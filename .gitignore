@@ -1,0 +1,18 @@
+# OSN / S3 credentials — never commit
+.env
+.env.*
+rclone.conf
+.aws/
+*credentials*
+*.key
+
+# build products, local previews, demo data downloads
+/index.html
+previews/
+demo-data/
+.venv/
+.coverage
+htmlcov/
+__pycache__/
+.playwright-cli/
+.DS_Store

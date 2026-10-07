@@ -1,0 +1,10 @@
+[project]
+name = "cds-data-pub"
+version = "0.1.0"
+description = "Public data portal page for BU CDS datasets on OSN"
+requires-python = ">=3.12"
+dependencies = []
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
