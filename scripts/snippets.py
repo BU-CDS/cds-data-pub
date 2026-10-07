@@ -12,6 +12,7 @@ from dataclasses import dataclass
 from scripts.manifest import BUCKET_BASE, DataFile, Dataset
 
 ENDPOINT, BUCKET = BUCKET_BASE.rstrip("/").rsplit("/", 1)
+NAMES = {"geojson": "GeoJSON"}  # formats whose usual spelling is not all caps
 COMPRESSION = {"gz": "gzip", "bz2": "bzip2", "xz": "xz", "zst": "zstd"}
 DOCS = {
     "curl": "https://curl.se/docs/manpage.html",
@@ -46,7 +47,7 @@ def file_format(name: str) -> str | None:
         return "TAR (gzip)"
     if parts[-1] in COMPRESSION and len(parts) > 2:
         return f"{parts[-2].upper()} ({COMPRESSION[parts[-1]]})"
-    return parts[-1].upper()
+    return NAMES.get(parts[-1], parts[-1].upper())
 
 
 def formats(ds: Dataset) -> list[str]:

@@ -73,8 +73,10 @@ class Card(unittest.TestCase):
     def test_meta_line(self) -> None:
         files = [file_dict(name=n, url=url_for(n)) for n in ("a.csv", "b.geojson", "README.md")]
         html = render_dataset(one(file=files, doi="10.5281/zenodo.1"))
-        self.assertIn("3 files (CSV, GEOJSON) · ", html)
-        self.assertIn("6.0 KiB</span> download · added 2026-10-06 · DOI ", html)
+        self.assertIn("3 files (CSV, GeoJSON) · ", html)
+        self.assertIn(
+            '6.0 KiB</span> download · added <span class="nw">2026-10-06</span> · DOI ', html
+        )
 
     def test_badges(self) -> None:
         html = render_dataset(one(license="CC0-1.0", tags=["example", "other"]))
@@ -145,7 +147,9 @@ class Page(unittest.TestCase):
         total = sum(d.total_size for d in SAMPLE.datasets)
         html = render_page(SAMPLE, ASSETS, DAY, None)
         self.assertIn(
-            f"24 datasets · {human_size(total)} total download · updated 2026-10-06", html
+            f"24 datasets · {human_size(total)} total download · "
+            'updated <span class="nw">2026-10-06</span>',
+            html,
         )
 
     def test_empty_catalog(self) -> None:
@@ -179,7 +183,9 @@ class Page(unittest.TestCase):
     def test_dark_tokens_and_rules(self) -> None:
         html = page()
         self.assertIn("color-scheme:light dark", html)
-        self.assertIn("@media(prefers-color-scheme:dark){:root{", html)
+        dark = html[html.index("@media(prefers-color-scheme:dark){:root{") :]
+        self.assertIn("--bg:#14110e", dark.split("}", 1)[0])
+        self.assertEqual(html.count("prefers-color-scheme:dark){:root{"), 1)  # one dark block
         self.assertIn("[hidden]{display:none!important}", html)
 
 

@@ -33,6 +33,7 @@ TOKENS = {
     "border": ("#dcd5cd", "#3d342b"),
     "accent": ("#0b7468", "#2bb39f"),
     "focus": ("#0b7468", "#2bb39f"),
+    "shadow": ("rgba(15,30,45,.10)", "rgba(0,0,0,.5)"),
     "code-bg": ("#2d2926", "#0e0c0a"),
     "code-fg": ("#f2efec", "#ece7e1"),
     "chip-on-bg": ("#2d2926", "#ece7e1"),
@@ -64,8 +65,7 @@ def _vars(theme: int) -> str:
 CSS = """\
 :root{--t-sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;\
 --t-mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;\
---content-max:1400px;--content-pad:12px;--shadow:rgba(15,30,45,.10);}
-@media(prefers-color-scheme:dark){:root{--shadow:rgba(0,0,0,.5);}}
+--content-max:1400px;--content-pad:12px;}
 @font-face{font-family:"Whitney SSm A";font-weight:600;font-style:normal;font-display:swap;\
 src:url("@@FONT_SEMIBOLD@@") format("woff2");}
 @font-face{font-family:"Whitney SSm A";font-weight:400;font-style:normal;font-display:swap;\
@@ -115,7 +115,7 @@ border-color:var(--chip-on-bg);}.chip[aria-pressed=true]::before{content:"\\2713
 .chip:disabled{cursor:default;opacity:.6;}
 .chip.extra{display:none;}\
 .chips.all .chip.extra,.chip.extra[aria-pressed=true]{display:inline-block;}
-.linkbtn,.more-tags,.clear,.more,.ftoggle{background:none;border:0;padding:4px 0;\
+.more-tags,.clear,.more,.ftoggle{background:none;border:0;padding:4px 0;\
 color:var(--accent);\
 cursor:pointer;font-size:0.75rem;text-decoration:underline;}
 .ftoggle{display:none;}
@@ -133,7 +133,7 @@ color:var(--text);text-decoration:none;font-size:0.75rem;}.toc a:hover{backgroun
 box-shadow:0 1px 2px var(--shadow);padding:14px 16px;margin:0 0 14px;}
 .ds-hd{display:flex;align-items:flex-start;gap:12px;}
 .ds h2{flex:1;min-width:0;font-family:"Whitney SSm A",var(--t-sans);font-size:1rem;font-weight:600;\
-margin:0;color:var(--text);overflow-wrap:anywhere;}
+margin:0;overflow-wrap:anywhere;}
 .acts{display:flex;gap:6px;flex-shrink:0;}
 .meta{color:var(--muted);font-size:0.75rem;margin:4px 0 6px;font-variant-numeric:tabular-nums;\
 overflow-wrap:anywhere;}
@@ -183,7 +183,7 @@ margin:0;white-space:pre-wrap;overflow-wrap:anywhere;font-family:var(--t-mono);f
 padding:1px 8px;font-size:0.7rem;cursor:pointer;margin-top:4px;}
 .hash .copy{margin:0 0 0 6px;}
 .bib{font-size:0.72rem;display:inline-block;margin-top:6px;}
-.empty{color:var(--muted);padding:24px 0;}
+.empty{color:var(--muted);padding:24px 0;}.nw{white-space:nowrap;}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
 .pagefoot{max-width:min(var(--content-max),98vw);width:100%;margin:0 auto;margin-top:auto;\
 padding:18px var(--content-pad) 30px;border-top:1px solid var(--border);display:flex;\
@@ -199,8 +199,10 @@ align-items:center;}.ft-link:hover{color:var(--accent);text-decoration:underline
 @media(max-width:480px){.pagefoot{gap:12px 18px;}.pagefoot .ft-l{min-width:0;}\
 .ft-emblem{height:auto;max-height:30px;max-width:100%;}}
 @media(pointer:coarse){header{padding-top:16px;padding-bottom:16px;}\
-.chip,.btn,.copy,.fmt label,.linkbtn,.more-tags,.clear,.more,.ftoggle,.ft-link,\
+.chip,.btn,.copy,.fmt label,.more-tags,.clear,.more,.ft-link,\
 details.det>summary,.more-files summary,.files .fn a{min-height:40px;display:inline-flex;\
+align-items:center;}}
+@media(pointer:coarse) and (max-width:1099px){.ftoggle{min-height:40px;display:inline-flex;\
 align-items:center;}}
 """
 PANEL_CSS = "".join(
@@ -333,7 +335,7 @@ def _meta(ds: Dataset) -> str:
     parts = [
         f"{n} file{'s' * (n != 1)}" + (f" ({', '.join(fmts)})" if fmts else ""),
         f"{_size(ds.total_size)} download",
-        f"added {ds.added.isoformat()}",
+        f'added <span class="nw">{ds.added.isoformat()}</span>',
     ]
     if ds.doi:
         parts.append(f'DOI <a href="https://doi.org/{_e(ds.doi)}">{_e(ds.doi)}</a>')
@@ -450,7 +452,7 @@ def render_page(
     notice = f'<p class="notice">{_e(catalog.notice)}</p>' if catalog.notice else ""
     summary = (
         f'<p class="summary">{n} dataset{"s" * (n != 1)} · {human_size(total)} total download · '
-        f"updated {updated.isoformat()}</p>"
+        f'updated <span class="nw">{updated.isoformat()}</span></p>'
         if n
         else ""
     )
@@ -482,7 +484,7 @@ def render_page(
         "Questions go to the contact or source listed on each dataset.</p></section>"
         f"{summary}"
         '<p class="empty" hidden>No datasets match. '
-        '<button type="button" class="clear linkbtn">Clear filters</button></p>'
+        '<button type="button" class="clear">Clear filters</button></p>'
         f"{body}</main></div>"
         f'<footer class="pagefoot"><div class="ft-l"><img class="ft-emblem light" '
         f'src="{assets.signature}" alt="Boston University Faculty of Computing &amp; Data '

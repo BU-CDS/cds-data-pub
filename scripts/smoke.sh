@@ -43,19 +43,20 @@ check "other query parameters are kept" "$(val '() => new URLSearchParams(locati
 pw goto "$URL#%E0" >/dev/null
 check "a malformed #fragment leaves filtering alive" "$(val '() => { const c = document.querySelector(".chip"); c.click(); return c.getAttribute("aria-pressed"); }')" "true"
 pw goto "$URL" >/dev/null
-pw eval '() => document.querySelector("details.pop > summary").click()' >/dev/null
+pw eval '() => document.querySelector(".acts details.pop:last-of-type > summary").click()' >/dev/null
 pw press Escape >/dev/null
 check "Escape closes popover and returns focus" \
-  "$(val '() => !document.querySelector("details.pop").open && document.activeElement === document.querySelector("details.pop > summary")')" "true"
+  "$(val '() => { const p = document.querySelector(".acts details.pop:last-of-type"); return !p.open && document.activeElement === p.querySelector("summary"); }')" "true"
 pw resize 390 600 >/dev/null
-pw eval '() => document.querySelector("details.pop > summary").click()' >/dev/null
+pw eval '() => document.querySelector(".acts details.pop:last-of-type > summary").click()' >/dev/null
 check "short viewport: open popover's Copy is reachable" \
-  "$(val '() => { const b = document.querySelector("details.pop[open] .copy"); b.scrollIntoView(); const r = b.getBoundingClientRect(); return r.bottom <= innerHeight && r.top >= 0; }')" "true"
+  "$(val '() => { const b = document.querySelector("details.pop[open] .copy"); b.scrollIntoView(); const r = b.getBoundingClientRect(); return r.height > 0 && r.bottom <= innerHeight && r.top >= 0; }')" "true"
 for theme in light dark; do
   pw run-code "async page => { await page.emulateMedia({ colorScheme: '$theme' }); }" >/dev/null
   for w in 1440 390; do
     pw resize "$w" 900 >/dev/null
-    pw screenshot --filename="$OUT_ABS/smoke-$theme-$w.png" >/dev/null
+    pw eval '() => scrollTo(0, 0)' >/dev/null
+    pw screenshot --full-page --filename="$OUT_ABS/smoke-$theme-$w.png" >/dev/null
   done
 done
 echo "smoke: screenshots in $OUT_ABS/smoke-{light,dark}-{1440,390}.png"

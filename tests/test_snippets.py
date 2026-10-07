@@ -31,7 +31,7 @@ class Formats(unittest.TestCase):
 
     def test_unique_in_first_seen_order(self) -> None:
         d = ds("b.geojson", "a.csv", "README.md", "c.csv")
-        self.assertEqual(snippets.formats(d), ["GEOJSON", "CSV"])
+        self.assertEqual(snippets.formats(d), ["GeoJSON", "CSV"])
 
     def test_main_file_skips_readme(self) -> None:
         self.assertEqual(snippets.main_file(ds("README.md", "a.csv")).name, "a.csv")

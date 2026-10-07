@@ -28,6 +28,9 @@
   Cite / Get data popovers, a collapsed Details section for files, dark mode (light and dark
   tokens checked for contrast), a catalog summary line. `smoke.sh` checks the filters, URL state,
   `#slug` links and Escape focus in a real browser and screenshots both themes.
+- Dates no longer break at the hyphen on phones; "GeoJSON" spelled as such; the Filters button
+  appears only on narrow screens (it showed, inert, on wide touch screens). Overflow and focus
+  checks now open the Get data popover; theme screenshots are full-page from the top.
 
 ## 2026-10-07
 
