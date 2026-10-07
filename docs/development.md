@@ -32,6 +32,15 @@ renderer's escaping is what keeps manifest text inert.
 Analytics: GA4 `G-MTV6EXSR2V`. Outbound clicks are **download-link clicks**, not downloads: they
 miss `curl` and include failed attempts and source/DOI links.
 
+## Catalog rules
+
+One `datasets/<slug>.toml` per dataset; the build refuses anything else and names the file and
+field. Highlights: 1–5 `tags`, each listed in `catalog.toml`; `license` an SPDX identifier or
+`Public domain`; every file in one bucket folder (the Get-data commands sync that folder); an
+optional `[citation]` (authors as "Family, Given" or an organization, year, title, publisher,
+optional url) — without one the dataset cites its catalog entry. The full rules and their tests:
+`scripts/manifest.py`, `tests/test_manifest.py`.
+
 ## Layout
 
 | Path | What |

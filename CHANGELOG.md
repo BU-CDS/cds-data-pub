@@ -31,6 +31,7 @@
 - Dates no longer break at the hyphen on phones; "GeoJSON" spelled as such; the Filters button
   appears only on narrow screens (it showed, inert, on wide touch screens). Overflow and focus
   checks now open the Get data popover; theme screenshots are full-page from the top.
+- Docs: catalog rules summary in the development guide; README points scripts to `catalog.json`.
 
 ## 2026-10-07
 

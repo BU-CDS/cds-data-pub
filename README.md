@@ -25,5 +25,7 @@ Catalog: **data.cds.bu.edu**
 - **Not an archive.** OSN keeps no backups. Researchers keep the master copy; for a citable DOI,
   also deposit the dataset in a repository such as Zenodo.
 - **Status:** demo. The listed datasets are public data re-hosted from their original sources.
+- **For scripts:** `catalog.json`, next to the page, lists every dataset, file, checksum and
+  citation.
 
 Changes: [CHANGELOG.md](CHANGELOG.md)
