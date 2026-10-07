@@ -13,6 +13,8 @@
   now carries its dataset DOI (10.7289/V5D21VHZ).
 - Citations prefer the DOI to a URL (APA 7), omit the publisher when it is the author, and use
   the dataset slug as the BibTeX key (unique; author-year keys collided).
+- Get-data snippets per dataset (download all, AWS CLI, rclone, Python, R; shell-quoted, run
+  against the bucket) and format names for the meta line (`CSV (gzip)`, `TAR (gzip)`).
 
 ## 2026-10-07
 
