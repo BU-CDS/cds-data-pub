@@ -95,6 +95,9 @@ class Refused(unittest.TestCase):
                 self.assertRefused(fragment, dataset_dict(tags=tags))
         self.assertRefused("1 to 5", dataset_dict(tags=["example"] * 6))
 
+    def test_tags_must_be_strings(self) -> None:
+        self.assertRefused("not in catalog.toml", dataset_dict(tags=[["example"]]))
+
     def test_citation_rules(self) -> None:
         cases = {
             "unknown field(s): editor": {**CITE, "editor": "x"},

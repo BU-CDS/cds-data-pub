@@ -18,7 +18,7 @@ mkrepo(){ # $1: dir; $2: page html
   git -C "$1" config user.name test
   cp "$R/deploy.sh" "$1/deploy.sh"
   cp -R "$R/scripts" "$1/scripts" && rm -rf "$1/scripts/__pycache__"
-  printf 'tags = ["x"]\n' > "$1/catalog.toml"; mkdir -p "$1/datasets"
+  printf 'tags = ["x"]\n' > "$1/catalog.toml"
   sha="$(digest "$1")"
   printf '%s\n' "${2//@@SHA@@/$sha}" > "$1/index.html"
   git -C "$1" add -A

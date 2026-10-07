@@ -200,13 +200,13 @@ def parse_dataset(slug: str, entry: dict, vocab: tuple[str, ...], where: str) ->
     tags = entry["tags"]
     if not isinstance(tags, list) or not 1 <= len(tags) <= MAX_TAGS:
         raise ManifestError(f"{where}: field 'tags' must list 1 to {MAX_TAGS} tags")
-    if len(set(tags)) != len(tags):
-        raise ManifestError(f"{where}: field 'tags' has a duplicate tag")
     stray = [t for t in tags if t not in vocab]
     if stray:
         raise ManifestError(
             f"{where}: field 'tags': {', '.join(map(str, stray))} not in catalog.toml tags"
         )
+    if len(set(tags)) != len(tags):
+        raise ManifestError(f"{where}: field 'tags' has a duplicate tag")
     citation = _parse_citation(entry["citation"], where) if "citation" in entry else None
     files = _parse_files(entry["file"], where)
     return Dataset(

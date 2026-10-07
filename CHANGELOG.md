@@ -7,6 +7,7 @@
   an optional `[citation]`; all of a dataset's files sit in one folder; licenses are SPDX
   identifiers (`PDDL-1.0`, not `ODC-PDDL-1.0`) or `Public domain`. The sample is a 24-dataset
   catalog under `examples/sample/`.
+- A non-text tag (e.g. a nested list) is refused with a clear message instead of a crash.
 
 ## 2026-10-07
 

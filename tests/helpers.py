@@ -38,9 +38,9 @@ def dataset_dict(**overrides: object) -> dict:
     return entry
 
 
-def parse(entry: dict | None = None, slug: str = "example", vocab: tuple[str, ...] = VOCAB):
+def parse(entry: dict | None = None, slug: str = "example"):
     """Parse one dataset table as datasets/<slug>.toml."""
-    return parse_dataset(slug, entry or dataset_dict(), vocab, f"datasets/{slug}.toml")
+    return parse_dataset(slug, entry or dataset_dict(), VOCAB, f"datasets/{slug}.toml")
 
 
 def dataset_toml(slug: str = "example", added: str = "2026-10-06") -> str:

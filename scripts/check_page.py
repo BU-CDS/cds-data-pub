@@ -1,10 +1,11 @@
 """Gate over a built catalog page.
 
-Usage: .venv/bin/python -m scripts.check_page PAGE [--preview | --require-ga G-XXXX] [--catalog DIR]
+Usage: .venv/bin/python -m scripts.check_page PAGE [--preview | --require-ga G-XXXX]
+       [--catalog DIR]
 
 Refuses: any sourced script but the GA loader, inline scripts beyond the GA bootstrap, network or
-storage APIs, http:// links, a missing "Updated" stamp, a preview build presented for publish, and (with --catalog) a page built from
-another catalog.
+storage APIs, http:// links, a missing "Updated" stamp, a preview build presented for publish,
+and (with --catalog) a page built from another catalog.
 """
 
 from __future__ import annotations
