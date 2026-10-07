@@ -18,7 +18,7 @@ mkrepo(){ # $1: dir; $2: page html
   git -C "$1" config user.name test
   cp "$R/deploy.sh" "$1/deploy.sh"
   cp -R "$R/scripts" "$1/scripts" && rm -rf "$1/scripts/__pycache__"
-  printf 'tags = ["x"]\n' > "$1/catalog.toml"
+  printf 'tags = ["x"]\n' > "$1/catalog.toml"; printf '{}\n' > "$1/catalog.json"
   sha="$(digest "$1")"
   printf '%s\n' "${2//@@SHA@@/$sha}" > "$1/index.html"
   git -C "$1" add -A
@@ -30,8 +30,8 @@ WORK="$(mktemp -d)"; trap 'rm -rf "$WORK"' EXIT
 # 1. happy path: page branch carries exactly index.html, .nojekyll, CNAME
 D="$WORK/r1"; mkrepo "$D" "$CLEAN"
 out="$(DEPLOY_PUSH=0 "$D/deploy.sh" 2>&1)" || bad "happy path failed: $out"
-files="$(git -C "$D" ls-tree --name-only page | sort | tr '\n' ' ')"
-[ "$files" = ".nojekyll CNAME index.html " ] && ok "page branch shape" || bad "page has: $files"
+files="$(git -C "$D" ls-tree --name-only page | LC_ALL=C sort | tr '\n' ' ')"
+[ "$files" = ".nojekyll CNAME catalog.json index.html " ] && ok "page branch shape" || bad "page has: $files"
 [ "$(git -C "$D" show page:CNAME)" = "data.cds.bu.edu" ] && ok "CNAME is data.cds.bu.edu" || bad "CNAME wrong"
 [ "$(wt_count "$D")" = 1 ] && ok "no leftover worktree" || bad "worktree left behind"
 
@@ -45,10 +45,14 @@ git -C "$D" show page:index.html | grep -q 2026-10-07 && ok "second deploy carri
 # 2b. CATALOG_DOMAIN= (empty) publishes for the default github.io domain: no CNAME on page;
 #     a later default deploy puts it back
 CATALOG_DOMAIN= DEPLOY_PUSH=0 "$D/deploy.sh" >/dev/null 2>&1 || bad "empty-domain deploy failed"
-files="$(git -C "$D" ls-tree --name-only page | sort | tr '\n' ' ')"
-[ "$files" = ".nojekyll index.html " ] && ok "empty CATALOG_DOMAIN drops CNAME" || bad "page has: $files"
+files="$(git -C "$D" ls-tree --name-only page | LC_ALL=C sort | tr '\n' ' ')"
+[ "$files" = ".nojekyll catalog.json index.html " ] && ok "empty CATALOG_DOMAIN drops CNAME" || bad "page has: $files"
 DEPLOY_PUSH=0 "$D/deploy.sh" >/dev/null 2>&1 || bad "default deploy after empty-domain failed"
 [ "$(git -C "$D" show page:CNAME 2>/dev/null)" = "data.cds.bu.edu" ] && ok "default deploy restores CNAME" || bad "CNAME not restored"
+
+# 2c. a missing catalog.json is refused
+D="$WORK/r1b"; mkrepo "$D" "$CLEAN"; rm "$D/catalog.json"
+DEPLOY_PUSH=0 "$D/deploy.sh" >/dev/null 2>&1 && bad "deployed without catalog.json" || ok "missing catalog.json refused"
 
 # 3. gate: refused pages never reach the page branch
 for case in fetch preview nostamp; do

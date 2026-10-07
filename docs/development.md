@@ -41,6 +41,7 @@ miss `curl` and include failed attempts and source/DOI links.
 | `scripts/render.py`, `scripts/build_page.py` | HTML/CSS and the build CLI |
 | `scripts/check_page.py`, `scripts/check_links.py` | Page gate and anonymous link check |
 | `publish.sh`, `deploy.sh` | Build → gate → link check → `page` branch |
+| `scripts/catalog_json.py` | `catalog.json`: every dataset, file, checksum and citation, built beside `index.html` and published with it |
 | `examples/sample/` | 24-dataset stress catalog (same layout) for layout work; never deployed |
 
 Last verified: 2026-10-07

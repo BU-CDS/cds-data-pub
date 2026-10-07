@@ -17,6 +17,7 @@ from datetime import date, datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
+from scripts.catalog_json import to_json
 from scripts.manifest import ManifestError, catalog_digest, load_catalog
 from scripts.render import Assets, render_page
 
@@ -78,16 +79,18 @@ def main(argv: list[str] | None = None) -> int:
     except (ManifestError, BuildError, OSError) as exc:
         print(f"build_page: {exc}", file=sys.stderr)
         return 1
+    stamp = args.updated or datetime.now(STAMP_TZ).date()
     html = render_page(
         catalog,
         assets,
-        args.updated or datetime.now(STAMP_TZ).date(),
+        stamp,
         ga_id,
         preview=args.preview,
         manifest_sha=manifest_sha,
     )
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(html, encoding="utf-8")
+    (args.out.parent / "catalog.json").write_text(to_json(catalog, stamp), encoding="utf-8")
     kind = "preview" if args.preview else "deploy build"
     print(f"build_page: wrote {args.out} ({len(catalog.datasets)} dataset(s), {kind})")
     return 0

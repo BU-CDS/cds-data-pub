@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import io
+import json
 import tempfile
 import unittest
 from contextlib import redirect_stderr, redirect_stdout
@@ -95,6 +96,12 @@ class Main(Fixture):
         self.assertIn("Updated 2026-10-06", html)
         self.assertEqual(html.count('<article class="ds"'), 24)
         self.assertIn("preview", out)
+
+    def test_writes_catalog_json_beside_page(self) -> None:
+        page = self.tmp / "out" / "index.html"
+        self.run_main("--catalog", "examples/sample", "--out", str(page), "--preview")
+        data = json.loads((page.parent / "catalog.json").read_text("utf-8"))
+        self.assertEqual(len(data["datasets"]), 24)
 
     def test_preview_never_carries_ga(self) -> None:
         page = self.tmp / "index.html"

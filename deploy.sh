@@ -12,7 +12,9 @@ REPO="$(git -C "$ROOT" rev-parse --show-toplevel)"
 PAGE="$ROOT/index.html"
 PY="${PYTHON:-$ROOT/.venv/bin/python}"
 DOMAIN="${CATALOG_DOMAIN-data.cds.bu.edu}"   # CATALOG_DOMAIN= (empty): default github.io domain, no CNAME
+CAT="$ROOT/catalog.json"
 [ -f "$PAGE" ] || { echo "deploy: no index.html to publish" >&2; exit 1; }
+[ -f "$CAT" ] || { echo "deploy: no catalog.json to publish (run build_page)" >&2; exit 1; }
 
 # unconditional gate: the page must pass check_page and must have been built from this
 # checkout's catalog (catalog.toml + datasets/), so a sample or preview build can never reach
@@ -52,8 +54,8 @@ fi
 WT="$(mktemp -d)"
 trap 'git -C "$REPO" worktree remove --force "$WT" 2>/dev/null || rm -rf "$WT"; git -C "$REPO" worktree prune' EXIT
 git -C "$REPO" worktree add -q "$WT" page
-cp "$PAGE" "$WT/index.html"; : > "$WT/.nojekyll"
-git -C "$WT" add -f index.html .nojekyll
+cp "$PAGE" "$WT/index.html"; cp "$CAT" "$WT/catalog.json"; : > "$WT/.nojekyll"
+git -C "$WT" add -f index.html .nojekyll catalog.json
 if [ -n "$DOMAIN" ]; then
   printf '%s\n' "$DOMAIN" > "$WT/CNAME"   # Pages needs CNAME in the published branch
   git -C "$WT" add -f CNAME

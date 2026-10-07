@@ -17,6 +17,8 @@
   against the bucket) and format names for the meta line (`CSV (gzip)`, `TAR (gzip)`).
 - The download-all loop uses `curl -g`, so file names with `[ ]` or `{ }` download instead of
   being read as curl globs.
+- `catalog.json` (every dataset, file, checksum and citation) is built beside `index.html` and
+  published with it; `deploy.sh` refuses to publish without it.
 
 ## 2026-10-07
 
