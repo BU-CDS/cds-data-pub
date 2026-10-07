@@ -15,6 +15,8 @@
   the dataset slug as the BibTeX key (unique; author-year keys collided).
 - Get-data snippets per dataset (download all, AWS CLI, rclone, Python, R; shell-quoted, run
   against the bucket) and format names for the meta line (`CSV (gzip)`, `TAR (gzip)`).
+- The download-all loop uses `curl -g`, so file names with `[ ]` or `{ }` download instead of
+  being read as curl globs.
 
 ## 2026-10-07
 

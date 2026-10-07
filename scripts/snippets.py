@@ -11,8 +11,7 @@ from dataclasses import dataclass
 
 from scripts.manifest import BUCKET_BASE, DataFile, Dataset
 
-ENDPOINT = "https://mghp.osn.xsede.org"
-BUCKET = "bu-cds-public-data"
+ENDPOINT, BUCKET = BUCKET_BASE.rstrip("/").rsplit("/", 1)
 COMPRESSION = {"gz": "gzip", "bz2": "bzip2", "xz": "xz", "zst": "zstd"}
 DOCS = {
     "curl": "https://curl.se/docs/manpage.html",
@@ -87,11 +86,9 @@ def _r(f: DataFile) -> tuple[str, str]:
 
 def get_data(ds: Dataset) -> list[Snippet]:
     """The Get-data tabs, in display order."""
-    from scripts.render import human_size  # render imports this module; import late
-
     folder = f"{BUCKET_BASE}{ds.prefix}"
     names = " \\\n         ".join(shlex.quote(f.name) for f in ds.files)
-    loop = f'base={shlex.quote(folder)}\nfor f in {names}; do\n  curl -fO "$base/$f"\ndone'
+    loop = f'base={shlex.quote(folder)}\nfor f in {names}; do\n  curl -gfO "$base/$f"\ndone'
     s3 = shlex.quote(f"s3://{BUCKET}/{ds.prefix}/")
     rc = shlex.quote(f":s3:{BUCKET}/{ds.prefix}")
     dest = shlex.quote(f"./{ds.slug}")
@@ -103,7 +100,7 @@ def get_data(ds: Dataset) -> list[Snippet]:
     return [
         Snippet(
             "Download all",
-            f"All {n} file{'s' * (n != 1)}, {human_size(ds.total_size)}",
+            f"All {n} file{'s' * (n != 1)}",
             loop,
             DOCS["curl"],
         ),
