@@ -33,9 +33,10 @@ class Effective(unittest.TestCase):
             cite.link(ds(source="https://s.org/x", doi="10.5281/zenodo.1")),
             "https://doi.org/10.5281/zenodo.1",
         )
-        self.assertEqual(
+        self.assertEqual(cite.link(ds(citation={**FULL, "url": "https://u.org"})), "https://u.org")
+        self.assertEqual(  # APA 7 prefers the DOI to a URL
             cite.link(ds(doi="10.5281/zenodo.1", citation={**FULL, "url": "https://u.org"})),
-            "https://u.org",
+            "https://doi.org/10.5281/zenodo.1",
         )
 
 
@@ -59,11 +60,15 @@ class Apa(unittest.TestCase):
             cite.apa(ds()).startswith(f"{cite.ORG}. (2026). Example dataset [Data set].")
         )
 
+    def test_publisher_omitted_when_it_is_the_author(self) -> None:
+        same = {**FULL, "authors": ["Natural Earth"], "publisher": "Natural Earth"}
+        self.assertIn("[Data set]. https://", cite.apa(ds(citation=same, source="https://n.org")))
+
 
 class Bibtex(unittest.TestCase):
     def test_full(self) -> None:
         text = cite.bibtex(ds(citation=FULL, doi="10.5281/zenodo.3960218"))
-        self.assertTrue(text.startswith("@misc{horst2020example,\n"))
+        self.assertTrue(text.startswith("@misc{example,\n"))  # slugs are unique keys
         self.assertIn(
             "  author = {Horst, Allison M. and Hill, Alison P. and Gorman, Kristen B.},", text
         )
@@ -85,7 +90,6 @@ class Bibtex(unittest.TestCase):
     def test_non_ascii_names_kept(self) -> None:
         text = cite.bibtex(ds(citation={**FULL, "authors": ["Müller, Zoë"]}))
         self.assertIn("author = {Müller, Zoë},", text)
-        self.assertTrue(text.startswith("@misc{mller2020example,"))
 
 
 class Ris(unittest.TestCase):

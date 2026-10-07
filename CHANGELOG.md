@@ -11,6 +11,8 @@
 - Citations: APA, BibTeX and RIS generated from `[citation]` (or, without one, the catalog entry).
   The demo datasets cite their original sources, read from each source page on 2026-10-07; GHCN
   now carries its dataset DOI (10.7289/V5D21VHZ).
+- Citations prefer the DOI to a URL (APA 7), omit the publisher when it is the author, and use
+  the dataset slug as the BibTeX key (unique; author-year keys collided).
 
 ## 2026-10-07
 
