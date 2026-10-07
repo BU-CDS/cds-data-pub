@@ -24,6 +24,10 @@
   any other inline script, JSON-LD, `eval(` and `new Function`.
 - The page script keeps other query parameters (`utm_*`, `gclid`) when it updates the URL,
   survives a malformed `#` fragment, and shows no filter box for an empty catalog.
+- v2 page: sticky sidebar (search, tag filter with live counts, dataset list), compact cards with
+  Cite / Get data popovers, a collapsed Details section for files, dark mode (light and dark
+  tokens checked for contrast), a catalog summary line. `smoke.sh` checks the filters, URL state,
+  `#slug` links and Escape focus in a real browser and screenshots both themes.
 
 ## 2026-10-07
 

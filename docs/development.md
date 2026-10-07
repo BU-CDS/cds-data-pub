@@ -15,7 +15,8 @@ with `PUB_CPU_CLONE`. They are never copied into this repo.
 | Task | Command |
 |---|---|
 | Preview with stress-case data | `.venv/bin/python -m scripts.build_page --catalog examples/sample --out previews/index.html --preview` |
-| Screenshots + overflow check | `scripts/shoot.sh previews/index.html previews` |
+| Screenshots + overflow check (1920–320 px, also with a popover open) | `scripts/shoot.sh previews/index.html previews` |
+| Browser behaviour: filters, URL state, `#slug`, Escape focus, light + dark screenshots | `scripts/smoke.sh previews/index.html previews` (build from `examples/sample` first) |
 | Unit tests | `.venv/bin/python -m unittest discover -s tests -t .` |
 | Deploy test | `tests/test_deploy.sh` |
 | Coverage (≥ 80%) | `uvx --from 'coverage==7.16.2' coverage run --source=scripts -m unittest discover -s tests -t . && uvx --from 'coverage==7.16.2' coverage report --fail-under=80` |
@@ -24,7 +25,7 @@ with `PUB_CPU_CLONE`. They are never copied into this repo.
 | Publish | `./publish.sh` (from `main` only) |
 | Publish to the default domain (testing; no `CNAME`) | `CATALOG_DOMAIN= ./publish.sh` → `https://bu-cds.github.io/cds-data-pub/` |
 
-`deploy.sh`, `publish.sh`, `test_deploy.sh` (git worktree) and `shoot.sh` (playwright-cli) need to
+`deploy.sh`, `publish.sh`, `test_deploy.sh` (git worktree), `shoot.sh` and `smoke.sh` (playwright-cli) need to
 run outside a restrictive sandbox. `check_page` is a regression check, not a security boundary: the
 renderer's escaping is what keeps manifest text inert.
 

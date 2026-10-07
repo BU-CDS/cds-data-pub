@@ -29,6 +29,7 @@ STAMP_TZ = ZoneInfo("America/New_York")  # the "Updated" stamp is a Boston date
 SIBLING_ASSETS = {
     "plate": ("bu_plate_white.png", "image/png"),
     "signature": ("faculty_compt_data_sci_signature_toptier_rgb.png", "image/png"),
+    "signature_dark": ("faculty_compt_data_sci_signature_toptier_rgbwhite.png", "image/png"),
     "font_semibold": ("WhitneySSmAdvancedSemibold.woff2", "font/woff2"),
     "font_book": ("WhitneySSmAdvancedBook.woff2", "font/woff2"),
 }

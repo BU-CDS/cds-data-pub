@@ -1,39 +1,82 @@
-"""Render the catalog page as one self-contained HTML document.
+"""Render the catalog page: sidebar filter, compact cards, Cite / Get data popovers.
 
-Header, footer, palette and phone rules are ported from pub-cds-scc/build_cluster_page.R
-(cluster.cds.bu.edu), including its 2026-09-03 phone fixes, so the two pages read as one family.
+Header, footer and phone rules descend from pub-cds-scc (cluster.cds.bu.edu); dark tokens reuse
+gpu-cds-scc's warm dark palette. Every manifest string is escaped here. Behaviour lives in
+scripts/page.js, embedded once; check_page admits it by sha256.
 """
 
 from __future__ import annotations
 
+from collections import Counter
 from dataclasses import dataclass
 from datetime import date
 from html import escape
 from pathlib import Path
+from urllib.parse import quote
 
-from scripts.manifest import Catalog, DataFile, Dataset
+from scripts import cite, snippets
+from scripts.manifest import Catalog, DataFile, Dataset, license_url
 
 UNITS = ("KiB", "MiB", "GiB", "TiB", "PiB")
 FILES_SHOWN = 5  # longer file lists collapse into a native <details> toggle
+TAGS_SHOWN = 12  # more tags sit behind "More tags"
 PREVIEW_MARK = '<meta name="cds-build" content="preview">'
 PAGE_JS = Path(__file__).with_name("page.js").read_text(encoding="utf-8")
+
+# name: (light, dark). Dark values from gpu-cds-scc/build_gpu_portal.R; notice and code are ours.
+TOKENS = {
+    "bg": ("#f2efec", "#14110e"),
+    "surface": ("#ffffff", "#1c1815"),
+    "surface2": ("#ebe6e0", "#241f1a"),
+    "text": ("#2d2926", "#ece7e1"),
+    "muted": ("#6b6158", "#b0a598"),
+    "border": ("#dcd5cd", "#3d342b"),
+    "accent": ("#0b7468", "#2bb39f"),
+    "focus": ("#0b7468", "#2bb39f"),
+    "code-bg": ("#2d2926", "#0e0c0a"),
+    "code-fg": ("#f2efec", "#ece7e1"),
+    "chip-on-bg": ("#2d2926", "#ece7e1"),
+    "chip-on-fg": ("#ffffff", "#14110e"),
+    "notice-bg": ("#fff4d6", "#3a3115"),
+    "notice-border": ("#e6c97a", "#6b5a24"),
+    "notice-fg": ("#2d2926", "#f3e6c0"),
+}
+CONTRAST_TEXT = (  # >= 4.5:1 in both themes
+    ("text", "bg"),
+    ("text", "surface"),
+    ("text", "surface2"),
+    ("muted", "bg"),
+    ("muted", "surface"),
+    ("muted", "surface2"),
+    ("accent", "bg"),
+    ("accent", "surface"),
+    ("code-fg", "code-bg"),
+    ("chip-on-fg", "chip-on-bg"),
+    ("notice-fg", "notice-bg"),
+)
+CONTRAST_UI = (("focus", "bg"), ("focus", "surface"))  # >= 3:1 (focus ring)
+
+
+def _vars(theme: int) -> str:
+    return ";".join(f"--{name}:{pair[theme]}" for name, pair in TOKENS.items())
+
 
 CSS = """\
 :root{--t-sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;\
 --t-mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;\
---content-max:1100px;--content-pad:12px;--bg:#f2efec;--surface:#ffffff;--surface2:#ebe6e0;\
---ink:#2d2926;--text:#2d2926;--muted:#6b6158;--border:#dcd5cd;--accent:#0b7468;\
---headbg:#2d2926;--headfg:#ffffff;--shadow:rgba(15,30,45,.10);}
+--content-max:1400px;--content-pad:12px;--shadow:rgba(15,30,45,.10);}
+@media(prefers-color-scheme:dark){:root{--shadow:rgba(0,0,0,.5);}}
 @font-face{font-family:"Whitney SSm A";font-weight:600;font-style:normal;font-display:swap;\
 src:url("@@FONT_SEMIBOLD@@") format("woff2");}
 @font-face{font-family:"Whitney SSm A";font-weight:400;font-style:normal;font-display:swap;\
 src:url("@@FONT_BOOK@@") format("woff2");}
+[hidden]{display:none!important}
 *{box-sizing:border-box}html{font-size:110%;}html,body{height:100%;}\
 body{display:flex;flex-direction:column;min-height:100vh;min-height:100dvh;\
 font-family:var(--t-sans);color:var(--text);margin:0;background:var(--bg);font-size:0.813rem;\
 line-height:1.45;-webkit-font-smoothing:antialiased;}
-header{background:var(--headbg);color:var(--headfg);padding:12px var(--content-pad);\
-position:relative;border-top:3px solid #cc0000;border-bottom:1px solid rgba(255,255,255,.08);}\
+header{background:#2d2926;color:#ffffff;padding:12px var(--content-pad);position:relative;\
+border-top:3px solid #cc0000;border-bottom:1px solid rgba(255,255,255,.08);}\
 header h1{font-size:1rem;margin:0;font-weight:600;letter-spacing:-.01em;\
 font-family:"Whitney SSm A",var(--t-sans);}\
 .buplate{height:1.615em;vertical-align:-.449em;margin-right:.34em;}\
@@ -43,54 +86,127 @@ font-family:"Whitney SSm A",var(--t-sans);}\
 gap:14px;flex-wrap:wrap;}
 @media(max-width:700px){.hsep{display:block;height:0;padding:0;overflow:hidden;}}\
 @media(max-width:480px){header h1{font-size:0.9rem;}}
-main{max-width:min(var(--content-max),98vw);width:100%;margin:0 auto;\
-padding:14px var(--content-pad) 60px;flex:1 0 auto;}
 a{color:var(--accent);}
-.intro p{margin:0 0 8px;max-width:75ch;}.intro .terms{color:var(--muted);font-size:0.75rem;}
-.notice{background:#fff4d6;border:1px solid #e6c97a;border-radius:6px;padding:8px 12px;\
-margin:0 0 12px;max-width:75ch;}
-.ds .source{font-size:0.75rem;margin:0 0 6px;overflow-wrap:anywhere;}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px;}
+button{font:inherit;}
+.wrap{max-width:min(var(--content-max),98vw);width:100%;margin:0 auto;\
+padding:14px var(--content-pad) 60px;flex:1 0 auto;display:grid;\
+grid-template-columns:minmax(0,1fr);\
+gap:20px;}
+@media(min-width:1100px){.wrap{grid-template-columns:270px minmax(0,1fr);}\
+.side-in{position:sticky;top:12px;max-height:calc(100vh - 24px);display:flex;\
+flex-direction:column;}}
+main{min-width:0;}
+.notice{background:var(--notice-bg);border:1px solid var(--notice-border);color:var(--notice-fg);\
+border-radius:6px;padding:8px 12px;margin:0 0 12px;max-width:80ch;}
+.intro p{margin:0 0 8px;max-width:80ch;}.intro .terms{color:var(--muted);font-size:0.75rem;}
+.summary{color:var(--muted);font-size:0.75rem;margin:0 0 12px;font-variant-numeric:tabular-nums;}
+.side input[type=search]{width:100%;padding:7px 9px;border:1px solid var(--border);\
+border-radius:6px;background:var(--surface);color:var(--text);font:inherit;}
+.chips-hd{font-size:0.7rem;color:var(--muted);margin:10px 0 4px;}
+.chips{display:flex;flex-wrap:wrap;gap:4px;}
+.chip{border:1px solid var(--border);background:var(--surface2);color:var(--text);\
+border-radius:999px;padding:2px 9px;font-size:0.72rem;cursor:pointer;\
+font-variant-numeric:tabular-nums;}
+.chip .n{color:var(--muted);margin-left:4px;}
+.chip[aria-pressed=true]{background:var(--chip-on-bg);color:var(--chip-on-fg);\
+border-color:var(--chip-on-bg);}.chip[aria-pressed=true]::before{content:"\\2713\\00a0";}
+.chip[aria-pressed=true] .n{color:inherit;}
+.chip:disabled{cursor:default;opacity:.6;}
+.chip.extra{display:none;}\
+.chips.all .chip.extra,.chip.extra[aria-pressed=true]{display:inline-block;}
+.linkbtn,.more-tags,.clear,.more,.ftoggle{background:none;border:0;padding:4px 0;\
+color:var(--accent);\
+cursor:pointer;font-size:0.75rem;text-decoration:underline;}
+.ftoggle{display:none;}
+.count{font-size:0.75rem;color:var(--muted);margin:8px 0 2px;font-variant-numeric:tabular-nums;}
+.toc-hd{font-size:0.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);\
+margin:14px 0 4px;}
+.toc{overflow:auto;min-height:0;}.toc ol{list-style:none;margin:0;padding:0;}
+.toc a{display:flex;justify-content:space-between;gap:8px;padding:3px 4px;border-radius:4px;\
+color:var(--text);text-decoration:none;font-size:0.75rem;}.toc a:hover{background:var(--surface2);}
+.toc .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.toc .sz{color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums;}
+@media(max-width:1099px){.toc,.toc-hd{display:none;}.ftoggle{display:inline-block;}\
+.chips-wrap:not(.open){display:none;}}
 .ds{background:var(--surface);border:1px solid var(--border);border-radius:8px;\
-box-shadow:0 1px 2px var(--shadow);padding:14px 16px;margin:16px 0;}
-.ds h2{font-family:"Whitney SSm A",var(--t-sans);font-size:1rem;font-weight:600;margin:0 0 4px;\
-color:var(--ink);overflow-wrap:anywhere;}
-.ds .meta{color:var(--muted);font-size:0.75rem;margin:0 0 10px;}
-.ds .desc p{margin:0 0 8px;max-width:75ch;}
-.ds .contact{font-size:0.75rem;margin:0 0 10px;overflow-wrap:anywhere;}
-.files{width:100%;border-collapse:collapse;font-size:0.75rem;}
+box-shadow:0 1px 2px var(--shadow);padding:14px 16px;margin:0 0 14px;}
+.ds-hd{display:flex;align-items:flex-start;gap:12px;}
+.ds h2{flex:1;min-width:0;font-family:"Whitney SSm A",var(--t-sans);font-size:1rem;font-weight:600;\
+margin:0;color:var(--text);overflow-wrap:anywhere;}
+.acts{display:flex;gap:6px;flex-shrink:0;}
+.meta{color:var(--muted);font-size:0.75rem;margin:4px 0 6px;font-variant-numeric:tabular-nums;\
+overflow-wrap:anywhere;}
+.badges{display:flex;flex-wrap:wrap;gap:4px;margin:0 0 8px;}
+.lic,.tag{border:1px solid var(--border);background:var(--surface2);color:var(--text);\
+border-radius:999px;padding:1px 8px;font-size:0.7rem;text-decoration:none;}.lic{font-weight:600;}
+.desc{max-width:80ch;}.desc p{margin:0 0 6px;}.desc p:last-child{margin-bottom:0;}
+.desc.clamp{max-height:2.9em;overflow:hidden;}
+details.det>summary{cursor:pointer;color:var(--accent);font-size:0.75rem;padding:6px 0;}
+.src,.contact{font-size:0.75rem;margin:4px 0;overflow-wrap:anywhere;}
+.files{width:100%;border-collapse:collapse;font-size:0.75rem;margin-top:6px;}
 .files th{text-align:left;font-weight:600;color:var(--muted);border-bottom:1px solid var(--border);\
 padding:4px 8px 4px 0;}
 .files td{border-bottom:1px solid var(--border);padding:5px 8px 5px 0;vertical-align:top;}
-.files .fn{overflow-wrap:anywhere;}.files .sz{white-space:nowrap;}
-.files code,.curl code{font-family:var(--t-mono);font-size:0.7rem;overflow-wrap:anywhere;\
+.files .fn{overflow-wrap:anywhere;}.files .sz{white-space:nowrap;font-variant-numeric:tabular-nums;}
+.files code{font-family:var(--t-mono);font-size:0.7rem;color:var(--muted);overflow-wrap:anywhere;\
 word-break:break-all;}
-.curlhd{font-size:0.75rem;color:var(--muted);margin:10px 0 4px;}
-.curl{background:var(--surface2);border-radius:5px;padding:6px 8px;margin:0;white-space:pre-wrap;\
-overflow-wrap:anywhere;}
-.empty{color:var(--muted);padding:24px 0;}
-@media(min-width:900px){.files{table-layout:fixed;}.files .sz{width:6em;}\
-.files .hash{width:28rem;}}
-.more summary{cursor:pointer;color:var(--accent);font-size:0.75rem;padding:6px 0;}
+@media(min-width:900px){.files{table-layout:fixed;}.files .sz{width:6em;}.files .hash{width:30rem;}}
 @media(max-width:600px){.files thead{display:none;}\
 .files,.files tbody,.files tr,.files td{display:block;width:100%;}\
 .files tr{border-bottom:1px solid var(--border);padding:6px 0;}.files td{border:0;padding:1px 0;}\
 .files .hash::before{content:"sha256 ";color:var(--muted);}}
+.more-files summary{cursor:pointer;color:var(--accent);font-size:0.75rem;padding:6px 0;}
+.btn{list-style:none;display:inline-flex;align-items:center;gap:4px;border:1px solid var(--border);\
+background:var(--surface);color:var(--text);border-radius:6px;padding:4px 10px;font-size:0.75rem;\
+cursor:pointer;white-space:nowrap;}summary.btn::-webkit-details-marker{display:none;}
+.pop{position:relative;}
+.pop-body{position:absolute;right:0;top:calc(100% + 6px);z-index:5;width:min(560px,90vw);\
+background:var(--surface);border:1px solid var(--border);border-radius:8px;\
+box-shadow:0 6px 24px var(--shadow);padding:10px 12px;}
+@media(max-width:1099px){.ds-hd{flex-wrap:wrap;}.acts{width:100%;flex-wrap:wrap;}\
+.pop[open]{flex-basis:100%;order:2;}.pop-body{position:static;width:100%;margin-top:8px;\
+box-shadow:none;}}
+.fmt{border:0;margin:0;padding:0;min-width:0;}
+.fmt legend{font-size:0.7rem;color:var(--muted);margin-bottom:4px;padding:0;}
+.fmt input{position:absolute;opacity:0;width:1px;height:1px;}
+.fmt label{display:inline-block;padding:3px 8px;border-radius:5px;font-size:0.72rem;cursor:pointer;\
+color:var(--muted);}
+.fmt input:checked+label{background:var(--surface2);color:var(--text);font-weight:600;}
+.fmt input:focus-visible+label{outline:2px solid var(--focus);outline-offset:1px;}
+.panel{display:none;margin-top:8px;}
+.hint{font-size:0.72rem;color:var(--muted);margin:0 0 4px;}
+.panel pre{background:var(--code-bg);color:var(--code-fg);border-radius:6px;padding:8px 10px;\
+margin:0;white-space:pre-wrap;overflow-wrap:anywhere;font-family:var(--t-mono);font-size:0.7rem;}
+.panel pre.prose{font-family:var(--t-sans);font-size:0.75rem;}
+.copy{border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:5px;\
+padding:1px 8px;font-size:0.7rem;cursor:pointer;margin-top:4px;}
+.hash .copy{margin:0 0 0 6px;}
+.bib{font-size:0.72rem;display:inline-block;margin-top:6px;}
+.empty{color:var(--muted);padding:24px 0;}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
 .pagefoot{max-width:min(var(--content-max),98vw);width:100%;margin:0 auto;margin-top:auto;\
 padding:18px var(--content-pad) 30px;border-top:1px solid var(--border);display:flex;\
 align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;}
 .pagefoot .ft-l{flex:1 1 200px;display:flex;align-items:center;}
 .pagefoot .ft-c{flex:0 0 auto;text-align:center;}
-.pagefoot .ft-r{flex:1 1 200px;text-align:right;}
-.ft-emblem{height:30px;width:auto;display:block;}
+.pagefoot .ft-r{flex:1 1 200px;text-align:right;display:flex;gap:14px;justify-content:flex-end;}
+.ft-emblem{height:30px;width:auto;display:block;}.ft-emblem.dark{display:none;}
+@media(prefers-color-scheme:dark){.ft-emblem.light{display:none;}.ft-emblem.dark{display:block;}}
 .stamp{color:var(--muted);font-size:0.75rem;}
 .ft-link{color:var(--muted);font-size:0.75rem;text-decoration:none;display:inline-flex;\
 align-items:center;}.ft-link:hover{color:var(--accent);text-decoration:underline;}
 @media(max-width:480px){.pagefoot{gap:12px 18px;}.pagefoot .ft-l{min-width:0;}\
 .ft-emblem{height:auto;max-height:30px;max-width:100%;}}
-@media(pointer:coarse){header{padding-top:16px;padding-bottom:16px;}.ft-link{min-height:40px;}\
-.files .fn a{display:inline-block;min-height:40px;padding-top:10px;}\
-.more summary{min-height:40px;padding-top:10px;}}
+@media(pointer:coarse){header{padding-top:16px;padding-bottom:16px;}\
+.chip,.btn,.copy,.fmt label,.linkbtn,.more-tags,.clear,.more,.ftoggle,.ft-link,\
+details.det>summary,.more-files summary,.files .fn a{min-height:40px;display:inline-flex;\
+align-items:center;}}
 """
+PANEL_CSS = "".join(
+    f".fmt input:nth-of-type({i}):checked~.panel:nth-of-type({i}){{display:block;}}"
+    for i in range(1, 6)
+)
 
 
 @dataclass(frozen=True)
@@ -99,6 +215,7 @@ class Assets:
 
     plate: str
     signature: str
+    signature_dark: str
     font_semibold: str
     font_book: str
     favicon: str
@@ -135,64 +252,164 @@ def ga_tag(ga_id: str) -> str:
     )
 
 
+COPY = '<button type="button" class="copy" hidden>Copy</button>'
+
+
+def _size(n: int) -> str:
+    return f'<span title="{n:,} bytes">{human_size(n)}</span>'
+
+
 def _rows(files: tuple[DataFile, ...]) -> str:
     return "".join(
         f'<tr><td class="fn"><a href="{_e(f.url)}">{_e(f.name)}</a></td>'
-        f'<td class="sz" title="{f.size:,} bytes">{human_size(f.size)}</td>'
-        f'<td class="hash"><code>{f.sha256}</code></td></tr>'
+        f'<td class="sz">{_size(f.size)}</td>'
+        f'<td class="hash"><code>{f.sha256}</code>{COPY}</td></tr>'
         for f in files
     )
 
 
-def _meta(ds: Dataset) -> list[str]:
-    count = len(ds.files)
-    meta = [
-        f'<span title="{ds.total_size:,} bytes">{human_size(ds.total_size)}</span>',
-        f"{count} file{'' if count == 1 else 's'}",
-        _e(ds.license),
-        f"added {ds.added.isoformat()}",
-    ]
-    if ds.doi:
-        meta.append(f'DOI <a href="https://doi.org/{_e(ds.doi)}">{_e(ds.doi)}</a>')
-    return meta
-
-
-def _files_block(ds: Dataset) -> str:
+def _files_table(ds: Dataset) -> str:
     shown, rest = ds.files[:FILES_SHOWN], ds.files[FILES_SHOWN:]
     table = (
         '<table class="files"><thead><tr><th>File</th><th class="sz">Size</th>'
         f'<th class="hash">sha256</th></tr></thead><tbody>{_rows(shown)}</tbody></table>'
     )
     if rest:
-        more = f"Show {len(rest)} more file{'' if len(rest) == 1 else 's'}"
+        more = f"Show {len(rest)} more file{'s' * (len(rest) != 1)}"
         table += (
-            f'<details class="more"><summary>{more}</summary>'
+            f'<details class="more-files"><summary>{more}</summary>'
             f'<table class="files"><tbody>{_rows(rest)}</tbody></table></details>'
         )
+    return table
+
+
+def _choices(group: str, legend: str, panels: list[tuple[str, str]]) -> str:
+    radios = "".join(
+        f'<input type="radio" name="{group}" id="{group}-{i}"{" checked" if i == 0 else ""}>'
+        f'<label for="{group}-{i}">{_e(label)}</label>'
+        for i, (label, _) in enumerate(panels)
+    )
+    bodies = "".join(f'<div class="panel">{body}</div>' for _, body in panels)
+    return f'<fieldset class="fmt"><legend>{legend}</legend>{radios}{bodies}</fieldset>'
+
+
+def _code(hint: str, code: str, prose: bool = False) -> str:
+    cls = ' class="prose"' if prose else ""
+    return f'<p class="hint">{hint}</p><pre{cls}><code>{_e(code)}</code></pre>{COPY}'
+
+
+def _pop(label: str, aria: str, body: str) -> str:
     return (
-        f"{table}"
-        '<p class="curlhd">Download from a script:</p>'
-        f"<pre class=\"curl\"><code>curl -O '{_e(ds.files[0].url)}'</code></pre>"  # URL_RE bars '
+        f'<details class="pop"><summary class="btn" aria-label="{_e(aria)}">{label} '
+        f'<span aria-hidden="true">▾</span></summary><div class="pop-body">{body}</div></details>'
     )
 
 
+def _get_data(ds: Dataset) -> str:
+    panels = [
+        (s.label, _code(f'{_e(s.hint)} · <a href="{_e(s.docs)}">docs</a>', s.code))
+        for s in snippets.get_data(ds)
+    ]
+    return _pop("Get data", f"Get data for {ds.title}", _choices(f"gd-{ds.slug}", "Format", panels))
+
+
+def _cite(ds: Dataset) -> str:
+    bib = cite.bibtex(ds)
+    panels = [
+        ("APA", _code("APA 7", cite.apa(ds), prose=True)),
+        ("BibTeX", _code("BibTeX", bib)),
+        ("RIS", _code("RIS", cite.ris(ds))),
+    ]
+    download = (
+        f'<a class="bib" download="{ds.slug}.bib" '
+        f'href="data:application/x-bibtex;charset=utf-8,{quote(bib)}">Download .bib</a>'
+    )
+    body = _choices(f"ct-{ds.slug}", "Citation style", panels) + download
+    return _pop("Cite", f"Cite {ds.title}", body)
+
+
+def _meta(ds: Dataset) -> str:
+    n, fmts = len(ds.files), snippets.formats(ds)
+    parts = [
+        f"{n} file{'s' * (n != 1)}" + (f" ({', '.join(fmts)})" if fmts else ""),
+        f"{_size(ds.total_size)} download",
+        f"added {ds.added.isoformat()}",
+    ]
+    if ds.doi:
+        parts.append(f'DOI <a href="https://doi.org/{_e(ds.doi)}">{_e(ds.doi)}</a>')
+    return " · ".join(parts)
+
+
+def _badges(ds: Dataset) -> str:
+    terms = license_url(ds.license)
+    lic = (
+        f'<a class="lic" href="{_e(terms)}">{_e(ds.license)}</a>'
+        if terms
+        else f'<span class="lic">{_e(ds.license)}</span>'
+    )
+    return lic + "".join(f'<a class="tag" href="?tag={t}">{t}</a>' for t in ds.tags)
+
+
 def render_dataset(ds: Dataset) -> str:
-    """One card for a dataset."""
+    """One compact card: header with popovers, meta line, badges, description, Details."""
+    text = " ".join(" ".join((ds.title, ds.description, *ds.tags)).lower().split())
+    source = (
+        f'<p class="src">Source: <a href="{_e(ds.source)}">{_e(ds.source)}</a></p>'
+        if ds.source
+        else ""
+    )
     contact = (
         f'<p class="contact">Contact: <a href="mailto:{_e(ds.contact)}">{_e(ds.contact)}</a></p>'
         if ds.contact
         else ""
     )
-    source = (
-        f'<p class="source">Source: <a href="{_e(ds.source)}">{_e(ds.source)}</a></p>'
-        if ds.source
+    return (
+        f'<article class="ds" id="{ds.slug}" data-tags="{" ".join(ds.tags)}" '
+        f'data-text="{_e(text)}"><div class="ds-hd"><h2>{_e(ds.title)}</h2>'
+        f'<div class="acts">{_cite(ds)}{_get_data(ds)}</div></div>'
+        f'<p class="meta">{_meta(ds)}</p><p class="badges">{_badges(ds)}</p>'
+        f'<div class="desc">{_paragraphs(ds.description)}</div>'
+        '<button type="button" class="more" aria-expanded="false" hidden>more</button>'
+        f'<details class="det"><summary>Details</summary>{source}{contact}{_files_table(ds)}'
+        "</details></article>"
+    )
+
+
+def _sidebar(catalog: Catalog) -> str:
+    counts = Counter(t for ds in catalog.datasets for t in ds.tags)
+    order = sorted(counts, key=lambda t: (-counts[t], t))
+    chips = "".join(
+        f'<button type="button" class="chip{" extra" if i >= TAGS_SHOWN else ""}" '
+        f'data-tag="{t}" aria-pressed="false">{t}<span class="n">{counts[t]}</span></button>'
+        for i, t in enumerate(order)
+    )
+    more = (
+        '<button type="button" class="more-tags">More tags</button>'
+        if len(order) > TAGS_SHOWN
         else ""
     )
+    n = len(catalog.datasets)
+    toc = "".join(
+        f'<li><a href="#{ds.slug}" title="{_e(ds.title)}"><span class="t">{_e(ds.title)}</span>'
+        f'<span class="sz">{human_size(ds.total_size)}</span></a></li>'
+        for ds in catalog.datasets
+    )
+    nav = (
+        f'<p class="toc-hd">Datasets</p><nav class="toc" aria-label="Datasets"><ol>{toc}</ol></nav>'
+    )
     return (
-        f'<article class="ds" id="{ds.slug}"><h2>{_e(ds.title)}</h2>'
-        f'<p class="meta">{" · ".join(_meta(ds))}</p>'
-        f'<div class="desc">{_paragraphs(ds.description)}</div>{source}{contact}'
-        f"{_files_block(ds)}</article>"
+        '<aside class="side" aria-label="Find datasets"><div class="side-in">'
+        '<div class="filters" hidden>'
+        '<input type="search" id="q" placeholder="Search datasets" '
+        'aria-label="Search titles, descriptions and tags">'
+        '<button type="button" class="ftoggle" aria-expanded="false" aria-controls="chips">'
+        'Filters<span class="fcount"></span></button>'
+        '<div class="chips-wrap" id="chips"><p class="chips-hd" id="chips-hd">Match all selected '
+        f'tags</p><div class="chips" role="group" aria-labelledby="chips-hd">{chips}</div>{more}'
+        f'</div><p class="count" aria-live="polite">{n} of {n} datasets</p>'
+        '<button type="button" class="clear" hidden>Clear filters</button></div>'
+        + (nav if n else "")
+        + "</div></aside>"
     )
 
 
@@ -207,26 +424,41 @@ def render_page(
     """The whole page.
 
     Args:
-        catalog: Notice and datasets, datasets already in display order.
+        catalog: Notice, tags and datasets (datasets already in display order).
         assets: Branding data URIs.
-        updated: Date for the footer stamp.
+        updated: Date for the footer stamp and the summary line.
         ga_id: GA4 measurement id, or None for no analytics tag.
         preview: Mark the page as a local preview (``check_page`` refuses to publish it).
-        manifest_sha: sha256 of the manifest bytes, stamped so ``deploy.sh`` can refuse a page
-            built from any other manifest. Empty = no stamp.
+        manifest_sha: catalog digest stamped so ``deploy.sh`` can refuse a page built from any
+            other catalog. Empty = no stamp.
 
     Returns:
         A complete HTML document.
     """
-    css = CSS.replace("@@FONT_SEMIBOLD@@", assets.font_semibold).replace(
-        "@@FONT_BOOK@@", assets.font_book
+    css = (
+        ":root{color-scheme:light dark;" + _vars(0) + "}"
+        "@media(prefers-color-scheme:dark){:root{"
+        + _vars(1)
+        + "}}"
+        + CSS.replace("@@FONT_SEMIBOLD@@", assets.font_semibold).replace(
+            "@@FONT_BOOK@@", assets.font_book
+        )
+        + PANEL_CSS
+    )
+    n = len(catalog.datasets)
+    total = sum(ds.total_size for ds in catalog.datasets)
+    notice = f'<p class="notice">{_e(catalog.notice)}</p>' if catalog.notice else ""
+    summary = (
+        f'<p class="summary">{n} dataset{"s" * (n != 1)} · {human_size(total)} total download · '
+        f"updated {updated.isoformat()}</p>"
+        if n
+        else ""
     )
     body = (
-        "".join(render_dataset(d) for d in catalog.datasets)
-        if catalog.datasets
-        else '<p class="empty">No datasets published yet.</p>'
+        "".join(render_dataset(ds) for ds in catalog.datasets)
+        if n
+        else '<p class="empty-catalog">No datasets published yet.</p>'
     )
-    notice = f'<p class="notice">{_e(catalog.notice)}</p>' if catalog.notice else ""
     return (
         '<!doctype html><html lang="en"><head><meta charset="utf-8">'
         '<meta name="viewport" content="width=device-width,initial-scale=1">'
@@ -241,20 +473,24 @@ def render_page(
         f'<header><div class="hwrap"><h1><img class="buplate" src="{assets.plate}" '
         'alt="Boston University"><span class="orgname">Faculty of Computing &amp; Data '
         'Sciences</span><span class="hsep">|</span>Public Research Data</h1></div></header>'
-        f'<main>{notice}<section class="intro"><p>Public datasets from research at the Boston '
-        "University Faculty of Computing &amp; Data Sciences, hosted on the NSF-funded "
-        '<a href="https://www.openstoragenetwork.org/">Open Storage Network</a>. Every file '
-        "downloads directly, with no account.</p>"
+        f'<div class="wrap">{_sidebar(catalog)}<main>{notice}<section class="intro">'
+        "<p>Public datasets from research at the Boston University Faculty of Computing &amp; "
+        'Data Sciences, hosted on the NSF-funded <a href="https://www.openstoragenetwork.org/">'
+        "Open Storage Network</a>. Every file downloads directly, with no account.</p>"
         '<p class="terms">Data is provided as is, and availability is not guaranteed: keep your '
         "own copy of anything you rely on. Cite a dataset by its DOI where one is listed. "
         "Questions go to the contact or source listed on each dataset.</p></section>"
-        f"{body}</main>"
-        f'<footer class="pagefoot"><div class="ft-l"><img class="ft-emblem" '
+        f"{summary}"
+        '<p class="empty" hidden>No datasets match. '
+        '<button type="button" class="clear linkbtn">Clear filters</button></p>'
+        f"{body}</main></div>"
+        f'<footer class="pagefoot"><div class="ft-l"><img class="ft-emblem light" '
         f'src="{assets.signature}" alt="Boston University Faculty of Computing &amp; Data '
-        'Sciences"></div>'
+        f'Sciences"><img class="ft-emblem dark" src="{assets.signature_dark}" alt=""></div>'
         f'<div class="ft-c"><span class="stamp">Updated {updated.isoformat()}</span></div>'
-        '<div class="ft-r"><a class="ft-link" '
-        'href="https://www.bu.edu/policies/digital-privacy-statement/" target="_blank" '
-        'rel="noopener">Privacy Statement</a></div></footer>'
+        '<div class="ft-r"><a class="ft-link" href="catalog.json">catalog.json</a>'
+        '<a class="ft-link" href="https://www.bu.edu/policies/digital-privacy-statement/" '
+        'target="_blank" rel="noopener">Privacy Statement</a></div></footer>'
+        '<p class="sr" id="live" aria-live="polite"></p>'
         f"<script>{PAGE_JS}</script></body></html>\n"
     )
