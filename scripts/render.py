@@ -236,8 +236,8 @@ def render_page(
         f'<header><div class="hwrap"><h1><img class="buplate" src="{assets.plate}" '
         'alt="Boston University"><span class="orgname">Faculty of Computing &amp; Data '
         'Sciences</span><span class="hsep">|</span>Public Research Data</h1></div></header>'
-        f'<main>{notice}<section class="intro"><p>Public datasets from research at the Boston University '
-        "Faculty of Computing &amp; Data Sciences, hosted on the NSF-funded "
+        f'<main>{notice}<section class="intro"><p>Public datasets from research at the Boston '
+        "University Faculty of Computing &amp; Data Sciences, hosted on the NSF-funded "
         '<a href="https://www.openstoragenetwork.org/">Open Storage Network</a>. Every file '
         "downloads directly, with no account.</p>"
         '<p class="terms">Data is provided as is, and availability is not guaranteed: keep your '
