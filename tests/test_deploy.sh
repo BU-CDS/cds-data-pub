@@ -52,7 +52,9 @@ DEPLOY_PUSH=0 "$D/deploy.sh" >/dev/null 2>&1 || bad "default deploy after empty-
 
 # 2c. a missing catalog.json is refused
 D="$WORK/r1b"; mkrepo "$D" "$CLEAN"; rm "$D/catalog.json"
-DEPLOY_PUSH=0 "$D/deploy.sh" >/dev/null 2>&1 && bad "deployed without catalog.json" || ok "missing catalog.json refused"
+if DEPLOY_PUSH=0 "$D/deploy.sh" >/dev/null 2>&1; then bad "deployed without catalog.json"
+elif git -C "$D" show-ref -q --verify refs/heads/page; then bad "missing catalog.json still created page"
+else ok "missing catalog.json refused before any page commit"; fi
 
 # 3. gate: refused pages never reach the page branch
 for case in fetch preview nostamp; do

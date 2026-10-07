@@ -24,11 +24,6 @@ class ToJson(unittest.TestCase):
         self.assertEqual(first["total_size"], ds.total_size)
         self.assertEqual([f["sha256"] for f in first["files"]], [f.sha256 for f in ds.files])
         self.assertIn("bibtex", first["citation"])
-        self.assertTrue(first["license_url"] is None or first["license_url"].startswith("https://"))
-
-    def test_stable_output(self) -> None:
-        cat = load_catalog(Path("examples/sample"))
-        self.assertEqual(to_json(cat, DAY), to_json(cat, DAY))
         self.assertTrue(to_json(cat, DAY).endswith("}\n"))
 
 

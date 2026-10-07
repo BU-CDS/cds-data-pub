@@ -18,7 +18,8 @@
 - The download-all loop uses `curl -g`, so file names with `[ ]` or `{ }` download instead of
   being read as curl globs.
 - `catalog.json` (every dataset, file, checksum and citation) is built beside `index.html` and
-  published with it; `deploy.sh` refuses to publish without it.
+  published with it; `deploy.sh` refuses to publish without it, before touching the `page`
+  branch.
 
 ## 2026-10-07
 
