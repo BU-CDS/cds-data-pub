@@ -43,7 +43,9 @@
     d.querySelector(".filters .clear").hidden = !active;
     d.querySelector(".empty").hidden = shown > 0 || cards.length === 0;
     d.querySelector(".fcount").textContent = selected.size ? ` (${selected.size})` : "";
-    const p = new URLSearchParams();
+    const p = new URLSearchParams(location.search); // keep utm_*, gclid and the like
+    p.delete("q");
+    p.delete("tag");
     if (q.value.trim()) p.set("q", q.value.trim());
     selected.forEach((t) => p.append("tag", t));
     const s = p.toString();
@@ -56,7 +58,8 @@
     apply();
   }
 
-  // Descriptions: clamp to two lines only when they overflow (measured before filtering hides cards).
+  // Descriptions: clamp to two lines only when they overflow.
+  // Measured before filtering, while every card is still visible.
   for (const desc of $$(".desc")) {
     const more = desc.nextElementSibling;
     desc.classList.add("clamp");
@@ -77,9 +80,9 @@
   for (const t of params.getAll("tag")) {
     if (chips.some((c) => c.dataset.tag === t)) selected.add(t);
   }
-  $$(".filters, .copy").forEach((el) => { el.hidden = false; });
+  $$(cards.length ? ".filters, .copy" : ".copy").forEach((el) => { el.hidden = false; });
   apply();
-  const target = location.hash && d.getElementById(decodeURIComponent(location.hash.slice(1)));
+  const target = location.hash && d.getElementById(location.hash.slice(1));
   if (target && target.hidden) {
     clearAll();
     target.scrollIntoView();
@@ -119,8 +122,9 @@
     button.addEventListener("click", () => {
       const text = button.parentElement.querySelector("code").textContent;
       const done = (ok) => {
-        button.textContent = ok ? "Copied" : "Copy failed";
-        say(ok ? "Copied" : "Copy failed — select the text");
+        const msg = ok ? "Copied" : "Copy failed — select the text";
+        button.textContent = msg;
+        say(msg);
         setTimeout(() => { button.textContent = "Copy"; }, 1500);
       };
       if (!navigator.clipboard) return done(false);

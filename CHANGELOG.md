@@ -22,6 +22,8 @@
   branch.
 - One owned page script (`scripts/page.js`, no libraries): the gate admits it by sha256 and refuses
   any other inline script, JSON-LD, `eval(` and `new Function`.
+- The page script keeps other query parameters (`utm_*`, `gclid`) when it updates the URL,
+  survives a malformed `#` fragment, and shows no filter box for an empty catalog.
 
 ## 2026-10-07
 

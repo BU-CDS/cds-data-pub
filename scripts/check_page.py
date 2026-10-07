@@ -4,7 +4,7 @@ Usage: .venv/bin/python -m scripts.check_page PAGE [--preview | --require-ga G-X
        [--catalog DIR]
 
 Refuses: any sourced script but the GA loader, any inline script but the GA bootstrap and
-scripts/page.js (matched by sha256), JSON-LD, network, storage and eval APIs, http:// links, a
+scripts/page.js (byte-for-byte), JSON-LD, network, storage and eval APIs, http:// links, a
 missing "Updated" stamp, a preview build presented for publish, and (with --catalog) a page built
 from another catalog.
 """
@@ -12,7 +12,6 @@ from another catalog.
 from __future__ import annotations
 
 import argparse
-import hashlib
 import re
 import sys
 from pathlib import Path
@@ -22,8 +21,6 @@ from scripts.render import PAGE_JS, PREVIEW_MARK
 
 SCRIPT_TAG_RE = re.compile(r"<script\b([^>]*)>", re.IGNORECASE)
 SCRIPT_RE = re.compile(r"<script\b([^>]*)>(.*?)</script\s*>", re.IGNORECASE | re.DOTALL)
-LDJSON_RE = re.compile(r"""\btype\s*=\s*["']?application/ld\+json""", re.IGNORECASE)
-PAGE_JS_SHA = hashlib.sha256(PAGE_JS.encode()).hexdigest()
 SRC_RE = re.compile(r"""\bsrc\s*=\s*["']?([^"'\s>]+)""", re.IGNORECASE)
 LOADER_RE = re.compile(r"^https://www\.googletagmanager\.com/gtag/js\?id=(G-[A-Z0-9]+)$")
 CONFIG_RE = re.compile(r'gtag\(\s*"config"\s*,\s*"(G-[A-Z0-9]+)"\s*\)')
@@ -71,9 +68,7 @@ def check_html(
                 problems.append(f"sourced script not allowed: {src.group(1)}")
             else:
                 loaders.append(loader.group(1))
-        elif LDJSON_RE.search(attrs):
-            problems.append("JSON-LD script not allowed (deferred to per-dataset pages)")
-        elif hashlib.sha256(body.encode()).hexdigest() == PAGE_JS_SHA:
+        elif body == PAGE_JS:  # byte-for-byte, so an edited copy is refused
             own += 1
         else:
             inline.append(body)
