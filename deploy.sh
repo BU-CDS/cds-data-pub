@@ -16,12 +16,19 @@ CAT="$ROOT/catalog.json"
 [ -f "$PAGE" ] || { echo "deploy: no index.html to publish" >&2; exit 1; }
 [ -f "$CAT" ] || { echo "deploy: no catalog.json to publish (run build_page)" >&2; exit 1; }
 
-# unconditional gate: the page must pass check_page and must have been built from this
-# checkout's catalog (catalog.toml + datasets/), so a sample or preview build can never reach
-# the page branch.
+# unconditional gate: the page must pass check_page, and both index.html and catalog.json must
+# have been built from this checkout's catalog (catalog.toml + datasets/), so a sample or
+# preview build can never reach the page branch.
 # publish.sh additionally runs check_links and, when pushing, requires GA.
 if ! PYTHONPATH="$ROOT" "$PY" -P -m scripts.check_page "$PAGE" --catalog "$ROOT"; then
   echo "deploy: REFUSED -- index.html fails check_page" >&2
+  exit 1
+fi
+if ! PYTHONPATH="$ROOT" "$PY" -P -c 'import json, sys
+from pathlib import Path
+from scripts.manifest import catalog_digest
+sys.exit(json.load(open(sys.argv[1])).get("catalog_digest") != catalog_digest(Path(sys.argv[2])))' "$CAT" "$ROOT"; then
+  echo "deploy: REFUSED -- catalog.json was not built from this checkout's catalog" >&2
   exit 1
 fi
 if [ "${DEPLOY_PUSH:-1}" = 1 ]; then

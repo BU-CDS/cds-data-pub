@@ -26,6 +26,10 @@ class ToJson(unittest.TestCase):
         self.assertIn("bibtex", first["citation"])
         self.assertTrue(to_json(cat, DAY).endswith("}\n"))
 
+    def test_digest_stamped(self) -> None:
+        cat = load_catalog(Path("examples/sample"))
+        self.assertEqual(json.loads(to_json(cat, DAY, digest="ab"))["catalog_digest"], "ab")
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -31,9 +31,14 @@ def _dataset(ds: Dataset) -> dict:
     }
 
 
-def to_json(catalog: Catalog, updated: date) -> str:
-    """The catalog as indented JSON (UTF-8, stable key order), ending in a newline."""
+def to_json(catalog: Catalog, updated: date, digest: str = "") -> str:
+    """The catalog as indented JSON (UTF-8, stable key order), ending in a newline.
+
+    ``digest`` is the catalog digest, stamped so deploy.sh can refuse a catalog.json built from
+    any other catalog (the same check index.html gets).
+    """
     data = {
+        "catalog_digest": digest,
         "name": cite.PUBLISHER,
         "url": cite.PAGE_URL,
         "updated": updated.isoformat(),

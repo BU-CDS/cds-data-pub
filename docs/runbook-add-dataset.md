@@ -11,7 +11,8 @@ Needs: rclone remote `osn` with the bucket's read-write keys (never in this repo
 2. Upload: `rclone copy ./<folder> osn:bu-cds-public-data/<slug>/ --exclude '.*' --exclude '.*/**' --progress`
    (demo data goes under `demo/<slug>/`).
 3. Sizes and hashes: `stat -f '%z %N' <folder>/*` and `shasum -a 256 <folder>/*`.
-4. Create `datasets/<slug>.toml`: the file name is the slug (fields: any file in
+4. Create `datasets/<slug>.toml`: the file name is the slug (not `q`, `live`, `chips` or
+   `chips-hd`, which the page uses; fields: any file in
    `examples/sample/datasets/`). `tags` lists 1–5 tags from `catalog.toml`; add a new tag there
    first. `license` is an SPDX identifier (`CC-BY-4.0`, `PDDL-1.0`) or `Public domain`. `contact` is
    optional and is shown publicly; leave it out unless the researcher wants an address listed.

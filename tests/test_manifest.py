@@ -162,6 +162,15 @@ class Refused(unittest.TestCase):
         f = file_dict(url=url_for("other.csv"))
         self.assertRefused("must end with /data.csv", dataset_dict(file=[f]))
 
+    def test_file_name_without_slash(self) -> None:
+        f = file_dict(name="sub/a.csv", url=url_for("sub/a.csv"))
+        self.assertRefused("field 'name'", dataset_dict(file=[f]))
+
+    def test_reserved_slugs(self) -> None:
+        for slug in ("q", "live", "chips", "chips-hd"):
+            with self.subTest(slug=slug):
+                self.assertRefused("reserved", dataset_dict(), slug=slug)
+
     def test_duplicate_file_name(self) -> None:
         self.assertRefused("duplicate file", dataset_dict(file=[file_dict(), file_dict()]))
 

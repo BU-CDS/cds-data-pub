@@ -32,6 +32,10 @@
   appears only on narrow screens (it showed, inert, on wide touch screens). Overflow and focus
   checks now open the Get data popover; theme screenshots are full-page from the top.
 - Docs: catalog rules summary in the development guide; README points scripts to `catalog.json`.
+- `catalog.json` carries the catalog digest and `deploy.sh` refuses one built from another
+  catalog (a sample preview written at the repo root could otherwise be published). File names may
+  not contain `/`; slugs `q`, `live`, `chips`, `chips-hd` are reserved by the page. The search
+  field's border meets 3:1 contrast.
 
 ## 2026-10-07
 

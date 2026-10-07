@@ -101,7 +101,7 @@ main{min-width:0;}
 border-radius:6px;padding:8px 12px;margin:0 0 12px;max-width:80ch;}
 .intro p{margin:0 0 8px;max-width:80ch;}.intro .terms{color:var(--muted);font-size:0.75rem;}
 .summary{color:var(--muted);font-size:0.75rem;margin:0 0 12px;font-variant-numeric:tabular-nums;}
-.side input[type=search]{width:100%;padding:7px 9px;border:1px solid var(--border);\
+.side input[type=search]{width:100%;padding:7px 9px;border:1px solid var(--muted);\
 border-radius:6px;background:var(--surface);color:var(--text);font:inherit;}
 .chips-hd{font-size:0.7rem;color:var(--muted);margin:10px 0 4px;}
 .chips{display:flex;flex-wrap:wrap;gap:4px;}

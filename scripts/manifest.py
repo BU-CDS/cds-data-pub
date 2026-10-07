@@ -15,6 +15,7 @@ from pathlib import Path
 BUCKET_BASE = "https://mghp.osn.xsede.org/bu-cds-public-data/"
 MAX_FILES = 50
 MAX_TAGS = 5
+RESERVED_SLUGS = frozenset(("q", "live", "chips", "chips-hd"))  # element ids the page uses
 SLUG_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 DOI_RE = re.compile(r"^10\.\d{4,9}/\S+$")
@@ -173,6 +174,10 @@ def parse_dataset(slug: str, entry: dict, vocab: tuple[str, ...], where: str) ->
             f"{where}: file name must be the slug: lowercase letters and digits joined by single"
             " hyphens"
         )
+    if slug in RESERVED_SLUGS:
+        raise ManifestError(
+            f"{where}: file name '{slug}' is reserved by the page; pick another slug"
+        )
     unknown = set(entry) - DATASET_KEYS
     if unknown:
         raise ManifestError(f"{where}: unknown field(s): {', '.join(sorted(unknown))}")
@@ -291,6 +296,8 @@ def _parse_file(where: str, index: int, entry: object) -> DataFile:
         if key not in entry:
             raise ManifestError(f"{fwhere}: missing field '{key}'")
     name = _text(entry, "name", fwhere)
+    if "/" in name:
+        raise ManifestError(f"{fwhere}: field 'name' must be a file name, not a path")
     url = _text(entry, "url", fwhere)
     if not URL_RE.match(url):
         raise ManifestError(f"{fwhere}: field 'url' must start with {BUCKET_BASE}")

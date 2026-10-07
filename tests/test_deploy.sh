@@ -18,8 +18,9 @@ mkrepo(){ # $1: dir; $2: page html
   git -C "$1" config user.name test
   cp "$R/deploy.sh" "$1/deploy.sh"
   cp -R "$R/scripts" "$1/scripts" && rm -rf "$1/scripts/__pycache__"
-  printf 'tags = ["x"]\n' > "$1/catalog.toml"; printf '{}\n' > "$1/catalog.json"
+  printf 'tags = ["x"]\n' > "$1/catalog.toml"
   sha="$(digest "$1")"
+  printf '{"catalog_digest": "%s"}\n' "$sha" > "$1/catalog.json"
   printf '%s\n' "${2//@@SHA@@/$sha}" > "$1/index.html"
   git -C "$1" add -A
   git -C "$1" -c commit.gpgsign=false commit -qm init
@@ -55,6 +56,11 @@ D="$WORK/r1b"; mkrepo "$D" "$CLEAN"; rm "$D/catalog.json"
 if DEPLOY_PUSH=0 "$D/deploy.sh" >/dev/null 2>&1; then bad "deployed without catalog.json"
 elif git -C "$D" show-ref -q --verify refs/heads/page; then bad "missing catalog.json still created page"
 else ok "missing catalog.json refused before any page commit"; fi
+
+# 2d. a catalog.json built from another catalog (e.g. a sample preview at the root) is refused
+D="$WORK/r2d"; mkrepo "$D" "$CLEAN"; printf '{"catalog_digest": "%064d"}\n' 0 > "$D/catalog.json"
+if DEPLOY_PUSH=0 "$D/deploy.sh" >/dev/null 2>&1; then bad "catalog.json from another catalog was deployed"
+else ok "catalog.json from another catalog refused"; fi
 
 # 3. gate: refused pages never reach the page branch
 for case in fetch preview nostamp; do

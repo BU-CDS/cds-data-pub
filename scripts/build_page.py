@@ -91,7 +91,9 @@ def main(argv: list[str] | None = None) -> int:
     )
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(html, encoding="utf-8")
-    (args.out.parent / "catalog.json").write_text(to_json(catalog, stamp), encoding="utf-8")
+    (args.out.parent / "catalog.json").write_text(
+        to_json(catalog, stamp, manifest_sha), encoding="utf-8"
+    )
     kind = "preview" if args.preview else "deploy build"
     print(f"build_page: wrote {args.out} ({len(catalog.datasets)} dataset(s), {kind})")
     return 0
