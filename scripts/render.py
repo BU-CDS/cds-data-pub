@@ -9,12 +9,14 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import date
 from html import escape
+from pathlib import Path
 
 from scripts.manifest import Catalog, DataFile, Dataset
 
 UNITS = ("KiB", "MiB", "GiB", "TiB", "PiB")
 FILES_SHOWN = 5  # longer file lists collapse into a native <details> toggle
 PREVIEW_MARK = '<meta name="cds-build" content="preview">'
+PAGE_JS = Path(__file__).with_name("page.js").read_text(encoding="utf-8")
 
 CSS = """\
 :root{--t-sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;\
@@ -254,5 +256,5 @@ def render_page(
         '<div class="ft-r"><a class="ft-link" '
         'href="https://www.bu.edu/policies/digital-privacy-statement/" target="_blank" '
         'rel="noopener">Privacy Statement</a></div></footer>'
-        "</body></html>\n"
+        f"<script>{PAGE_JS}</script></body></html>\n"
     )

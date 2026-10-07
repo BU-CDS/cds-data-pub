@@ -20,6 +20,8 @@
 - `catalog.json` (every dataset, file, checksum and citation) is built beside `index.html` and
   published with it; `deploy.sh` refuses to publish without it, before touching the `page`
   branch.
+- One owned page script (`scripts/page.js`, no libraries): the gate admits it by sha256 and refuses
+  any other inline script, JSON-LD, `eval(` and `new Function`.
 
 ## 2026-10-07
 

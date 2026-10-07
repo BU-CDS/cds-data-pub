@@ -3,22 +3,27 @@
 Usage: .venv/bin/python -m scripts.check_page PAGE [--preview | --require-ga G-XXXX]
        [--catalog DIR]
 
-Refuses: any sourced script but the GA loader, inline scripts beyond the GA bootstrap, network or
-storage APIs, http:// links, a missing "Updated" stamp, a preview build presented for publish,
-and (with --catalog) a page built from another catalog.
+Refuses: any sourced script but the GA loader, any inline script but the GA bootstrap and
+scripts/page.js (matched by sha256), JSON-LD, network, storage and eval APIs, http:// links, a
+missing "Updated" stamp, a preview build presented for publish, and (with --catalog) a page built
+from another catalog.
 """
 
 from __future__ import annotations
 
 import argparse
+import hashlib
 import re
 import sys
 from pathlib import Path
 
 from scripts.manifest import catalog_digest
-from scripts.render import PREVIEW_MARK
+from scripts.render import PAGE_JS, PREVIEW_MARK
 
 SCRIPT_TAG_RE = re.compile(r"<script\b([^>]*)>", re.IGNORECASE)
+SCRIPT_RE = re.compile(r"<script\b([^>]*)>(.*?)</script\s*>", re.IGNORECASE | re.DOTALL)
+LDJSON_RE = re.compile(r"""\btype\s*=\s*["']?application/ld\+json""", re.IGNORECASE)
+PAGE_JS_SHA = hashlib.sha256(PAGE_JS.encode()).hexdigest()
 SRC_RE = re.compile(r"""\bsrc\s*=\s*["']?([^"'\s>]+)""", re.IGNORECASE)
 LOADER_RE = re.compile(r"^https://www\.googletagmanager\.com/gtag/js\?id=(G-[A-Z0-9]+)$")
 CONFIG_RE = re.compile(r'gtag\(\s*"config"\s*,\s*"(G-[A-Z0-9]+)"\s*\)')
@@ -31,6 +36,8 @@ FORBIDDEN = (
     "sessionStorage",
     "document.cookie",
     "indexedDB",
+    "eval(",
+    "new Function",
 )
 
 
@@ -51,21 +58,33 @@ def check_html(
     """
     problems: list[str] = []
     loaders: list[str] = []
-    inline = 0
-    for attrs in SCRIPT_TAG_RE.findall(html):
+    own = 0
+    inline: list[str] = []
+    scripts = SCRIPT_RE.findall(html)
+    if len(scripts) != len(SCRIPT_TAG_RE.findall(html)):
+        problems.append("unbalanced <script> tags")
+    for attrs, body in scripts:
         src = SRC_RE.search(attrs)
-        if src is None:
-            inline += 1
-            continue
-        loader = LOADER_RE.match(src.group(1))
-        if loader is None:
-            problems.append(f"sourced script not allowed: {src.group(1)}")
+        if src is not None:
+            loader = LOADER_RE.match(src.group(1))
+            if loader is None:
+                problems.append(f"sourced script not allowed: {src.group(1)}")
+            else:
+                loaders.append(loader.group(1))
+        elif LDJSON_RE.search(attrs):
+            problems.append("JSON-LD script not allowed (deferred to per-dataset pages)")
+        elif hashlib.sha256(body.encode()).hexdigest() == PAGE_JS_SHA:
+            own += 1
         else:
-            loaders.append(loader.group(1))
+            inline.append(body)
     configs = CONFIG_RE.findall(html)
-
-    if inline > (1 if loaders else 0):
-        problems.append(f"inline script beyond the GA bootstrap ({inline} inline script(s))")
+    ga_inline = [b for b in inline if CONFIG_RE.search(b)]
+    if len(inline) > len(ga_inline):
+        problems.append("inline script not allowed: only the GA bootstrap and scripts/page.js")
+    if len(ga_inline) > (1 if loaders else 0):
+        problems.append(f"inline script beyond the GA bootstrap ({len(ga_inline)} GA script(s))")
+    if own > 1:
+        problems.append(f"page script embedded {own} times")
     if len(loaders) > 1 or len(configs) > 1:
         problems.append(
             f"more than one GA tag: {len(loaders)} loader(s), {len(configs)} config call(s)"

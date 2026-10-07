@@ -11,7 +11,7 @@ from pathlib import Path
 
 from scripts.check_page import check_html, main
 from scripts.manifest import Catalog, catalog_digest, load_catalog
-from scripts.render import ga_tag, render_page
+from scripts.render import PAGE_JS, ga_tag, render_page
 from tests.helpers import dataset_toml, write_catalog
 from tests.test_render import ASSETS
 
@@ -127,6 +127,34 @@ class ManifestBinding(unittest.TestCase):
                 self.assertEqual(main([str(page), "--catalog", str(root)]), 0)
                 (root / "datasets" / "one.toml").write_text(dataset_toml("one", "2026-01-01"))
                 self.assertEqual(main([str(page), "--catalog", str(root)]), 1)
+
+
+class PageScript(unittest.TestCase):
+    def test_owned_script_passes(self) -> None:
+        self.assertIn(f"<script>{PAGE_JS}</script>", CLEAN)
+        self.assertEqual(check_html(CLEAN), [])
+
+    def test_edited_script_refused(self) -> None:
+        edited = CLEAN.replace(f"<script>{PAGE_JS}</script>", f"<script>{PAGE_JS} </script>")
+        self.assertTrue(any("inline script not allowed" in p for p in check_html(edited)))
+
+    def test_foreign_inline_refused(self) -> None:
+        self.assertTrue(check_html(inject(CLEAN, "<script>alert(1)</script>")))
+
+    def test_ld_json_refused(self) -> None:
+        page = inject(CLEAN, '<script type="application/ld+json">{}</script>')
+        self.assertTrue(any("JSON-LD" in p for p in check_html(page)))
+
+    def test_eval_and_function_refused(self) -> None:
+        for needle in ("eval(", "new Function"):
+            with self.subTest(needle=needle):
+                self.assertTrue(check_html(inject(CLEAN, f"<p>{needle}</p>")))
+
+    def test_unclosed_script_refused(self) -> None:
+        self.assertTrue(check_html(inject(CLEAN, "<script>x")))
+
+    def test_page_script_twice_refused(self) -> None:
+        self.assertTrue(check_html(inject(CLEAN, f"<script>{PAGE_JS}</script>")))
 
 
 class Cli(unittest.TestCase):

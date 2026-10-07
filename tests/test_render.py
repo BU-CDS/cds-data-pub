@@ -6,7 +6,15 @@ import unittest
 from datetime import date
 
 from scripts.manifest import Catalog
-from scripts.render import PREVIEW_MARK, Assets, ga_tag, human_size, render_dataset, render_page
+from scripts.render import (
+    PAGE_JS,
+    PREVIEW_MARK,
+    Assets,
+    ga_tag,
+    human_size,
+    render_dataset,
+    render_page,
+)
 from tests.helpers import dataset_dict, file_dict, parse, url_for
 
 ASSETS = Assets(
@@ -117,7 +125,11 @@ class RenderPage(unittest.TestCase):
 
     def test_no_script_without_ga(self) -> None:
         html = page(one())
-        self.assertNotIn("<script", html)
+        self.assertNotIn("googletagmanager", html)
+        self.assertEqual(html.count("<script"), 1)  # the page script only
+
+    def test_page_script_embedded_last(self) -> None:
+        self.assertTrue(page().endswith(f"<script>{PAGE_JS}</script></body></html>\n"))
 
     def test_ga_tag_after_icon(self) -> None:
         html = render_page(Catalog(None, (), [one()]), ASSETS, date(2026, 10, 6), "G-TEST123")
