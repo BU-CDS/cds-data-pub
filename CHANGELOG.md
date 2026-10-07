@@ -8,6 +8,9 @@
   identifiers (`PDDL-1.0`, not `ODC-PDDL-1.0`) or `Public domain`. The sample is a 24-dataset
   catalog under `examples/sample/`.
 - A non-text tag (e.g. a nested list) is refused with a clear message instead of a crash.
+- Citations: APA, BibTeX and RIS generated from `[citation]` (or, without one, the catalog entry).
+  The demo datasets cite their original sources, read from each source page on 2026-10-07; GHCN
+  now carries its dataset DOI (10.7289/V5D21VHZ).
 
 ## 2026-10-07
 

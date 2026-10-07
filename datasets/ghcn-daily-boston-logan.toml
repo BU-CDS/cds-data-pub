@@ -3,6 +3,7 @@ description = "NOAA Global Historical Climatology Network daily observations for
 license = "CC0-1.0"
 added = 2026-10-07
 tags = ["climate", "boston", "timeseries", "tabular"]
+doi = "10.7289/V5D21VHZ"
 source = "https://registry.opendata.aws/noaa-ghcn/"
 
 [[file]]
@@ -16,3 +17,9 @@ name = "README.md"
 url = "https://mghp.osn.xsede.org/bu-cds-public-data/demo/ghcn-daily-boston-logan/README.md"
 size = 1298
 sha256 = "743acdf021688311e420c8419de9449f5a79a66a196a89ffe43546eff194caf6"
+
+[citation]
+authors = ["Menne, Matthew J.", "Durre, Imke", "Korzeniewski, Bryant", "McNeill, Shelley", "Thomas, Kristy", "Yin, Xungang", "Anthony, Steven", "Ray, Ron", "Vose, Russell S.", "Gleason, Byron E.", "Houston, Tamara G."]
+year = 2012
+title = "Global Historical Climatology Network - Daily (GHCN-Daily), Version 3 (station USW00014739, version 3.35-upd-2026100617)"
+publisher = "NOAA National Climatic Data Center"

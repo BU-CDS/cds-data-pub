@@ -22,3 +22,10 @@ name = "README.md"
 url = "https://mghp.osn.xsede.org/bu-cds-public-data/demo/boston-street-trees/README.md"
 size = 1171
 sha256 = "181601d858282a496b02f64b8ac7357d185fa9a44e1c88d4832ccd63267656a6"
+
+[citation]
+authors = ["Boston Parks and Recreation Department"]
+year = 2026
+title = "BPRD Trees"
+publisher = "Boston Maps, City of Boston (Analyze Boston)"
+url = "https://data.boston.gov/dataset/bprd-trees"

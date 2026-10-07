@@ -17,3 +17,9 @@ name = "README.md"
 url = "https://mghp.osn.xsede.org/bu-cds-public-data/demo/palmer-penguins/README.md"
 size = 901
 sha256 = "44ce277c4e795e750faa83ee188f02252317b80854fc70da1265e77f84a154a9"
+
+[citation]
+authors = ["Horst, A. M.", "Hill, A. P.", "Gorman, K. B."]
+year = 2020
+title = "palmerpenguins: Palmer Archipelago (Antarctica) penguin data (R package version 0.1.0)"
+publisher = "Zenodo"

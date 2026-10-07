@@ -16,3 +16,10 @@ name = "README.md"
 url = "https://mghp.osn.xsede.org/bu-cds-public-data/demo/natural-earth-countries/README.md"
 size = 688
 sha256 = "ccb3f323353a8adb5f7ce620e1c6ccf7cd46cab1134fff0cfc50803cfad753fb"
+
+[citation]
+authors = ["Natural Earth"]
+year = 2022
+title = "Admin 0 – Countries, 1:110m, version 5.1.1"
+publisher = "Natural Earth"
+url = "https://www.naturalearthdata.com/downloads/110m-cultural-vectors/110m-admin-0-countries/"
