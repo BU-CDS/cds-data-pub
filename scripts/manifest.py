@@ -21,8 +21,8 @@ URL_RE = re.compile(rf"^{re.escape(BUCKET_BASE)}[^\s\"'<>?#%\\]+$")
 SOURCE_RE = re.compile(r"^https://[^\s\"'<>]+$")
 
 TOP_KEYS = frozenset(("notice", "dataset"))
-REQUIRED = ("slug", "title", "description", "license", "contact", "added", "file")
-DATASET_KEYS = frozenset((*REQUIRED, "doi", "source"))
+REQUIRED = ("slug", "title", "description", "license", "added", "file")
+DATASET_KEYS = frozenset((*REQUIRED, "contact", "doi", "source"))
 FILE_KEYS = ("name", "url", "size", "sha256")
 
 
@@ -48,7 +48,7 @@ class Dataset:
     title: str
     description: str
     license: str
-    contact: str
+    contact: str | None
     added: date
     doi: str | None
     source: str | None
@@ -128,8 +128,8 @@ def _parse_dataset(index: int, entry: object) -> Dataset:
     added = entry["added"]
     if type(added) is not date:  # tomllib gives datetime (a date subclass) for date-times
         raise ManifestError(f"{where}: field 'added' must be a date like 2026-10-07")
-    contact = _text(entry, "contact", where)
-    if "@" not in contact:
+    contact = _text(entry, "contact", where) if "contact" in entry else None
+    if contact is not None and "@" not in contact:
         raise ManifestError(f"{where}: field 'contact' must be an email address")
     doi = _text(entry, "doi", where) if "doi" in entry else None
     if doi is not None and not DOI_RE.match(doi):

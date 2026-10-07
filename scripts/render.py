@@ -176,7 +176,11 @@ def _files_block(ds: Dataset) -> str:
 
 def render_dataset(ds: Dataset) -> str:
     """One card for a dataset."""
-    contact = _e(ds.contact)
+    contact = (
+        f'<p class="contact">Contact: <a href="mailto:{_e(ds.contact)}">{_e(ds.contact)}</a></p>'
+        if ds.contact
+        else ""
+    )
     source = (
         f'<p class="source">Source: <a href="{_e(ds.source)}">{_e(ds.source)}</a></p>'
         if ds.source
@@ -185,8 +189,7 @@ def render_dataset(ds: Dataset) -> str:
     return (
         f'<article class="ds" id="{ds.slug}"><h2>{_e(ds.title)}</h2>'
         f'<p class="meta">{" · ".join(_meta(ds))}</p>'
-        f'<div class="desc">{_paragraphs(ds.description)}</div>{source}'
-        f'<p class="contact">Contact: <a href="mailto:{contact}">{contact}</a></p>'
+        f'<div class="desc">{_paragraphs(ds.description)}</div>{source}{contact}'
         f"{_files_block(ds)}</article>"
     )
 
@@ -242,7 +245,7 @@ def render_page(
         "downloads directly, with no account.</p>"
         '<p class="terms">Data is provided as is, and availability is not guaranteed: keep your '
         "own copy of anything you rely on. Cite a dataset by its DOI where one is listed. "
-        "Questions go to the contact listed on each dataset.</p></section>"
+        "Questions go to the contact or source listed on each dataset.</p></section>"
         f"{body}</main>"
         f'<footer class="pagefoot"><div class="ft-l"><img class="ft-emblem" '
         f'src="{assets.signature}" alt="Boston University Faculty of Computing &amp; Data '

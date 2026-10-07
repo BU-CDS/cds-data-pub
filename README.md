@@ -15,7 +15,7 @@ Catalog: **data.cds.bu.edu**
 
 | I want to… | Go to |
 |---|---|
-| Publish my dataset | Email the data steward (contact on the catalog page) |
+| Publish my dataset | Ask the CDS data steward |
 | Add or take down a dataset (steward) | [Steward runbook](docs/runbook-add-dataset.md) |
 | Work on the code or the page | [Development guide](docs/development.md) |
 

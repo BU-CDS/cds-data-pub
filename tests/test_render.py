@@ -147,6 +147,21 @@ class RenderPage(unittest.TestCase):
                 self.assertIn(rule, html)
 
 
+class Contact(unittest.TestCase):
+    def test_contact_line_when_set(self) -> None:
+        html = render_dataset(one(contact="a@b.org"))
+        self.assertIn('Contact: <a href="mailto:a@b.org">a@b.org</a>', html)
+
+    def test_no_contact_line_without_contact(self) -> None:
+        entry = dataset_dict()
+        del entry["contact"]
+        ds = parse_manifest({"dataset": [entry]}).datasets[0]
+        self.assertNotIn("Contact:", render_dataset(ds))
+
+    def test_intro_points_to_contact_or_source(self) -> None:
+        self.assertIn("Questions go to the contact or source listed on each dataset.", page())
+
+
 class NoticeAndSource(unittest.TestCase):
     def test_no_banner_without_notice(self) -> None:
         self.assertNotIn('class="notice"', page(one()))

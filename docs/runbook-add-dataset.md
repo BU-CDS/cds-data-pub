@@ -11,7 +11,8 @@ Needs: rclone remote `osn` with the bucket's read-write keys (never in this repo
 2. Upload: `rclone copy ./<folder> osn:bu-cds-public-data/<slug>/ --exclude '.*' --exclude '.*/**' --progress`
    (demo data goes under `demo/<slug>/`).
 3. Sizes and hashes: `stat -f '%z %N' <folder>/*` and `shasum -a 256 <folder>/*`.
-4. Add a `[[dataset]]` block to `datasets.toml` (fields: `examples/sample.toml`). File URL:
+4. Add a `[[dataset]]` block to `datasets.toml` (fields: `examples/sample.toml`). `contact` is
+   optional and is shown publicly; leave it out unless the researcher wants an address listed. File URL:
    `https://mghp.osn.xsede.org/bu-cds-public-data/<slug>/<name>`.
 5. Preview: `.venv/bin/python -m scripts.build_page --out previews/index.html --preview` and look.
 6. Commit on `main`, then `./publish.sh`. It refuses if any link is not public or the size is off.

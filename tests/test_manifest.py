@@ -41,6 +41,11 @@ class Valid(unittest.TestCase):
         url = f"{url_for('x.csv', slug='demo/example')}"
         parse(dataset_dict(file=[file_dict(name="x.csv", url=url)]))
 
+    def test_contact_optional(self) -> None:
+        entry = dataset_dict()
+        del entry["contact"]
+        self.assertIsNone(parse(entry).datasets[0].contact)
+
     def test_sha_lowercased(self) -> None:
         cat = parse(dataset_dict(file=[file_dict(sha256="A" * 64)]))
         self.assertEqual(cat.datasets[0].files[0].sha256, "a" * 64)
@@ -74,7 +79,7 @@ class Refused(unittest.TestCase):
         self.assertRefused("unknown field(s): version", dataset_dict(version=1))
 
     def test_each_required_field(self) -> None:
-        for key in ("slug", "title", "description", "license", "contact", "added", "file"):
+        for key in ("slug", "title", "description", "license", "added", "file"):
             with self.subTest(key=key):
                 entry = dataset_dict()
                 del entry[key]
