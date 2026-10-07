@@ -11,13 +11,10 @@ from pathlib import Path
 from unittest import mock
 
 from scripts import check_links as cl
-from scripts.manifest import parse_manifest
-from tests.helpers import dataset_dict, file_dict, url_for
+from tests.helpers import dataset_dict, dataset_toml, file_dict, parse, url_for, write_catalog
 
 URL_B = url_for("b.csv")
-DATA = parse_manifest(
-    {"dataset": [dataset_dict(file=[file_dict(), file_dict(name="b.csv", url=URL_B, size=99)])]}
-).datasets
+DATA = [parse(dataset_dict(file=[file_dict(), file_dict(name="b.csv", url=URL_B, size=99)]))]
 SIZES = {url_for(): 2048, URL_B: 99}
 
 
@@ -39,7 +36,7 @@ class CheckLinks(unittest.TestCase):
 
     def test_wrong_size(self) -> None:
         out = cl.check_links(DATA, lambda u: (200, 1))
-        self.assertIn("size 1 on OSN, 2048 in manifest", out[0])
+        self.assertIn("size 1 on OSN, 2048 in catalog", out[0])
 
     def test_missing_content_length_is_not_a_pass(self) -> None:
         out = cl.check_links(DATA, lambda u: (200, None))
@@ -57,21 +54,14 @@ class UrllibHead(unittest.TestCase):
 class Main(unittest.TestCase):
     def run_main(self, head) -> tuple[int, str]:
         with tempfile.TemporaryDirectory() as tmp:
-            m = Path(tmp) / "m.toml"
-            m.write_text(
-                f'[[dataset]]\nslug = "example"\ntitle = "t"\ndescription = "d"\n'
-                f'license = "CC0-1.0"\ncontact = "a@b.c"\nadded = 2026-10-07\n'
-                f'[[dataset.file]]\nname = "data.csv"\nurl = "{url_for()}"\nsize = 2048\n'
-                f'sha256 = "{"a" * 64}"\n',
-                encoding="utf-8",
-            )
+            write_catalog(Path(tmp), {"example": dataset_toml()})
             out = io.StringIO()
             with (
                 redirect_stdout(out),
                 redirect_stderr(out),
                 mock.patch.object(cl, "urllib_head", head),
             ):
-                code = cl.main(["--manifest", str(m)])
+                code = cl.main(["--catalog", tmp])
         return code, out.getvalue()
 
     def test_pass_and_fail_exit_codes(self) -> None:

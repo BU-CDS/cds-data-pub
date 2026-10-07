@@ -1,0 +1,306 @@
+title = "Cell Painting images of U2OS cells under 300 compounds"
+description = "Synthetic stress-case entry: cell painting images of u2os cells under 300 compounds. Used only to exercise layout, filters and scale."
+license = "CC0-1.0"
+added = 2026-09-20
+tags = ["imaging", "biology"]
+doi = "10.5072/sample.cell-painting-u2os"
+
+[[file]]
+name = "part-000.tar"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/cell-painting-u2os/part-000.tar"
+size = 59373627899
+sha256 = "aed0a689a1301620eea4492a865048a10cbc7a36098390f85b66d7df03c75dac"
+
+[[file]]
+name = "part-001.tar"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/cell-painting-u2os/part-001.tar"
+size = 59373627899
+sha256 = "a774e9df06cf4b93dbf7c9cb64e28ddffe93303d772880a26dbf89de3979f09c"
+
+[[file]]
+name = "part-002.tar"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/cell-painting-u2os/part-002.tar"
+size = 59373627899
+sha256 = "4677fa4a5b90acdcd320d3ac85a3f36829abd939d843e25e1bbabf290972ab28"
+
+[[file]]
+name = "part-003.tar"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/cell-painting-u2os/part-003.tar"
+size = 59373627899
+sha256 = "5434e01dfb3fb4a746166fcd1492e7564c759c18b126a9e672ae9c7e8da8ba5f"
+
+[[file]]
+name = "part-004.tar"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/cell-painting-u2os/part-004.tar"
+size = 59373627899
+sha256 = "ad571072d2dc7f71680b4f99feaaf26f7bb9367456c5a50e2fdd6e7d53366f20"
+
+[[file]]
+name = "part-005.tar"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/cell-painting-u2os/part-005.tar"
+size = 59373627899
+sha256 = "cb2ae87c834e44969a271a858d8c0722f0dd018c6e5c182a3c29a52571b04a62"
+
+[[file]]
+name = "part-006.tar"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/cell-painting-u2os/part-006.tar"
+size = 59373627899
+sha256 = "f417d387ded2e847c8547f3cd04aab30a14b0c1be99049edfa0df711410efcda"
+
+[[file]]
+name = "part-007.tar"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/cell-painting-u2os/part-007.tar"
+size = 59373627899
+sha256 = "37a003f2864d04a441c0f5e4b0bf07bff7d7291db59b7f993dcf7ec69a53ba15"
+
+[[file]]
+name = "part-008.tar"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/cell-painting-u2os/part-008.tar"
+size = 59373627899
+sha256 = "d3d7d70d4629f584477462ef6ec3dc0452e187b8467553431807b37f2fa30e62"
+
+[[file]]
+name = "part-009.tar"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/cell-painting-u2os/part-009.tar"
+size = 59373627899
+sha256 = "89849f48edc7eb0e9081bbdb0dfe4a070d3b1e25ab0d5f6b26579772fdb6b528"
+
+[[file]]
+name = "part-010.tar"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/cell-painting-u2os/part-010.tar"
+size = 59373627899
+sha256 = "1d7840fa3bb7eac4db87083aa33bb30276b22d91d1d5414fd746266a3bcd2194"
+
+[[file]]
+name = "part-011.tar"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/cell-painting-u2os/part-011.tar"
+size = 59373627899
+sha256 = "52fca8288176735d3ab4242dba0d1495e52337e6c093ea680eff069bc7e099da"
+
+[[file]]
+name = "part-012.tar"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/cell-painting-u2os/part-012.tar"
+size = 59373627899
+sha256 = "1104a4084a5d817f79431364efe19e5ba009a556092afee0ecf795ee5970f29c"
+
+[[file]]
+name = "part-013.tar"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/cell-painting-u2os/part-013.tar"
+size = 59373627899
+sha256 = "3e0209709cb05df54207a8e4ad97cf8e027c26945992576dea6bca2299ba3602"
+
+[[file]]
+name = "part-014.tar"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/cell-painting-u2os/part-014.tar"
+size = 59373627899
+sha256 = "113a60cb6590b6d9d1645c1d1f7e34d34a547a73ae6e196684a2b05fb6418794"
+
+[[file]]
+name = "part-015.tar"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/cell-painting-u2os/part-015.tar"
+size = 59373627899
+sha256 = "27498fd1808924ca798f5966a9efb124687438be2c58ec9e900519169083979e"
+
+[[file]]
+name = "part-016.tar"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/cell-painting-u2os/part-016.tar"
+size = 59373627899
+sha256 = "fe85b6c4ce510c72e06e145d78a3499220857ce83efae27c823702655fc0e9b9"
+
+[[file]]
+name = "part-017.tar"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/cell-painting-u2os/part-017.tar"
+size = 59373627899
+sha256 = "2644f1f8105713459d465bd1a80aa16cc2d87c6bc02ad165dedf19148126f3da"
+
+[[file]]
+name = "part-018.tar"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/cell-painting-u2os/part-018.tar"
+size = 59373627899
+sha256 = "db71a6961fc92a32a209d8182596985d98edab5cbecb7891aea26d0edde25f66"
+
+[[file]]
+name = "part-019.tar"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/cell-painting-u2os/part-019.tar"
+size = 59373627899
+sha256 = "a6e66b60c77a6d02736544eb62de9ecd84438c71711c15f6adaf1a9fe283d930"
+
+[[file]]
+name = "part-020.tar"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/cell-painting-u2os/part-020.tar"
+size = 59373627899
+sha256 = "16f6a87fbc4d49614dd977fb55571c7448ddf8b38947ae0cc9ec5d4890231040"
+
+[[file]]
+name = "part-021.tar"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/cell-painting-u2os/part-021.tar"
+size = 59373627899
+sha256 = "e83e271c036c742e2c0a45857c32c7164a239655850124e5e0c64db674f41f87"
+
+[[file]]
+name = "part-022.tar"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/cell-painting-u2os/part-022.tar"
+size = 59373627899
+sha256 = "c4c14c9fa356a1de42431f24f161b27bbda3f81ccf060ed301194ba6c601e3cb"
+
+[[file]]
+name = "part-023.tar"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/cell-painting-u2os/part-023.tar"
+size = 59373627899
+sha256 = "ea9c3139e93283c8f7c306aa0b40aedb6079f5bb0f946893afb3d354fa219bfd"
+
+[[file]]
+name = "part-024.tar"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/cell-painting-u2os/part-024.tar"
+size = 59373627899
+sha256 = "d56680f1bac5051915e5cdc6ac40a1e54456e75e9d5202333c5a4b65f2d45925"
+
+[[file]]
+name = "part-025.tar"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/cell-painting-u2os/part-025.tar"
+size = 59373627899
+sha256 = "39b332975ce99742bde3c9965ad98155e1061425097cc19df8a8427896f08943"
+
+[[file]]
+name = "part-026.tar"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/cell-painting-u2os/part-026.tar"
+size = 59373627899
+sha256 = "9e24096f73750a84845ba55321481bba0aafdf75d526b63141c5596bfc978f81"
+
+[[file]]
+name = "part-027.tar"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/cell-painting-u2os/part-027.tar"
+size = 59373627899
+sha256 = "8d1100a117c6e03888d59fd3d0331093d6ac03eb0b0f34de37f31c80085e162c"
+
+[[file]]
+name = "part-028.tar"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/cell-painting-u2os/part-028.tar"
+size = 59373627899
+sha256 = "0cbf3e928bb1210890fa6a52e38b05037ed468c5cafc3c1109d30f9722504eb4"
+
+[[file]]
+name = "part-029.tar"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/cell-painting-u2os/part-029.tar"
+size = 59373627899
+sha256 = "114e01682899472b9da4612b8c84a5718807738ea99dd7b7535d32c111fbd425"
+
+[[file]]
+name = "part-030.tar"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/cell-painting-u2os/part-030.tar"
+size = 59373627899
+sha256 = "2a7b8806cae1cd2da7f3af837b53b670ec234571dea5c82018e37ecc792dc229"
+
+[[file]]
+name = "part-031.tar"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/cell-painting-u2os/part-031.tar"
+size = 59373627899
+sha256 = "5c9fe72090af065fb7ff0e1a0e4b02753e6d57a79a9c0e48948b43b910d16ac9"
+
+[[file]]
+name = "part-032.tar"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/cell-painting-u2os/part-032.tar"
+size = 59373627899
+sha256 = "3802e41467d12e6474f380929dfca886b9629a0a80d273597a7eef305a64829d"
+
+[[file]]
+name = "part-033.tar"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/cell-painting-u2os/part-033.tar"
+size = 59373627899
+sha256 = "83c8bfbf63bbd7e22bb63d18b7810536fde0af7ffc0d74a5d654cf72dd292608"
+
+[[file]]
+name = "part-034.tar"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/cell-painting-u2os/part-034.tar"
+size = 59373627899
+sha256 = "fa1a0e979d044c2ee908ff2681347a3c10b6984732a0fbf089de9f4976252077"
+
+[[file]]
+name = "part-035.tar"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/cell-painting-u2os/part-035.tar"
+size = 59373627899
+sha256 = "d6219f4713763824b05a5224b15b74a9c64adb6b6e22bbcef827a0c2a91daf53"
+
+[[file]]
+name = "part-036.tar"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/cell-painting-u2os/part-036.tar"
+size = 59373627899
+sha256 = "85f5f0189a736262a1a6a4cbf7e7a1e5f28f7ba7f13350bf2c51794350b42f75"
+
+[[file]]
+name = "part-037.tar"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/cell-painting-u2os/part-037.tar"
+size = 59373627899
+sha256 = "acb8237d7e50e81850cbb0b8f2f96121d457b8198f7a791a4d9572b96ba20192"
+
+[[file]]
+name = "part-038.tar"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/cell-painting-u2os/part-038.tar"
+size = 59373627899
+sha256 = "5d316787ec46a42fd1f9d1bf79a48c3157b6b9c5a89c763d32ed4606ed8ae360"
+
+[[file]]
+name = "part-039.tar"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/cell-painting-u2os/part-039.tar"
+size = 59373627899
+sha256 = "a9b28a1fdf18cacbf9fef228e9e2feb786c3e58f0b4f6eb731b2012b303d9cac"
+
+[[file]]
+name = "part-040.tar"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/cell-painting-u2os/part-040.tar"
+size = 59373627899
+sha256 = "77002ae24127ced678ffb4e86ff41ca27e1a9a4847a93dcf719dbc35899a229b"
+
+[[file]]
+name = "part-041.tar"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/cell-painting-u2os/part-041.tar"
+size = 59373627899
+sha256 = "4e2dfebbeb14bbd3dc23c9cf89fda99039045c00b557cedae32ba510b6562ed1"
+
+[[file]]
+name = "part-042.tar"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/cell-painting-u2os/part-042.tar"
+size = 59373627899
+sha256 = "7c280180343460eb53e8a5ecb87854909679cf0929eb9a8e39f3d88ec4570db3"
+
+[[file]]
+name = "part-043.tar"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/cell-painting-u2os/part-043.tar"
+size = 59373627899
+sha256 = "f40a9da03f6147b93c337189981c024f0d1237f5168152628d7ed98ccd4639c9"
+
+[[file]]
+name = "part-044.tar"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/cell-painting-u2os/part-044.tar"
+size = 59373627899
+sha256 = "3d46a2557ecc0a687fd978d2e69a633e96bf66d65b6453a51edf37f09fd8989b"
+
+[[file]]
+name = "part-045.tar"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/cell-painting-u2os/part-045.tar"
+size = 59373627899
+sha256 = "d0058b1714ce911750aa3db07ff24d4ee97bb6df765587a2b430d437b9e2e6b1"
+
+[[file]]
+name = "part-046.tar"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/cell-painting-u2os/part-046.tar"
+size = 59373627899
+sha256 = "dd2774d814b2abf6dcc795c7799342faaebcfabfeb44ad518c01b875b3d65f54"
+
+[[file]]
+name = "part-047.tar"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/cell-painting-u2os/part-047.tar"
+size = 59373627899
+sha256 = "4e6db6c56475842025d4fadaa3e98596760644f2e4a879d0a9e650d92600300f"
+
+[[file]]
+name = "part-048.tar"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/cell-painting-u2os/part-048.tar"
+size = 59373627899
+sha256 = "45a751e2372e8da3f8ceb3f34c9bbc9c43a1afe3b9e3abe4d407108498b41673"
+
+[[file]]
+name = "README.md"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/cell-painting-u2os/README.md"
+size = 59373627899
+sha256 = "beff90b790b01c156311e9f9fa96b9db10ab835530052492ba14918b77ebf03c"

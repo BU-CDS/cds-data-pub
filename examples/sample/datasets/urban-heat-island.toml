@@ -1,0 +1,53 @@
+title = "Urban heat island land-surface temperature, Boston metro"
+description = "Synthetic stress-case entry: urban heat island land-surface temperature, boston metro. Used only to exercise layout, filters and scale."
+license = "CC-BY-4.0"
+added = 2026-09-18
+tags = ["climate", "boston", "geospatial"]
+
+[[file]]
+name = "part-000.tif"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/urban-heat-island/part-000.tif"
+size = 2952790016
+sha256 = "79b66d9c8b9326cbd2685144b2aed8d5282a4ba80a03c4b5a3a3aa918da21040"
+
+[[file]]
+name = "part-001.tif"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/urban-heat-island/part-001.tif"
+size = 2952790016
+sha256 = "c01e3040fb7c530a7f0b342d2be40554bd60122032c67a11bbbd352e03d43156"
+
+[[file]]
+name = "part-002.tif"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/urban-heat-island/part-002.tif"
+size = 2952790016
+sha256 = "b9191cb01b471112d2076a0e983c3cd5bd9143dbd6159d7ee5d5a989c88143a7"
+
+[[file]]
+name = "part-003.tif"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/urban-heat-island/part-003.tif"
+size = 2952790016
+sha256 = "9728de2cb8aedaa3cf266bf35eab660ae47106721199d463813384285e613665"
+
+[[file]]
+name = "part-004.tif"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/urban-heat-island/part-004.tif"
+size = 2952790016
+sha256 = "6b14736eb5517e771c61ca838ea18f90374d36a4139f3319d9dd4d40a56551d9"
+
+[[file]]
+name = "part-005.tif"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/urban-heat-island/part-005.tif"
+size = 2952790016
+sha256 = "26d027769be120704757b6c9f75d137771f5f2c13c66b43267476c30b9581085"
+
+[[file]]
+name = "part-006.tif"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/urban-heat-island/part-006.tif"
+size = 2952790016
+sha256 = "2f6f573712581884b403833424432c1a08a6824561059a86d1421f59a0a129ce"
+
+[[file]]
+name = "README.md"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/urban-heat-island/README.md"
+size = 2952790016
+sha256 = "795d7f92e5f2d824923c4fc0464653d2d5ac5714a92ed38cfcfc76f40f201932"

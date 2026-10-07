@@ -1,0 +1,17 @@
+title = "Anonymized intro-CS course forum posts"
+description = "Synthetic stress-case entry: anonymized intro-cs course forum posts. Used only to exercise layout, filters and scale."
+license = "CC-BY-4.0"
+added = 2026-09-17
+tags = ["education", "nlp"]
+
+[[file]]
+name = "part-000.parquet"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/intro-cs-anon/part-000.parquet"
+size = 21495808
+sha256 = "a9c1624cea5a97f9fc5b58634db4b5514b265979ae695c6f0c0dced61a961d6d"
+
+[[file]]
+name = "README.md"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/intro-cs-anon/README.md"
+size = 21495808
+sha256 = "de9e5e5d3982702a97c19470c449d2ddf58c4e78b6f67303268475b40cd11682"

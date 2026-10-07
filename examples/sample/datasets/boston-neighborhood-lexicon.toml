@@ -1,0 +1,12 @@
+title = "Lexicon of Boston neighborhood names and aliases"
+description = "Synthetic stress-case entry: lexicon of boston neighborhood names and aliases. Used only to exercise layout, filters and scale."
+license = "CC0-1.0"
+added = 2026-09-16
+tags = ["boston", "nlp", "geospatial"]
+doi = "10.5072/sample.boston-neighborhood-lexicon"
+
+[[file]]
+name = "boston-neighborhood-lexicon.csv"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/boston-neighborhood-lexicon/boston-neighborhood-lexicon.csv"
+size = 38912
+sha256 = "15d5bd572bcbbeb9c68e666db49252105a53bd865040f04eb9bdd2cb53dbd2c5"

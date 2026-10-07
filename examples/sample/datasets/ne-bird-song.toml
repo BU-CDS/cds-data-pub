@@ -1,0 +1,185 @@
+title = "Northeastern US bird-song recordings with species labels"
+description = "Synthetic stress-case entry: northeastern us bird-song recordings with species labels. Used only to exercise layout, filters and scale."
+license = "CC-BY-4.0"
+added = 2026-09-15
+tags = ["biology", "benchmark", "audio"]
+
+[[file]]
+name = "part-000.flac"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/ne-bird-song/part-000.flac"
+size = 2183275042
+sha256 = "4ab6269c5cc6cfd3b6c25c04a5a577a7fed7e58bf69be615d6b2d526326881e0"
+
+[[file]]
+name = "part-001.flac"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/ne-bird-song/part-001.flac"
+size = 2183275042
+sha256 = "3806e8d8ec2efb6b63297de8e6b8a99064eaff8146b9bf10700d11c547b39257"
+
+[[file]]
+name = "part-002.flac"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/ne-bird-song/part-002.flac"
+size = 2183275042
+sha256 = "d6a82728eed02320b523b507887a94ce125ec28a6cee70746c65e2d78c6829f3"
+
+[[file]]
+name = "part-003.flac"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/ne-bird-song/part-003.flac"
+size = 2183275042
+sha256 = "731e403e2bc196a83c77e5ecc0979cea04a6464584bac09516134b0bf04e8b60"
+
+[[file]]
+name = "part-004.flac"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/ne-bird-song/part-004.flac"
+size = 2183275042
+sha256 = "28b071194220baea5891009a9f1cb13b219fb3674af889aee0420b38251a9e6e"
+
+[[file]]
+name = "part-005.flac"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/ne-bird-song/part-005.flac"
+size = 2183275042
+sha256 = "a38e248f2554b464a9bb3949a3b605a3c253c615e62d833a6e9e05964decb63b"
+
+[[file]]
+name = "part-006.flac"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/ne-bird-song/part-006.flac"
+size = 2183275042
+sha256 = "7117e0264b85ee83d12ca06bb235ab88b896f76fe9dd062e4434edfe541e4ec4"
+
+[[file]]
+name = "part-007.flac"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/ne-bird-song/part-007.flac"
+size = 2183275042
+sha256 = "91f15db51365f7d9241a70361cc4678d2be7e76a6c8f1190ca3a6c0ec151700f"
+
+[[file]]
+name = "part-008.flac"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/ne-bird-song/part-008.flac"
+size = 2183275042
+sha256 = "722c6957b3dc14bafc7ea18f08c8b64e7a3981e4cb6c9adb5d5bec1a14a96ddf"
+
+[[file]]
+name = "part-009.flac"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/ne-bird-song/part-009.flac"
+size = 2183275042
+sha256 = "fcfeb0f940fc71a4f2148cdf3f24493eca92708edcc4fd48b3a8a5dd390edda1"
+
+[[file]]
+name = "part-010.flac"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/ne-bird-song/part-010.flac"
+size = 2183275042
+sha256 = "f47fa952f1d76f4162e4de5f6040dcd03fa281616dbfa448ebc20b74e80410d9"
+
+[[file]]
+name = "part-011.flac"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/ne-bird-song/part-011.flac"
+size = 2183275042
+sha256 = "7c783976e221f4a11a27671a71889b04c0adb5eb08bb15745e74b53d56ac9058"
+
+[[file]]
+name = "part-012.flac"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/ne-bird-song/part-012.flac"
+size = 2183275042
+sha256 = "3f0cf07f29028d0f5aa66fb9a73ee5c3993f8dbec9de5d4a3e33875394d39b3d"
+
+[[file]]
+name = "part-013.flac"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/ne-bird-song/part-013.flac"
+size = 2183275042
+sha256 = "8e9f83f06cf0e0d4f3cf85cb19029af5f3051c00c527c88b9b1c5f42d0a1f9f5"
+
+[[file]]
+name = "part-014.flac"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/ne-bird-song/part-014.flac"
+size = 2183275042
+sha256 = "2828c1cd2b043372f7c8b57e557eb2b7250d4e4c2fc02cb3601d4b589dcba183"
+
+[[file]]
+name = "part-015.flac"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/ne-bird-song/part-015.flac"
+size = 2183275042
+sha256 = "d57d9c2d5cbe77074a2e27d04511f40c134d117291fe5824e0f4303a3bb24f6e"
+
+[[file]]
+name = "part-016.flac"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/ne-bird-song/part-016.flac"
+size = 2183275042
+sha256 = "4a6821a1e43a807d7988962b9434c1101564f02dfa2798e7afe88d854a37fc31"
+
+[[file]]
+name = "part-017.flac"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/ne-bird-song/part-017.flac"
+size = 2183275042
+sha256 = "9513c3762853c8b01c3ed9a7bebb1290373be645dd3068f17e4a84cb250f2016"
+
+[[file]]
+name = "part-018.flac"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/ne-bird-song/part-018.flac"
+size = 2183275042
+sha256 = "83d2e56d9cc91cdf24c3886b41188abde47df16c5a058af046dfe3f67f5bf5ae"
+
+[[file]]
+name = "part-019.flac"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/ne-bird-song/part-019.flac"
+size = 2183275042
+sha256 = "f59d5212e876b2432b15358b371096ccde581347406d3fa92b6ec481790e3f09"
+
+[[file]]
+name = "part-020.flac"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/ne-bird-song/part-020.flac"
+size = 2183275042
+sha256 = "1d69de54d242e516ced96a833628137b9664e4e99e2146a8f282296254a9bc19"
+
+[[file]]
+name = "part-021.flac"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/ne-bird-song/part-021.flac"
+size = 2183275042
+sha256 = "651e214f5965e166eebc2122c9d56300030d24296265ab009f58649638c40cbf"
+
+[[file]]
+name = "part-022.flac"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/ne-bird-song/part-022.flac"
+size = 2183275042
+sha256 = "f96c07112960c6c418816fe83f5cc709bd30f5cb001f61e4d8350859d929aeac"
+
+[[file]]
+name = "part-023.flac"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/ne-bird-song/part-023.flac"
+size = 2183275042
+sha256 = "ac25f1aa22cb9e967a8818468728fc5066d1388a55d79472bbf7421341a39646"
+
+[[file]]
+name = "part-024.flac"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/ne-bird-song/part-024.flac"
+size = 2183275042
+sha256 = "ee8cf7027a9f58d62b731c1aa20a5416a0154f7990723853721328049c3c2df8"
+
+[[file]]
+name = "part-025.flac"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/ne-bird-song/part-025.flac"
+size = 2183275042
+sha256 = "4c8014761c212a2971376a162e26661b88d237803392faef991421e5e3d2d081"
+
+[[file]]
+name = "part-026.flac"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/ne-bird-song/part-026.flac"
+size = 2183275042
+sha256 = "a6673fb774d9a55daf40398ea376e83f1759e3f0b651500863576c84c353a353"
+
+[[file]]
+name = "part-027.flac"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/ne-bird-song/part-027.flac"
+size = 2183275042
+sha256 = "0952f0843ac2200f3c11a8dfca73601b218571341705ff7787c17c6bf7119491"
+
+[[file]]
+name = "part-028.flac"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/ne-bird-song/part-028.flac"
+size = 2183275042
+sha256 = "2630869de482512ca17b48a7c29acc67436aedb8ceb6b60f1d468fe9050f7155"
+
+[[file]]
+name = "README.md"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/ne-bird-song/README.md"
+size = 2183275042
+sha256 = "5a97b462a625b1a2b68875c6c82b37b278c68faaef93be6ba8df793ced7a92b0"

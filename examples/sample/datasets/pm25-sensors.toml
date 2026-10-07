@@ -1,0 +1,47 @@
+title = "Low-cost PM2.5 sensor network readings, 2019–2026"
+description = "Synthetic stress-case entry: low-cost pm2.5 sensor network readings, 2019–2026. Used only to exercise layout, filters and scale."
+license = "ODC-By-1.0"
+added = 2026-09-14
+tags = ["climate", "health-public", "timeseries"]
+
+[[file]]
+name = "part-000.csv.gz"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/pm25-sensors/part-000.csv.gz"
+size = 133318948
+sha256 = "7230d3d7b86c315e189ce24d8e4002082dde76f6809c107a0aea863f3e157e7e"
+
+[[file]]
+name = "part-001.csv.gz"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/pm25-sensors/part-001.csv.gz"
+size = 133318948
+sha256 = "295e6f62e433d1424d472f145142a60b63ab8139fff24b532de5885fcdcd7f94"
+
+[[file]]
+name = "part-002.csv.gz"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/pm25-sensors/part-002.csv.gz"
+size = 133318948
+sha256 = "82e6f674e9b5225e3a224956051df85b0ba21995f3918e4dfede37b4f084b442"
+
+[[file]]
+name = "part-003.csv.gz"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/pm25-sensors/part-003.csv.gz"
+size = 133318948
+sha256 = "a0c2e7e9602a685dd3b1b3e2daf01c07ac20f32bed562056b8e6fd3a4f68d13e"
+
+[[file]]
+name = "part-004.csv.gz"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/pm25-sensors/part-004.csv.gz"
+size = 133318948
+sha256 = "c2d3c3c5f94f33a9a4b8edc34248b0d461a182ac5e8ca4884523ad526391e8d5"
+
+[[file]]
+name = "part-005.csv.gz"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/pm25-sensors/part-005.csv.gz"
+size = 133318948
+sha256 = "bb16a64edcc0f93cd3f6e50b99b3fedefd95cece983204711e40dbc2240b1d0c"
+
+[[file]]
+name = "README.md"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/pm25-sensors/README.md"
+size = 133318948
+sha256 = "24f3e44a2865457b2925d1d67ce79453421609ed14c0360aaeb728d51c4eed3c"

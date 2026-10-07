@@ -1,0 +1,155 @@
+title = "Multilingual extractive question answering, 12 languages"
+description = "Synthetic stress-case entry: multilingual extractive question answering, 12 languages. Used only to exercise layout, filters and scale."
+license = "CC-BY-4.0"
+added = 2026-09-21
+tags = ["nlp", "benchmark"]
+
+[[file]]
+name = "part-000.jsonl"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/multilingual-qa/part-000.jsonl"
+size = 17196646
+sha256 = "2753a576ea7d1ab36ba3ea4c81788421a6839dc09afd9313285392640075b14d"
+
+[[file]]
+name = "part-001.jsonl"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/multilingual-qa/part-001.jsonl"
+size = 17196646
+sha256 = "78b27a5bc44d5ddba61cf542dd1ef6df4242eeda6a6d2ca01433e3e2dda80f5f"
+
+[[file]]
+name = "part-002.jsonl"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/multilingual-qa/part-002.jsonl"
+size = 17196646
+sha256 = "7af52a7c7e359215ca6849c9fabe583d72e83f420cb07169bab620b3baf64fd3"
+
+[[file]]
+name = "part-003.jsonl"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/multilingual-qa/part-003.jsonl"
+size = 17196646
+sha256 = "9cc566969dbdf6f56e04aa06b91ece67c446eb2ac785a6fe104c8cf7aafe3578"
+
+[[file]]
+name = "part-004.jsonl"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/multilingual-qa/part-004.jsonl"
+size = 17196646
+sha256 = "4c2678cdd2dd7c784721d7bc52da882b509bbaa3120447da7699d20d3d3edd9a"
+
+[[file]]
+name = "part-005.jsonl"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/multilingual-qa/part-005.jsonl"
+size = 17196646
+sha256 = "515d799e07e657e61d013c46e3a0860db63631ed86a4c316a21b75a1c930e479"
+
+[[file]]
+name = "part-006.jsonl"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/multilingual-qa/part-006.jsonl"
+size = 17196646
+sha256 = "56c73d0b6e3b2a4eb9501ce0e849671140ae5b2bb37c17cd4427d65389739304"
+
+[[file]]
+name = "part-007.jsonl"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/multilingual-qa/part-007.jsonl"
+size = 17196646
+sha256 = "975194588f30d3d72316346feed828a8b8c0642df818538ba03f194e426aa60e"
+
+[[file]]
+name = "part-008.jsonl"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/multilingual-qa/part-008.jsonl"
+size = 17196646
+sha256 = "c5beb32478274f7c4b64109471503b80a936337946ac497a08b7ea71a577df88"
+
+[[file]]
+name = "part-009.jsonl"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/multilingual-qa/part-009.jsonl"
+size = 17196646
+sha256 = "33558524bd8730b7d4b331cfe2a4e1d9a6a56621b83bb6e278c72f59bf1dd4f4"
+
+[[file]]
+name = "part-010.jsonl"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/multilingual-qa/part-010.jsonl"
+size = 17196646
+sha256 = "f556d350b1ce08e6a5dc867a96467d3600f567025a8ed9151e60c21d090a5c6b"
+
+[[file]]
+name = "part-011.jsonl"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/multilingual-qa/part-011.jsonl"
+size = 17196646
+sha256 = "95da855bfc95fc46f2d22549289860b841771f6a03db4a6aa899df9421b8b7ff"
+
+[[file]]
+name = "part-012.jsonl"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/multilingual-qa/part-012.jsonl"
+size = 17196646
+sha256 = "4038eb7fe0019cbba4ae473e73a1dc81a56c8c2faef13c3f368b5004858682f6"
+
+[[file]]
+name = "part-013.jsonl"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/multilingual-qa/part-013.jsonl"
+size = 17196646
+sha256 = "f754bda868dc631d34ed96d7bf42558a2ed81c27d9407c9a00174a410faf56ff"
+
+[[file]]
+name = "part-014.jsonl"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/multilingual-qa/part-014.jsonl"
+size = 17196646
+sha256 = "1c3c9c363e80c16c50e3bd6e893cf249afef9b818db1bb6cd4b981a68fca0991"
+
+[[file]]
+name = "part-015.jsonl"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/multilingual-qa/part-015.jsonl"
+size = 17196646
+sha256 = "61defbfdc8558b7b50eb7689b8f7dc169f8152415f66c1e890d76b2e593f253c"
+
+[[file]]
+name = "part-016.jsonl"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/multilingual-qa/part-016.jsonl"
+size = 17196646
+sha256 = "6052eeda710a97321777e511857fc02f30ac2a879a3f7193931c377a98229ec6"
+
+[[file]]
+name = "part-017.jsonl"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/multilingual-qa/part-017.jsonl"
+size = 17196646
+sha256 = "5b68a36e2f71eaecbbc9cb872afa0a9b04e319bfc4447e87eafbf30714b4149a"
+
+[[file]]
+name = "part-018.jsonl"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/multilingual-qa/part-018.jsonl"
+size = 17196646
+sha256 = "98f9fc218824d7e2336efba6de965b1c972a475612b64cc087a2ea8abd8cb079"
+
+[[file]]
+name = "part-019.jsonl"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/multilingual-qa/part-019.jsonl"
+size = 17196646
+sha256 = "4da418988a7bb581334b871889769dedf389ea06c437d5426d3a886ac66adc4e"
+
+[[file]]
+name = "part-020.jsonl"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/multilingual-qa/part-020.jsonl"
+size = 17196646
+sha256 = "d99aa7dd023cbaed7aedf105b3ba64ca9251b8f67f9669924fac83550935fc77"
+
+[[file]]
+name = "part-021.jsonl"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/multilingual-qa/part-021.jsonl"
+size = 17196646
+sha256 = "dd671e8aef3bc21460e7f5f1cd5cbc917e3a169a29e7d17373ab70c44b372e41"
+
+[[file]]
+name = "part-022.jsonl"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/multilingual-qa/part-022.jsonl"
+size = 17196646
+sha256 = "596f28c09c6de42f14bb4fb96dce537d5414fdd305b24e39033b0921d261677c"
+
+[[file]]
+name = "part-023.jsonl"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/multilingual-qa/part-023.jsonl"
+size = 17196646
+sha256 = "d9c5803b4fd63cbd771baaacb62b4e9dbaae99c6fd4361c9694c983672d677e6"
+
+[[file]]
+name = "README.md"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/multilingual-qa/README.md"
+size = 17196646
+sha256 = "1ab2b5e9badc868ae87980961718df22e53ba39368fe9ce23f500dc017cc11e2"

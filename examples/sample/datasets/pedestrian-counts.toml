@@ -1,0 +1,17 @@
+title = "Pedestrian counts at 60 Boston intersections"
+description = "Synthetic stress-case entry: pedestrian counts at 60 boston intersections. Used only to exercise layout, filters and scale."
+license = "PDDL-1.0"
+added = 2026-09-13
+tags = ["mobility", "boston", "tabular"]
+
+[[file]]
+name = "part-000.csv"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/pedestrian-counts/part-000.csv"
+size = 62914560
+sha256 = "82656dcd139b665c6c6c762f539b930218a4b8b4514d049d7ae13e0f51c15f1d"
+
+[[file]]
+name = "README.md"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/pedestrian-counts/README.md"
+size = 62914560
+sha256 = "0acfb7d4f74dcb0c97517e81032762940e7701cbd20ca895293c08cfb4ec328a"

@@ -1,0 +1,186 @@
+title = "Sharded text corpus"
+description = "Thirty shards, used to check a long file table."
+license = "ODC-By-1.0"
+added = 2026-08-20
+tags = ["nlp", "benchmark"]
+contact = "corpus@example.org"
+
+[[file]]
+name = "shard-00000.jsonl.gz"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/demo/sharded-text-corpus/shard-00000.jsonl.gz"
+size = 1073741824
+sha256 = "0000000000000000000000000000000000000000000000000000000000000000"
+
+[[file]]
+name = "shard-00001.jsonl.gz"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/demo/sharded-text-corpus/shard-00001.jsonl.gz"
+size = 1073749743
+sha256 = "0101010101010101010101010101010101010101010101010101010101010101"
+
+[[file]]
+name = "shard-00002.jsonl.gz"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/demo/sharded-text-corpus/shard-00002.jsonl.gz"
+size = 1073757662
+sha256 = "0202020202020202020202020202020202020202020202020202020202020202"
+
+[[file]]
+name = "shard-00003.jsonl.gz"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/demo/sharded-text-corpus/shard-00003.jsonl.gz"
+size = 1073765581
+sha256 = "0303030303030303030303030303030303030303030303030303030303030303"
+
+[[file]]
+name = "shard-00004.jsonl.gz"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/demo/sharded-text-corpus/shard-00004.jsonl.gz"
+size = 1073773500
+sha256 = "0404040404040404040404040404040404040404040404040404040404040404"
+
+[[file]]
+name = "shard-00005.jsonl.gz"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/demo/sharded-text-corpus/shard-00005.jsonl.gz"
+size = 1073781419
+sha256 = "0505050505050505050505050505050505050505050505050505050505050505"
+
+[[file]]
+name = "shard-00006.jsonl.gz"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/demo/sharded-text-corpus/shard-00006.jsonl.gz"
+size = 1073789338
+sha256 = "0606060606060606060606060606060606060606060606060606060606060606"
+
+[[file]]
+name = "shard-00007.jsonl.gz"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/demo/sharded-text-corpus/shard-00007.jsonl.gz"
+size = 1073797257
+sha256 = "0707070707070707070707070707070707070707070707070707070707070707"
+
+[[file]]
+name = "shard-00008.jsonl.gz"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/demo/sharded-text-corpus/shard-00008.jsonl.gz"
+size = 1073805176
+sha256 = "0808080808080808080808080808080808080808080808080808080808080808"
+
+[[file]]
+name = "shard-00009.jsonl.gz"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/demo/sharded-text-corpus/shard-00009.jsonl.gz"
+size = 1073813095
+sha256 = "0909090909090909090909090909090909090909090909090909090909090909"
+
+[[file]]
+name = "shard-00010.jsonl.gz"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/demo/sharded-text-corpus/shard-00010.jsonl.gz"
+size = 1073821014
+sha256 = "0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a"
+
+[[file]]
+name = "shard-00011.jsonl.gz"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/demo/sharded-text-corpus/shard-00011.jsonl.gz"
+size = 1073828933
+sha256 = "0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b"
+
+[[file]]
+name = "shard-00012.jsonl.gz"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/demo/sharded-text-corpus/shard-00012.jsonl.gz"
+size = 1073836852
+sha256 = "0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c"
+
+[[file]]
+name = "shard-00013.jsonl.gz"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/demo/sharded-text-corpus/shard-00013.jsonl.gz"
+size = 1073844771
+sha256 = "0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d"
+
+[[file]]
+name = "shard-00014.jsonl.gz"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/demo/sharded-text-corpus/shard-00014.jsonl.gz"
+size = 1073852690
+sha256 = "0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e"
+
+[[file]]
+name = "shard-00015.jsonl.gz"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/demo/sharded-text-corpus/shard-00015.jsonl.gz"
+size = 1073860609
+sha256 = "0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f"
+
+[[file]]
+name = "shard-00016.jsonl.gz"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/demo/sharded-text-corpus/shard-00016.jsonl.gz"
+size = 1073868528
+sha256 = "1010101010101010101010101010101010101010101010101010101010101010"
+
+[[file]]
+name = "shard-00017.jsonl.gz"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/demo/sharded-text-corpus/shard-00017.jsonl.gz"
+size = 1073876447
+sha256 = "1111111111111111111111111111111111111111111111111111111111111111"
+
+[[file]]
+name = "shard-00018.jsonl.gz"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/demo/sharded-text-corpus/shard-00018.jsonl.gz"
+size = 1073884366
+sha256 = "1212121212121212121212121212121212121212121212121212121212121212"
+
+[[file]]
+name = "shard-00019.jsonl.gz"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/demo/sharded-text-corpus/shard-00019.jsonl.gz"
+size = 1073892285
+sha256 = "1313131313131313131313131313131313131313131313131313131313131313"
+
+[[file]]
+name = "shard-00020.jsonl.gz"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/demo/sharded-text-corpus/shard-00020.jsonl.gz"
+size = 1073900204
+sha256 = "1414141414141414141414141414141414141414141414141414141414141414"
+
+[[file]]
+name = "shard-00021.jsonl.gz"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/demo/sharded-text-corpus/shard-00021.jsonl.gz"
+size = 1073908123
+sha256 = "1515151515151515151515151515151515151515151515151515151515151515"
+
+[[file]]
+name = "shard-00022.jsonl.gz"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/demo/sharded-text-corpus/shard-00022.jsonl.gz"
+size = 1073916042
+sha256 = "1616161616161616161616161616161616161616161616161616161616161616"
+
+[[file]]
+name = "shard-00023.jsonl.gz"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/demo/sharded-text-corpus/shard-00023.jsonl.gz"
+size = 1073923961
+sha256 = "1717171717171717171717171717171717171717171717171717171717171717"
+
+[[file]]
+name = "shard-00024.jsonl.gz"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/demo/sharded-text-corpus/shard-00024.jsonl.gz"
+size = 1073931880
+sha256 = "1818181818181818181818181818181818181818181818181818181818181818"
+
+[[file]]
+name = "shard-00025.jsonl.gz"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/demo/sharded-text-corpus/shard-00025.jsonl.gz"
+size = 1073939799
+sha256 = "1919191919191919191919191919191919191919191919191919191919191919"
+
+[[file]]
+name = "shard-00026.jsonl.gz"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/demo/sharded-text-corpus/shard-00026.jsonl.gz"
+size = 1073947718
+sha256 = "1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a"
+
+[[file]]
+name = "shard-00027.jsonl.gz"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/demo/sharded-text-corpus/shard-00027.jsonl.gz"
+size = 1073955637
+sha256 = "1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b"
+
+[[file]]
+name = "shard-00028.jsonl.gz"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/demo/sharded-text-corpus/shard-00028.jsonl.gz"
+size = 1073963556
+sha256 = "1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c"
+
+[[file]]
+name = "shard-00029.jsonl.gz"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/demo/sharded-text-corpus/shard-00029.jsonl.gz"
+size = 1073971475
+sha256 = "1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d"

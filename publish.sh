@@ -20,5 +20,5 @@ fi
 
 "$PY" -P -m scripts.build_page --out "$ROOT/index.html"
 "$PY" -P -m scripts.check_page "$ROOT/index.html" ${GATE[@]+"${GATE[@]}"}
-"$PY" -P -m scripts.check_links --manifest "$ROOT/datasets.toml"
+"$PY" -P -m scripts.check_links --catalog "$ROOT"
 "$ROOT/deploy.sh"

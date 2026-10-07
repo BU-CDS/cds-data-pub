@@ -1,19 +1,20 @@
 """Gate over a built catalog page.
 
-Usage: .venv/bin/python -m scripts.check_page PAGE [--preview | --require-ga G-XXXX] [--manifest PATH]
+Usage: .venv/bin/python -m scripts.check_page PAGE [--preview | --require-ga G-XXXX] [--catalog DIR]
 
 Refuses: any sourced script but the GA loader, inline scripts beyond the GA bootstrap, network or
-storage APIs, http:// links, a missing "Updated" stamp, a preview build presented for publish, and (with --manifest) a page built from another manifest.
+storage APIs, http:// links, a missing "Updated" stamp, a preview build presented for publish, and (with --catalog) a page built from
+another catalog.
 """
 
 from __future__ import annotations
 
 import argparse
-import hashlib
 import re
 import sys
 from pathlib import Path
 
+from scripts.manifest import catalog_digest
 from scripts.render import PREVIEW_MARK
 
 SCRIPT_TAG_RE = re.compile(r"<script\b([^>]*)>", re.IGNORECASE)
@@ -45,7 +46,7 @@ def check_html(
         html: The built page.
         preview: The page is a local preview (must carry the preview mark and no GA).
         require_ga: Measurement id the page must carry exactly once (publish builds).
-        manifest_sha: sha256 of the manifest the page must have been built from (deploy).
+        manifest_sha: digest of the catalog the page must have been built from (deploy).
     """
     problems: list[str] = []
     loaders: list[str] = []
@@ -90,7 +91,9 @@ def check_html(
         manifest_sha is not None
         and f'<meta name="cds-manifest" content="{manifest_sha}">' not in html
     ):
-        problems.append("page was not built from this manifest (rebuild from datasets.toml)")
+        problems.append(
+            "page was not built from this catalog (rebuild from catalog.toml + datasets/)"
+        )
     if not STAMP_RE.search(html):
         problems.append('missing "Updated YYYY-MM-DD" stamp')
     return problems
@@ -103,9 +106,9 @@ def main(argv: list[str] | None = None) -> int:
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--preview", action="store_true")
     mode.add_argument("--require-ga", metavar="ID")
-    parser.add_argument("--manifest", type=Path, help="refuse a page built from another manifest")
+    parser.add_argument("--catalog", type=Path, help="refuse a page built from another catalog")
     args = parser.parse_args(argv)
-    sha = hashlib.sha256(args.manifest.read_bytes()).hexdigest() if args.manifest else None
+    sha = catalog_digest(args.catalog) if args.catalog else None
     problems = check_html(
         args.page.read_text(encoding="utf-8"),
         preview=args.preview,

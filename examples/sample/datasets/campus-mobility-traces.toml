@@ -1,0 +1,20 @@
+title = "Anonymized campus mobility traces from a two-semester sensing study"
+description = "Aggregated Wi-Fi association counts per building per 15-minute bin, two semesters.\n\nNo device identifiers are present. See the README for the binning method."
+license = "CC-BY-4.0"
+added = 2026-10-01
+tags = ["mobility", "boston", "timeseries"]
+doi = "10.0000/example"
+source = "https://example.org/original/source/page"
+contact = "mobility-study@example.org"
+
+[[file]]
+name = "README.md"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/demo/campus-mobility-traces/README.md"
+size = 812
+sha256 = "0f343b0931126a20f133d67c2b018a3b0f343b0931126a20f133d67c2b018a3b"
+
+[[file]]
+name = "mobility_counts_2025-fall_2026-spring_15min_by_building_with_weather_covariates_v2.parquet"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/demo/campus-mobility-traces/mobility_counts_2025-fall_2026-spring_15min_by_building_with_weather_covariates_v2.parquet"
+size = 2748779069440
+sha256 = "9b74c9897bac770ffc029102a200c5de9b74c9897bac770ffc029102a200c5de"

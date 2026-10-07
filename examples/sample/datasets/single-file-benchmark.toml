@@ -1,0 +1,12 @@
+title = "Small benchmark"
+description = "One CSV file, used to check the one-file layout."
+license = "CC0-1.0"
+added = 2026-09-15
+tags = ["benchmark", "tabular"]
+contact = "bench@example.org"
+
+[[file]]
+name = "bench.csv"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/demo/single-file-benchmark/bench.csv"
+size = 512
+sha256 = "2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae"

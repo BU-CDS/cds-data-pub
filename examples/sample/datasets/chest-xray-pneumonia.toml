@@ -1,0 +1,42 @@
+title = "Chest radiograph pneumonia benchmark (de-identified)"
+description = "Synthetic stress-case entry: chest radiograph pneumonia benchmark (de-identified). Used only to exercise layout, filters and scale."
+license = "CC-BY-4.0"
+added = 2026-09-24
+tags = ["imaging", "health-public", "benchmark"]
+doi = "10.5072/sample.chest-xray-pneumonia"
+
+[[file]]
+name = "part-000.tar.gz"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/chest-xray-pneumonia/part-000.tar.gz"
+size = 8589934592
+sha256 = "e45d7ccceb99446e7f64e58c0e5e6b1bdfaa432d95b7d3f4cd2911c6f1a2b178"
+
+[[file]]
+name = "part-001.tar.gz"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/chest-xray-pneumonia/part-001.tar.gz"
+size = 8589934592
+sha256 = "7585470a28b14eddbe2ccbd66def2a788478170fd50abbb35e892ba26b69c414"
+
+[[file]]
+name = "part-002.tar.gz"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/chest-xray-pneumonia/part-002.tar.gz"
+size = 8589934592
+sha256 = "857d2da59cf288c3e73b4cd2885b222869ef20f3b0e3e6f0e9954d3dba4bc5fe"
+
+[[file]]
+name = "part-003.tar.gz"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/chest-xray-pneumonia/part-003.tar.gz"
+size = 8589934592
+sha256 = "29a2e4d8ec0e69c2b7b2c3dcb5325716cf2b4510c1a8286b798797b70fadf9aa"
+
+[[file]]
+name = "part-004.tar.gz"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/chest-xray-pneumonia/part-004.tar.gz"
+size = 8589934592
+sha256 = "f4bc60315a8a9ea38159f649979240a477640ff83ea541832b360c500151405f"
+
+[[file]]
+name = "README.md"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/chest-xray-pneumonia/README.md"
+size = 8589934592
+sha256 = "f9f5a2b751b60b99af1899b4ad54b1984387d948dd4e8d7976019f2877d104e0"

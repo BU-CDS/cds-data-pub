@@ -1,0 +1,3 @@
+# Stress-case sample catalog for the visual dev loop. Never deployed.
+notice = "Demo: sample datasets for layout testing."
+tags = ["audio", "benchmark", "biology", "boston", "climate", "education", "geospatial", "health-public", "imaging", "mobility", "nlp", "tabular", "timeseries"]

@@ -1,0 +1,24 @@
+title = "Annotated imaging archive"
+description = "Three compressed archives, used to check archive-style datasets."
+license = "CC-BY-4.0"
+added = 2026-10-04
+tags = ["imaging", "health-public"]
+contact = "imaging@example.org"
+
+[[file]]
+name = "images-part1.tar.gz"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/demo/imaging-archive/images-part1.tar.gz"
+size = 8589934592
+sha256 = "76ca67e53adfbaa6c82a2058628f50a92acfb2b1b74778225692520093a54a5b"
+
+[[file]]
+name = "images-part2.tar.gz"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/demo/imaging-archive/images-part2.tar.gz"
+size = 8589934592
+sha256 = "a6946f99b9572bfd30ba555b4d44b26460e55034cc7d70033288c7d5908f02a4"
+
+[[file]]
+name = "images-part3.tar.gz"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/demo/imaging-archive/images-part3.tar.gz"
+size = 4294967296
+sha256 = "10a77fa1abbd2dcfc251445fa28d221628db22d87703de9d379fd78470c72873"

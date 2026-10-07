@@ -10,14 +10,16 @@ ok(){ echo "PASS: $*"; }
 bad(){ echo "FAIL: $*"; FAILS=$((FAILS+1)); }
 CLEAN='<!doctype html><html><head><meta name="cds-manifest" content="@@SHA@@"></head><body><p>Updated 2026-10-06</p></body></html>'
 
+digest(){ PYTHONPATH="$1" "$PYTHON" -c "from pathlib import Path; from scripts.manifest import catalog_digest; print(catalog_digest(Path('$1')))"; }
+
 mkrepo(){ # $1: dir; $2: page html
   git init -q -b main "$1"
   git -C "$1" config user.email test@test
   git -C "$1" config user.name test
   cp "$R/deploy.sh" "$1/deploy.sh"
   cp -R "$R/scripts" "$1/scripts" && rm -rf "$1/scripts/__pycache__"
-  printf '# toy manifest\n' > "$1/datasets.toml"
-  sha="$(shasum -a 256 "$1/datasets.toml" | cut -d' ' -f1)"
+  printf 'tags = ["x"]\n' > "$1/catalog.toml"; mkdir -p "$1/datasets"
+  sha="$(digest "$1")"
   printf '%s\n' "${2//@@SHA@@/$sha}" > "$1/index.html"
   git -C "$1" add -A
   git -C "$1" -c commit.gpgsign=false commit -qm init
@@ -34,7 +36,7 @@ files="$(git -C "$D" ls-tree --name-only page | sort | tr '\n' ' ')"
 [ "$(wt_count "$D")" = 1 ] && ok "no leftover worktree" || bad "worktree left behind"
 
 # 2. a second deploy amends: page stays one commit
-sha="$(shasum -a 256 "$D/datasets.toml" | cut -d' ' -f1)"
+sha="$(digest "$D")"
 printf '%s\n' "${CLEAN/2026-10-06/2026-10-07}" | sed "s/@@SHA@@/$sha/" > "$D/index.html"
 DEPLOY_PUSH=0 "$D/deploy.sh" >/dev/null 2>&1 || bad "second deploy failed"
 [ "$(git -C "$D" rev-list --count page)" = 1 ] && ok "page stays a single commit" || bad "page grew history"
@@ -62,10 +64,10 @@ for case in fetch preview nostamp; do
   else ok "$case page refused"; fi
 done
 
-# 3b. a page built from another manifest (e.g. the sample, --preview forgotten) is refused
+# 3b. a page built from another catalog (e.g. the sample, --preview forgotten) is refused
 D="$WORK/g-other"; mkrepo "$D" "${CLEAN//@@SHA@@/$(printf '%064d' 0)}"
-if DEPLOY_PUSH=0 "$D/deploy.sh" >/dev/null 2>&1; then bad "page from another manifest was deployed"
-else ok "page from another manifest refused"; fi
+if DEPLOY_PUSH=0 "$D/deploy.sh" >/dev/null 2>&1; then bad "page from another catalog was deployed"
+else ok "page from another catalog refused"; fi
 
 # 3c. pushing from a branch other than main is refused before any commit
 D="$WORK/g-branch"; mkrepo "$D" "$CLEAN"; git -C "$D" checkout -qb feature

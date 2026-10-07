@@ -1,0 +1,23 @@
+title = "Boston Harbor water-quality buoys, 2010–2026"
+description = "Synthetic stress-case entry: boston harbor water-quality buoys, 2010–2026. Used only to exercise layout, filters and scale."
+license = "CC0-1.0"
+added = 2026-09-22
+tags = ["climate", "boston", "timeseries", "tabular"]
+
+[[file]]
+name = "part-000.csv"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/boston-harbor-water/part-000.csv"
+size = 25864874
+sha256 = "ef8b872a9d8b75bf8e0a24e39c7336508ca23d8cced984bd72be1ac671e69bbd"
+
+[[file]]
+name = "part-001.csv"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/boston-harbor-water/part-001.csv"
+size = 25864874
+sha256 = "953965d73b41d2d4ac6b145df22588a58fd5b04ac11c6794afe72e2dd424f5cd"
+
+[[file]]
+name = "README.md"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/boston-harbor-water/README.md"
+size = 25864874
+sha256 = "d2b004241b23f3e267a1416763a4c891eafdbbcb3885556931393c5cf03495f8"

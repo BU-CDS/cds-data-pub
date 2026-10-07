@@ -1,0 +1,149 @@
+title = "ERA5 hourly reanalysis subset for New England"
+description = "Synthetic stress-case entry: era5 hourly reanalysis subset for new england. Used only to exercise layout, filters and scale."
+license = "CC-BY-4.0"
+added = 2026-09-23
+tags = ["climate", "geospatial", "timeseries"]
+
+[[file]]
+name = "part-000.nc"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/era5-new-england/part-000.nc"
+size = 73300775185
+sha256 = "4ff1b384264b9e2030f236309d0fc1c5ea6f0dc464e998f9441ff32d58a893fc"
+
+[[file]]
+name = "part-001.nc"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/era5-new-england/part-001.nc"
+size = 73300775185
+sha256 = "e1a6025834298faa3d6fb2d6180e65f4f7092c95f39a1a5e9e08bf9932d312a1"
+
+[[file]]
+name = "part-002.nc"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/era5-new-england/part-002.nc"
+size = 73300775185
+sha256 = "b7b8e41d363317209c5f2e260d6204c87b18d1cce548ed0168850b2b935638b3"
+
+[[file]]
+name = "part-003.nc"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/era5-new-england/part-003.nc"
+size = 73300775185
+sha256 = "c7926e815ba93055976ceb9cfe34c10380fbb6cb5060243dc41fdcff5dc737c3"
+
+[[file]]
+name = "part-004.nc"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/era5-new-england/part-004.nc"
+size = 73300775185
+sha256 = "7735f00d6f8200b0f054e9030c30ccb48e76f7208f995a1afd55814a11e62a38"
+
+[[file]]
+name = "part-005.nc"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/era5-new-england/part-005.nc"
+size = 73300775185
+sha256 = "a7dc63d79db7b8dee4c9c9eee504955e12e532cb9b9b520987d18775e63c36ab"
+
+[[file]]
+name = "part-006.nc"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/era5-new-england/part-006.nc"
+size = 73300775185
+sha256 = "e9134220ed0002fd6d11a895003a1aa4540a067877e6abed9e92c97fbb6942fd"
+
+[[file]]
+name = "part-007.nc"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/era5-new-england/part-007.nc"
+size = 73300775185
+sha256 = "2f651433ab6ba461dbbd19cc43411854d8e8697bcb34cd748ce11616c8e41efd"
+
+[[file]]
+name = "part-008.nc"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/era5-new-england/part-008.nc"
+size = 73300775185
+sha256 = "9d655297199c16d75323eadaa1d280a856d9799a271d026a248db50654494672"
+
+[[file]]
+name = "part-009.nc"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/era5-new-england/part-009.nc"
+size = 73300775185
+sha256 = "2366aaea37a55339544b0d71350e784ca0aee2d6dfea7d6e3c376923e7c61321"
+
+[[file]]
+name = "part-010.nc"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/era5-new-england/part-010.nc"
+size = 73300775185
+sha256 = "5a1b472be5714ebe64b239f40082d8d49fb67b0b28f1f469d67f53d8eac28702"
+
+[[file]]
+name = "part-011.nc"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/era5-new-england/part-011.nc"
+size = 73300775185
+sha256 = "6ea661f12b2e38f25c8131ceddeec31ee1ca315e1982a599a2d177e4f7d5fd5a"
+
+[[file]]
+name = "part-012.nc"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/era5-new-england/part-012.nc"
+size = 73300775185
+sha256 = "3829db9fb5ef72ebc621f36ff7c9433d72a638fcf8f1ef1be5ddc7cc706c435d"
+
+[[file]]
+name = "part-013.nc"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/era5-new-england/part-013.nc"
+size = 73300775185
+sha256 = "b0689747b675619ac84ebc4f922144994ef9a540599d957e6595d439bd84fff6"
+
+[[file]]
+name = "part-014.nc"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/era5-new-england/part-014.nc"
+size = 73300775185
+sha256 = "d2ae5772f90f0cb812aae3eaa1f83dc7fcd11e6f9b3232ffd098f9b80ad4cd98"
+
+[[file]]
+name = "part-015.nc"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/era5-new-england/part-015.nc"
+size = 73300775185
+sha256 = "9156e0ee36533e22b7a00b1c5d307beb6dbe1028075f40799f49321720c0e4a3"
+
+[[file]]
+name = "part-016.nc"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/era5-new-england/part-016.nc"
+size = 73300775185
+sha256 = "f0bfacb0f010eb48b137e1d2338a4d6552a147224b9a662ef9073819cb281241"
+
+[[file]]
+name = "part-017.nc"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/era5-new-england/part-017.nc"
+size = 73300775185
+sha256 = "21d8b2144e9aaaf961d4626743c9d533786410184a4015f69f29ff6d0772e782"
+
+[[file]]
+name = "part-018.nc"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/era5-new-england/part-018.nc"
+size = 73300775185
+sha256 = "8265fcf8258fe3ff9fffa5a6997955b62c75fb42a933ab9fe6a7e6d96b56f6e5"
+
+[[file]]
+name = "part-019.nc"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/era5-new-england/part-019.nc"
+size = 73300775185
+sha256 = "759f7fae4e3d98072648db807dbc462eb58be088d7e32d627738b2239032e0f1"
+
+[[file]]
+name = "part-020.nc"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/era5-new-england/part-020.nc"
+size = 73300775185
+sha256 = "2ae433571cfbafc66b7f312bd2400a71646ceb7b95cda5bcaf1ecc5cbc4303b4"
+
+[[file]]
+name = "part-021.nc"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/era5-new-england/part-021.nc"
+size = 73300775185
+sha256 = "1d126044d1106168ad84656304173fd4f9d43ccf157adf50e027705fd5e4dccf"
+
+[[file]]
+name = "part-022.nc"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/era5-new-england/part-022.nc"
+size = 73300775185
+sha256 = "73102b8e59f42a090eaa52da8e44dff0ce9b1909c09c2f7cd0f6a17e70b6b8e4"
+
+[[file]]
+name = "README.md"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/era5-new-england/README.md"
+size = 73300775185
+sha256 = "05f3ba6b705039322418b1f1c5050308ba356deb3b4b9c69a33b4a7c04ee4037"

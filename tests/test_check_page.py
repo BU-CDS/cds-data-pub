@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import hashlib
 import io
 import tempfile
 import unittest
@@ -11,11 +10,12 @@ from datetime import date
 from pathlib import Path
 
 from scripts.check_page import check_html, main
-from scripts.manifest import Catalog, load_manifest
+from scripts.manifest import Catalog, catalog_digest, load_catalog
 from scripts.render import ga_tag, render_page
+from tests.helpers import dataset_toml, write_catalog
 from tests.test_render import ASSETS
 
-SAMPLE = load_manifest(Path("examples/sample.toml"))
+SAMPLE = load_catalog(Path("examples/sample"))
 DAY = date(2026, 10, 6)
 CLEAN = render_page(SAMPLE, ASSETS, DAY, None)
 PREVIEW = render_page(SAMPLE, ASSETS, DAY, None, preview=True)
@@ -38,7 +38,7 @@ class Passes(unittest.TestCase):
         self.assertEqual(check_html(WITH_GA, require_ga="G-TEST123"), [])
 
     def test_empty_state(self) -> None:
-        self.assertEqual(check_html(render_page(Catalog(None, []), ASSETS, DAY, None)), [])
+        self.assertEqual(check_html(render_page(Catalog(None, (), []), ASSETS, DAY, None)), [])
 
 
 class Refuses(unittest.TestCase):
@@ -104,7 +104,7 @@ class Refuses(unittest.TestCase):
 
 class ManifestBinding(unittest.TestCase):
     def test_matching_hash_passes(self) -> None:
-        html = render_page(Catalog(None, []), ASSETS, DAY, None, manifest_sha="ab" * 32)
+        html = render_page(Catalog(None, (), []), ASSETS, DAY, None, manifest_sha="ab" * 32)
         self.assertEqual(check_html(html, manifest_sha="ab" * 32), [])
 
     def test_other_manifest_refused(self) -> None:
@@ -116,19 +116,17 @@ class ManifestBinding(unittest.TestCase):
         problems = check_html(CLEAN, manifest_sha="ab" * 32)
         self.assertTrue(any("not built from" in p for p in problems), problems)
 
-    def test_cli_manifest_flag_hashes_file(self) -> None:
+    def test_cli_catalog_flag_hashes_folder(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
-            manifest = Path(tmp) / "datasets.toml"
-            manifest.write_bytes(b"# empty\n")
-            digest = hashlib.sha256(b"# empty\n").hexdigest()
+            root = write_catalog(Path(tmp), {"one": dataset_toml("one")})
             page = Path(tmp) / "index.html"
             page.write_text(
-                render_page(Catalog(None, []), ASSETS, DAY, None, manifest_sha=digest), "utf-8"
-            )
+                render_page(Catalog(None, (), []), ASSETS, DAY, None,
+                            manifest_sha=catalog_digest(root)), "utf-8")  # fmt: skip
             with redirect_stdout(io.StringIO()):
-                self.assertEqual(main([str(page), "--manifest", str(manifest)]), 0)
-                manifest.write_bytes(b"# changed\n")
-                self.assertEqual(main([str(page), "--manifest", str(manifest)]), 1)
+                self.assertEqual(main([str(page), "--catalog", str(root)]), 0)
+                (root / "datasets" / "one.toml").write_text(dataset_toml("one", "2026-01-01"))
+                self.assertEqual(main([str(page), "--catalog", str(root)]), 1)
 
 
 class Cli(unittest.TestCase):

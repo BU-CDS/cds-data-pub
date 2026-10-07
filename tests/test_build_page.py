@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import hashlib
 import io
 import tempfile
 import unittest
@@ -11,7 +10,9 @@ from pathlib import Path
 from unittest import mock
 
 from scripts import build_page
+from scripts.manifest import catalog_digest
 from scripts.render import PREVIEW_MARK
+from tests.helpers import write_catalog
 
 SIBLING_FILES = (
     "bu_plate_white.png",
@@ -80,8 +81,8 @@ class Main(Fixture):
     def test_builds_sample_preview(self) -> None:
         page = self.tmp / "p" / "index.html"
         code, out, _ = self.run_main(
-            "--manifest",
-            "examples/sample.toml",
+            "--catalog",
+            "examples/sample",
             "--out",
             str(page),
             "--preview",
@@ -92,25 +93,25 @@ class Main(Fixture):
         html = page.read_text(encoding="utf-8")
         self.assertIn(PREVIEW_MARK, html)
         self.assertIn("Updated 2026-10-06", html)
-        self.assertEqual(html.count('<article class="ds"'), 5)
+        self.assertEqual(html.count('<article class="ds"'), 24)
         self.assertIn("preview", out)
 
     def test_preview_never_carries_ga(self) -> None:
         page = self.tmp / "index.html"
         with mock.patch.object(build_page, "GA_ID", "G-TEST123"):
-            self.run_main("--manifest", "datasets.toml", "--out", str(page), "--preview")
+            self.run_main("--catalog", ".", "--out", str(page), "--preview")
         self.assertNotIn("googletagmanager", page.read_text(encoding="utf-8"))
 
-    def test_page_carries_manifest_hash(self) -> None:
+    def test_page_carries_catalog_digest(self) -> None:
         page = self.tmp / "index.html"
-        self.run_main("--manifest", "examples/sample.toml", "--out", str(page), "--preview")
-        digest = hashlib.sha256(Path("examples/sample.toml").read_bytes()).hexdigest()
+        self.run_main("--catalog", "examples/sample", "--out", str(page), "--preview")
+        digest = catalog_digest(Path("examples/sample"))
         self.assertIn(f'<meta name="cds-manifest" content="{digest}">', page.read_text("utf-8"))
 
     def test_deploy_build_carries_ga_when_set(self) -> None:
         page = self.tmp / "index.html"
         with mock.patch.object(build_page, "GA_ID", "G-TEST123"):
-            code, _, _ = self.run_main("--manifest", "datasets.toml", "--out", str(page))
+            code, _, _ = self.run_main("--catalog", ".", "--out", str(page))
         self.assertEqual(code, 0)
         html = page.read_text(encoding="utf-8")
         self.assertIn('gtag("config","G-TEST123")', html)
@@ -118,30 +119,27 @@ class Main(Fixture):
 
     def test_malformed_ga_id_refused(self) -> None:
         with mock.patch.object(build_page, "GA_ID", "UA-123"):
-            code, _, err = self.run_main(
-                "--manifest", "datasets.toml", "--out", str(self.tmp / "x")
-            )
+            code, _, err = self.run_main("--catalog", ".", "--out", str(self.tmp / "x"))
         self.assertEqual(code, 1)
         self.assertIn("GA_ID", err)
 
-    def test_bad_manifest_exits_1_with_message(self) -> None:
-        bad = self.tmp / "bad.toml"
-        bad.write_text('[[dataset]]\nslug = "x"\n', encoding="utf-8")
-        code, _, err = self.run_main("--manifest", str(bad), "--out", str(self.tmp / "x"))
+    def test_bad_catalog_exits_1_with_message(self) -> None:
+        bad = write_catalog(self.tmp / "bad", {"x": 'title = "x"\n'})
+        code, _, err = self.run_main("--catalog", str(bad), "--out", str(self.tmp / "x"))
         self.assertEqual(code, 1)
         self.assertIn("missing field", err)
         self.assertFalse((self.tmp / "x").exists())
 
     def test_missing_asset_exits_1_with_name(self) -> None:
         (self.sibling / "bu_plate_white.png").unlink()
-        code, _, err = self.run_main("--manifest", "datasets.toml", "--out", str(self.tmp / "x"))
+        code, _, err = self.run_main("--catalog", ".", "--out", str(self.tmp / "x"))
         self.assertEqual(code, 1)
         self.assertIn("bu_plate_white.png", err)
 
-    def test_missing_manifest_exits_1(self) -> None:
-        code, _, err = self.run_main("--manifest", str(self.tmp / "nope.toml"), "--out", "x")
+    def test_missing_catalog_exits_1(self) -> None:
+        code, _, err = self.run_main("--catalog", str(self.tmp / "nope"), "--out", "x")
         self.assertEqual(code, 1)
-        self.assertIn("nope.toml", err)
+        self.assertIn("catalog.toml", err)
 
 
 if __name__ == "__main__":

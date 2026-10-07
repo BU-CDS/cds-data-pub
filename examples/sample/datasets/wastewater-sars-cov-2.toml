@@ -1,0 +1,11 @@
+title = "SARS-CoV-2 wastewater concentrations, Eastern MA"
+description = "Synthetic stress-case entry: sars-cov-2 wastewater concentrations, eastern ma. Used only to exercise layout, filters and scale."
+license = "CC0-1.0"
+added = 2026-09-19
+tags = ["health-public", "timeseries", "tabular"]
+
+[[file]]
+name = "wastewater-sars-cov-2.csv"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/wastewater-sars-cov-2/wastewater-sars-cov-2.csv"
+size = 3565158
+sha256 = "436b4a20a507f6a200440911d78c482914d9f9cd85001ac799a1c789e6406e4f"

@@ -1,0 +1,17 @@
+title = "Massachusetts public school enrollment by grade, 1994–2025"
+description = "Synthetic stress-case entry: massachusetts public school enrollment by grade, 1994–2025. Used only to exercise layout, filters and scale."
+license = "CC0-1.0"
+added = 2026-09-26
+tags = ["education", "tabular", "timeseries"]
+
+[[file]]
+name = "part-000.csv"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/ma-school-enrollment/part-000.csv"
+size = 9437184
+sha256 = "baa1d096a57e8eced99e9c2199185db8c3190e855a01163f6819f451a0afbaaf"
+
+[[file]]
+name = "README.md"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/ma-school-enrollment/README.md"
+size = 9437184
+sha256 = "5031eb4f49d505c334f9715801c287f99e83c62c884317e09bbbbb15409fb927"

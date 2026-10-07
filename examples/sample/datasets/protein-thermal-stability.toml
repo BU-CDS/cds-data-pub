@@ -1,0 +1,24 @@
+title = "Protein thermal stability from deep mutational scans"
+description = "Synthetic stress-case entry: protein thermal stability from deep mutational scans. Used only to exercise layout, filters and scale."
+license = "CC-BY-4.0"
+added = 2026-09-12
+tags = ["biology", "tabular"]
+doi = "10.5072/sample.protein-thermal-stability"
+
+[[file]]
+name = "part-000.parquet"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/protein-thermal-stability/part-000.parquet"
+size = 90876586
+sha256 = "d16ac185ddc22dc2b088e415faf866c4033d2e2f1baaf887ca8f59a60ce03643"
+
+[[file]]
+name = "part-001.parquet"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/protein-thermal-stability/part-001.parquet"
+size = 90876586
+sha256 = "87e803671d9f9309fcfa4aa1ccc569ef654235ac27a93aef6f02e98becba2d83"
+
+[[file]]
+name = "README.md"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/protein-thermal-stability/README.md"
+size = 90876586
+sha256 = "77e39e6d09ca50c022a09c049ca16b440d1cb487fc064fe7957e4a47f6576559"

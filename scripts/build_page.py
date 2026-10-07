@@ -1,6 +1,6 @@
-"""Build the catalog page from the manifest.
+"""Build the catalog page from the catalog folder (catalog.toml + datasets/).
 
-Usage: .venv/bin/python -m scripts.build_page [--manifest PATH] [--out PATH] [--preview]
+Usage: .venv/bin/python -m scripts.build_page [--catalog DIR] [--out PATH] [--preview]
 
 Branding assets (fonts, BU plate, CDS signature) are read from the sibling clone named by
 $PUB_CPU_CLONE (default ../cpu-cds-scc) and embedded; they are never copied into this repo.
@@ -10,7 +10,6 @@ from __future__ import annotations
 
 import argparse
 import base64
-import hashlib
 import os
 import re
 import sys
@@ -18,7 +17,7 @@ from datetime import date, datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
-from scripts.manifest import ManifestError, load_manifest
+from scripts.manifest import ManifestError, catalog_digest, load_catalog
 from scripts.render import Assets, render_page
 
 REPO = Path(__file__).resolve().parent.parent
@@ -59,7 +58,9 @@ def _default_sibling_assets() -> Path:
 def main(argv: list[str] | None = None) -> int:
     """Build the page. Returns a process exit code."""
     parser = argparse.ArgumentParser(description="Build the catalog page.")
-    parser.add_argument("--manifest", type=Path, default=REPO / "datasets.toml")
+    parser.add_argument(
+        "--catalog", type=Path, default=REPO, help="folder holding catalog.toml and datasets/"
+    )
     parser.add_argument("--out", type=Path, default=REPO / "index.html")
     parser.add_argument("--preview", action="store_true", help="local preview: no GA tag, marked")
     parser.add_argument("--assets", type=Path, default=None, help="sibling clone's assets/ dir")
@@ -71,8 +72,8 @@ def main(argv: list[str] | None = None) -> int:
         print(f"build_page: GA_ID {ga_id!r} is not a GA4 measurement id (G-...)", file=sys.stderr)
         return 1
     try:
-        catalog = load_manifest(args.manifest)
-        manifest_sha = hashlib.sha256(args.manifest.read_bytes()).hexdigest()
+        catalog = load_catalog(args.catalog)
+        manifest_sha = catalog_digest(args.catalog)
         assets = load_assets(args.assets or _default_sibling_assets(), OWN_ASSETS)
     except (ManifestError, BuildError, OSError) as exc:
         print(f"build_page: {exc}", file=sys.stderr)

@@ -1,0 +1,24 @@
+title = "Boston street and park trees"
+description = "The City of Boston Parks and Recreation tree inventory: species, trunk diameter, planting date, neighborhood and point location for each tree. The same data as CSV and as GeoJSON."
+license = "PDDL-1.0"
+added = 2026-10-07
+tags = ["boston", "geospatial", "tabular"]
+source = "https://data.boston.gov/dataset/bprd-trees"
+
+[[file]]
+name = "bprd_trees.csv"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/demo/boston-street-trees/bprd_trees.csv"
+size = 12469450
+sha256 = "1f6487b46bf9b3684679e3dd40b65bb6f2062eead8461b693331cf6c66a2ae16"
+
+[[file]]
+name = "bprd_trees.geojson"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/demo/boston-street-trees/bprd_trees.geojson"
+size = 32635356
+sha256 = "c18ca0c6cb6e268677ab57034a3e5c322fa078391e7ec90a3b54230e6f9b3b4f"
+
+[[file]]
+name = "README.md"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/demo/boston-street-trees/README.md"
+size = 1171
+sha256 = "181601d858282a496b02f64b8ac7357d185fa9a44e1c88d4832ccd63267656a6"

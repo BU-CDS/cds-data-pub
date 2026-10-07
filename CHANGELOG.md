@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-07 (v2)
+
+- Catalog is a folder: `catalog.toml` (notice, allowed tags) plus one `datasets/<slug>.toml` per
+  dataset; `--catalog DIR` replaces `--manifest`. Datasets carry 1–5 tags from the allowed list and
+  an optional `[citation]`; all of a dataset's files sit in one folder; licenses are SPDX
+  identifiers (`PDDL-1.0`, not `ODC-PDDL-1.0`) or `Public domain`. The sample is a 24-dataset
+  catalog under `examples/sample/`.
+
 ## 2026-10-07
 
 - New repo, ported and trimmed from cds-osn's catalog page: manifest without versions, withdrawals

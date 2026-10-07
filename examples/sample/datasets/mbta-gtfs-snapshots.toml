@@ -1,0 +1,245 @@
+title = "MBTA GTFS schedule snapshots, monthly 2023–2026"
+description = "Synthetic stress-case entry: mbta gtfs schedule snapshots, monthly 2023–2026. Used only to exercise layout, filters and scale."
+license = "PDDL-1.0"
+added = 2026-09-27
+tags = ["mobility", "boston", "timeseries"]
+
+[[file]]
+name = "part-000.zip"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/mbta-gtfs-snapshots/part-000.zip"
+size = 85899345
+sha256 = "6d0daced0f165fb046e3217d7b67b4583f876e2c6c53084d7e94330a70210fa2"
+
+[[file]]
+name = "part-001.zip"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/mbta-gtfs-snapshots/part-001.zip"
+size = 85899345
+sha256 = "44d2f3dfbc51f08f310691aa3b2ffa875b3ac9516b319a2b4fa9fbd23576f419"
+
+[[file]]
+name = "part-002.zip"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/mbta-gtfs-snapshots/part-002.zip"
+size = 85899345
+sha256 = "b559ebdfb7e5c5bc386787ef8c1c19ccb01c014892b44a69d067ba0ca18427dd"
+
+[[file]]
+name = "part-003.zip"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/mbta-gtfs-snapshots/part-003.zip"
+size = 85899345
+sha256 = "add970ef24b6b527db8c9042eacc9e8877909c86f70cea8d41f362aa77c323b3"
+
+[[file]]
+name = "part-004.zip"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/mbta-gtfs-snapshots/part-004.zip"
+size = 85899345
+sha256 = "7ee5cc26cc1368408dd366832c0efd93cc9111d2776f264e26c5a6277c67c322"
+
+[[file]]
+name = "part-005.zip"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/mbta-gtfs-snapshots/part-005.zip"
+size = 85899345
+sha256 = "bd304f810636e0a3e82fcc438ecec65e755d45476b547f18bc19bf477a2dd7fd"
+
+[[file]]
+name = "part-006.zip"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/mbta-gtfs-snapshots/part-006.zip"
+size = 85899345
+sha256 = "15e20445e8f17550476db49963ff4328de92b3de7eb01f0b533e9b1788de2196"
+
+[[file]]
+name = "part-007.zip"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/mbta-gtfs-snapshots/part-007.zip"
+size = 85899345
+sha256 = "10860a5538fa4b835cd7e1044ea05a5933906ac580431f08ebbc2e9470a7f7cf"
+
+[[file]]
+name = "part-008.zip"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/mbta-gtfs-snapshots/part-008.zip"
+size = 85899345
+sha256 = "8472c799f2ae5c2184a31de28a3c6caf0f60d7146c511afef94e239a80033f78"
+
+[[file]]
+name = "part-009.zip"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/mbta-gtfs-snapshots/part-009.zip"
+size = 85899345
+sha256 = "54973fff941b929e9e639a4ab0002be27f207353f24388823bf3879d358554e3"
+
+[[file]]
+name = "part-010.zip"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/mbta-gtfs-snapshots/part-010.zip"
+size = 85899345
+sha256 = "8791d2e7f7871fdd98ed0619ed5a48e18a4e13407ad4af026d96225a2d3555b0"
+
+[[file]]
+name = "part-011.zip"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/mbta-gtfs-snapshots/part-011.zip"
+size = 85899345
+sha256 = "fdb50b35d64f45153a43f1e8181dc532096b76bcb5a2b29c1d5fdac18d81664f"
+
+[[file]]
+name = "part-012.zip"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/mbta-gtfs-snapshots/part-012.zip"
+size = 85899345
+sha256 = "d37d15a8b09d0d626cbc61c4819c4cbb81316b8e8e437158e95d202ac0aabb76"
+
+[[file]]
+name = "part-013.zip"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/mbta-gtfs-snapshots/part-013.zip"
+size = 85899345
+sha256 = "b51a45ae6ad4b531eb1357a64e2f6466d596348fc523cc214906f6db4dbfd527"
+
+[[file]]
+name = "part-014.zip"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/mbta-gtfs-snapshots/part-014.zip"
+size = 85899345
+sha256 = "4bef06a7983f340bb535719b31eb22564c534eea733d47958a904ba1683e25f7"
+
+[[file]]
+name = "part-015.zip"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/mbta-gtfs-snapshots/part-015.zip"
+size = 85899345
+sha256 = "1c0fd3b747b7ca3d6e592d4ab15f73a7db8ac773f019a6e6ae6890b3338b86f6"
+
+[[file]]
+name = "part-016.zip"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/mbta-gtfs-snapshots/part-016.zip"
+size = 85899345
+sha256 = "664101ded43444b2343397ce651775a59a0dd614ecb9037f15dc902bac4f8db3"
+
+[[file]]
+name = "part-017.zip"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/mbta-gtfs-snapshots/part-017.zip"
+size = 85899345
+sha256 = "d09d1f7613b85e9d4ced131a5840c59413814dff43fb681752cf00be0497dfa3"
+
+[[file]]
+name = "part-018.zip"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/mbta-gtfs-snapshots/part-018.zip"
+size = 85899345
+sha256 = "4093795a479cdda3277077de4f05f098fdd4174cf77794ef814495f2fe06a27f"
+
+[[file]]
+name = "part-019.zip"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/mbta-gtfs-snapshots/part-019.zip"
+size = 85899345
+sha256 = "018a749250bad42fc7b028ad01de7158ff6fb33ddd6f49e8a60a167fcc02c2b1"
+
+[[file]]
+name = "part-020.zip"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/mbta-gtfs-snapshots/part-020.zip"
+size = 85899345
+sha256 = "711c390ba1b96117aae776714d80a22d40f1a669abde82184920ba4e1d2bc29c"
+
+[[file]]
+name = "part-021.zip"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/mbta-gtfs-snapshots/part-021.zip"
+size = 85899345
+sha256 = "8b0172a2ddf04508984a23b5faeefc3c9d42926cbfd995c57e9022630ee6fab7"
+
+[[file]]
+name = "part-022.zip"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/mbta-gtfs-snapshots/part-022.zip"
+size = 85899345
+sha256 = "7792e45797984a046d859570b325897d81fbe9aea03d1ad8318293c5a2f422d0"
+
+[[file]]
+name = "part-023.zip"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/mbta-gtfs-snapshots/part-023.zip"
+size = 85899345
+sha256 = "280cbcd8d93a84d1ea750e0a95256cf426fe5ddbb038d9b67ea805303b457421"
+
+[[file]]
+name = "part-024.zip"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/mbta-gtfs-snapshots/part-024.zip"
+size = 85899345
+sha256 = "2193d7c0e2ebc011501f7bc48b6487ac5a5fc5efa5be4bc17f205bccb1ad8756"
+
+[[file]]
+name = "part-025.zip"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/mbta-gtfs-snapshots/part-025.zip"
+size = 85899345
+sha256 = "6c2a1247c682970fb9041f048d4887f89b6ddfd1dfcb9d26ef2f9c2247b56900"
+
+[[file]]
+name = "part-026.zip"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/mbta-gtfs-snapshots/part-026.zip"
+size = 85899345
+sha256 = "2d0c0dd2abad7ba1ec594b96550f77237df89864f8798906e71f100e51246b97"
+
+[[file]]
+name = "part-027.zip"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/mbta-gtfs-snapshots/part-027.zip"
+size = 85899345
+sha256 = "41356433787cb7732c1072f9504074d79a545059e245818908c4bfa4ae02570d"
+
+[[file]]
+name = "part-028.zip"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/mbta-gtfs-snapshots/part-028.zip"
+size = 85899345
+sha256 = "464e0e1fd2cf1377412c4b4f75a2b35b25c28f8bcc5e17ffeb4f54b5cc352cb7"
+
+[[file]]
+name = "part-029.zip"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/mbta-gtfs-snapshots/part-029.zip"
+size = 85899345
+sha256 = "cadc0f2b8d9298874c11fcef2c1b70d3f8be3c4f45d2a57bf7ebb0b8c6628215"
+
+[[file]]
+name = "part-030.zip"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/mbta-gtfs-snapshots/part-030.zip"
+size = 85899345
+sha256 = "7f65ed6aaa711cd0a143b23b37427bb464b71142fb3d5d94d4375627fb2deaa4"
+
+[[file]]
+name = "part-031.zip"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/mbta-gtfs-snapshots/part-031.zip"
+size = 85899345
+sha256 = "a552a3e2e603dc10665e941eab92ab30d46612e4bd9124b47f9ba18fbd6dc5ba"
+
+[[file]]
+name = "part-032.zip"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/mbta-gtfs-snapshots/part-032.zip"
+size = 85899345
+sha256 = "e5bb0db7c26cd3b2b981dc6cabd1f66041c99321ab3a491ae0de66270dbd636d"
+
+[[file]]
+name = "part-033.zip"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/mbta-gtfs-snapshots/part-033.zip"
+size = 85899345
+sha256 = "42e71ba402c7d99c0ba4b03f0e420204aa8e45c9afceab3cd0de9b63fa808753"
+
+[[file]]
+name = "part-034.zip"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/mbta-gtfs-snapshots/part-034.zip"
+size = 85899345
+sha256 = "c379ea97dcdb05d853185b4fd91d3f4f253211b088cff2a235bbbff166d8ad16"
+
+[[file]]
+name = "part-035.zip"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/mbta-gtfs-snapshots/part-035.zip"
+size = 85899345
+sha256 = "e442f468d0e9bda420a8fc305f05359d4615a8f7806694651382b259d7ba1394"
+
+[[file]]
+name = "part-036.zip"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/mbta-gtfs-snapshots/part-036.zip"
+size = 85899345
+sha256 = "2a551e6100b2f2dd84a56d2fbf999b3899a4bed2231789d75039ba64fe9455c3"
+
+[[file]]
+name = "part-037.zip"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/mbta-gtfs-snapshots/part-037.zip"
+size = 85899345
+sha256 = "9897c7733bd9d67afa82406deb1f209ee0889f4affe2edc58a83652a63bfbbcc"
+
+[[file]]
+name = "part-038.zip"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/mbta-gtfs-snapshots/part-038.zip"
+size = 85899345
+sha256 = "5a0bda6ca4bf5a6a9b19e85912759e910c92c0329e41854581a708c2a7dc608d"
+
+[[file]]
+name = "README.md"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/mbta-gtfs-snapshots/README.md"
+size = 85899345
+sha256 = "c157895a3f5cb740171dbf689fb21ba6a6d10d2ae3776b4cc274fe963e9f60d9"

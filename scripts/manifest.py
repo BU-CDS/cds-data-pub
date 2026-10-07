@@ -1,10 +1,11 @@
-"""Load and validate datasets.toml, the catalog manifest.
+"""Load and validate the catalog: catalog.toml plus one datasets/<slug>.toml per dataset.
 
-Every rejection raises ManifestError naming the dataset (slug when known) and the field.
+Every rejection raises ManifestError naming the file (and dataset file, when known) and the field.
 """
 
 from __future__ import annotations
 
+import hashlib
 import re
 import tomllib
 from dataclasses import dataclass
@@ -13,21 +14,36 @@ from pathlib import Path
 
 BUCKET_BASE = "https://mghp.osn.xsede.org/bu-cds-public-data/"
 MAX_FILES = 50
+MAX_TAGS = 5
 SLUG_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 DOI_RE = re.compile(r"^10\.\d{4,9}/\S+$")
+LICENSE_RE = re.compile(r"^(?:Public domain|[A-Za-z0-9][A-Za-z0-9.+-]*)$")
 # No query, fragment, percent-escape or backslash: browsers decode %2e%2e to .. and read \ as /
 URL_RE = re.compile(rf"^{re.escape(BUCKET_BASE)}[^\s\"'<>?#%\\]+$")
-SOURCE_RE = re.compile(r"^https://[^\s\"'<>]+$")
+HTTPS_RE = re.compile(r"^https://[^\s\"'<>]+$")
 
-TOP_KEYS = frozenset(("notice", "dataset"))
-REQUIRED = ("slug", "title", "description", "license", "added", "file")
-DATASET_KEYS = frozenset((*REQUIRED, "contact", "doi", "source"))
+CATALOG_KEYS = frozenset(("notice", "tags"))
+REQUIRED = ("title", "description", "license", "added", "tags", "file")
+DATASET_KEYS = frozenset((*REQUIRED, "contact", "doi", "source", "citation"))
+CITATION_REQUIRED = ("authors", "year", "title", "publisher")
+CITATION_KEYS = frozenset((*CITATION_REQUIRED, "url"))
 FILE_KEYS = ("name", "url", "size", "sha256")
 
 
 class ManifestError(ValueError):
-    """The manifest is invalid; the message names the dataset and field."""
+    """The catalog is invalid; the message names the file and field."""
+
+
+@dataclass(frozen=True)
+class Citation:
+    """How to cite a dataset: its original publication, or (absent) the catalog entry."""
+
+    authors: tuple[str, ...]
+    year: int
+    title: str
+    publisher: str
+    url: str | None
 
 
 @dataclass(frozen=True)
@@ -52,6 +68,8 @@ class Dataset:
     added: date
     doi: str | None
     source: str | None
+    tags: tuple[str, ...]
+    citation: Citation | None
     files: tuple[DataFile, ...]
 
     @property
@@ -59,46 +77,69 @@ class Dataset:
         """Sum of file sizes in bytes."""
         return sum(f.size for f in self.files)
 
+    @property
+    def prefix(self) -> str:
+        """The folder below the bucket that holds every file (validated to be shared)."""
+        return self.files[0].url[len(BUCKET_BASE) :].rsplit("/", 1)[0]
+
 
 @dataclass(frozen=True)
 class Catalog:
-    """The whole manifest: an optional page-wide notice and the datasets in display order."""
+    """The page-wide notice, the allowed tags, and the datasets in display order."""
 
     notice: str | None
+    tags: tuple[str, ...]
     datasets: list[Dataset]
 
 
-def load_manifest(path: Path) -> Catalog:
-    """Read and validate a TOML manifest.
+def license_url(license: str) -> str | None:
+    """The license terms page: SPDX for identifiers, none for 'Public domain'."""
+    return None if license == "Public domain" else f"https://spdx.org/licenses/{license}.html"
 
-    Raises:
-        ManifestError: The file is not valid TOML or an entry is invalid.
-    """
+
+def load_catalog(root: Path) -> Catalog:
+    """Read catalog.toml and datasets/*.toml under root; datasets newest ``added`` first."""
+    notice, vocab = _parse_catalog_toml(_read(root / "catalog.toml", "catalog.toml"))
+    datasets = []
+    for path in _dataset_paths(root, strict=True):
+        where = f"datasets/{path.name}"
+        datasets.append(parse_dataset(path.stem, _read(path, where), vocab, where))
+    datasets.sort(key=lambda d: (-d.added.toordinal(), d.slug))
+    return Catalog(notice=notice, tags=vocab, datasets=datasets)
+
+
+def catalog_digest(root: Path) -> str:
+    """sha256 over catalog.toml and datasets/*.toml (relative paths and bytes, dotfiles ignored)."""
+    h = hashlib.sha256()
+    for path in [root / "catalog.toml", *_dataset_paths(root, strict=False)]:
+        if path.is_file():
+            h.update(path.relative_to(root).as_posix().encode() + b"\0" + path.read_bytes() + b"\0")
+    return h.hexdigest()
+
+
+def _dataset_paths(root: Path, *, strict: bool) -> list[Path]:
+    folder = root / "datasets"
+    if not folder.is_dir():
+        return []
+    paths = []
+    for path in sorted(folder.iterdir()):
+        if path.name.startswith("."):
+            continue
+        if path.suffix == ".toml" and path.is_file():
+            paths.append(path)
+        elif strict:
+            raise ManifestError(f"datasets/{path.name}: only <slug>.toml files belong in datasets/")
+    return paths
+
+
+def _read(path: Path, where: str) -> dict:
+    if not path.is_file():
+        raise ManifestError(f"{where}: missing")
     try:
         with path.open("rb") as fh:
-            data = tomllib.load(fh)
+            return tomllib.load(fh)
     except tomllib.TOMLDecodeError as exc:
-        raise ManifestError(f"{path}: not valid TOML: {exc}") from exc
-    return parse_manifest(data)
-
-
-def parse_manifest(data: dict) -> Catalog:
-    """Validate parsed TOML. Datasets come back newest ``added`` first, then by slug."""
-    extra = set(data) - TOP_KEYS
-    if extra:
-        raise ManifestError(f"unknown top-level key(s): {', '.join(sorted(extra))}")
-    notice = _text(data, "notice", "manifest") if "notice" in data else None
-    raw = data.get("dataset", [])
-    if not isinstance(raw, list):
-        raise ManifestError("'dataset' must be an array of tables ([[dataset]])")
-    datasets = [_parse_dataset(i, e) for i, e in enumerate(raw)]
-    seen: set[str] = set()
-    for ds in datasets:
-        if ds.slug in seen:
-            raise ManifestError(f"dataset '{ds.slug}': duplicate slug")
-        seen.add(ds.slug)
-    datasets.sort(key=lambda d: (-d.added.toordinal(), d.slug))
-    return Catalog(notice=notice, datasets=datasets)
+        raise ManifestError(f"{where}: not valid TOML: {exc}") from exc
 
 
 def _text(table: dict, key: str, where: str) -> str:
@@ -108,22 +149,41 @@ def _text(table: dict, key: str, where: str) -> str:
     return value.strip()
 
 
-def _parse_dataset(index: int, entry: object) -> Dataset:
-    where = f"dataset #{index + 1}"
-    if not isinstance(entry, dict):
-        raise ManifestError(f"{where}: must be a table")
-    if isinstance(entry.get("slug"), str) and entry["slug"].strip():
-        where = f"dataset '{entry['slug'].strip()}'"
+def _parse_catalog_toml(data: dict) -> tuple[str | None, tuple[str, ...]]:
+    extra = set(data) - CATALOG_KEYS
+    if extra:
+        raise ManifestError(f"catalog.toml: unknown top-level key(s): {', '.join(sorted(extra))}")
+    notice = _text(data, "notice", "catalog.toml") if "notice" in data else None
+    tags = data.get("tags", [])
+    if (
+        not isinstance(tags, list)
+        or not all(isinstance(t, str) and SLUG_RE.match(t) for t in tags)
+        or len(set(tags)) != len(tags)
+    ):
+        raise ManifestError(
+            "catalog.toml: field 'tags' must be a list of unique lowercase-hyphen tags"
+        )
+    return notice, tuple(tags)
+
+
+def parse_dataset(slug: str, entry: dict, vocab: tuple[str, ...], where: str) -> Dataset:
+    """Validate one dataset table read from ``where`` (datasets/<slug>.toml)."""
+    if not SLUG_RE.match(slug):
+        raise ManifestError(
+            f"{where}: file name must be the slug: lowercase letters and digits joined by single"
+            " hyphens"
+        )
     unknown = set(entry) - DATASET_KEYS
     if unknown:
         raise ManifestError(f"{where}: unknown field(s): {', '.join(sorted(unknown))}")
     for key in REQUIRED:
         if key not in entry:
             raise ManifestError(f"{where}: missing field '{key}'")
-    slug = _text(entry, "slug", where)
-    if not SLUG_RE.match(slug):
+    license = _text(entry, "license", where)
+    if not LICENSE_RE.match(license):
         raise ManifestError(
-            f"{where}: field 'slug' must be lowercase letters and digits joined by single hyphens"
+            f"{where}: field 'license' must be an SPDX identifier (e.g. CC-BY-4.0)"
+            " or 'Public domain'"
         )
     added = entry["added"]
     if type(added) is not date:  # tomllib gives datetime (a date subclass) for date-times
@@ -135,33 +195,87 @@ def _parse_dataset(index: int, entry: object) -> Dataset:
     if doi is not None and not DOI_RE.match(doi):
         raise ManifestError(f"{where}: field 'doi' must be a bare DOI like 10.1234/example")
     source = _text(entry, "source", where) if "source" in entry else None
-    if source is not None and not SOURCE_RE.match(source):
+    if source is not None and not HTTPS_RE.match(source):
         raise ManifestError(f"{where}: field 'source' must be an https:// URL")
-    raw_files = entry["file"]
-    if not isinstance(raw_files, list) or not raw_files:
-        raise ManifestError(f"{where}: needs at least one [[dataset.file]]")
-    if len(raw_files) > MAX_FILES:
+    tags = entry["tags"]
+    if not isinstance(tags, list) or not 1 <= len(tags) <= MAX_TAGS:
+        raise ManifestError(f"{where}: field 'tags' must list 1 to {MAX_TAGS} tags")
+    if len(set(tags)) != len(tags):
+        raise ManifestError(f"{where}: field 'tags' has a duplicate tag")
+    stray = [t for t in tags if t not in vocab]
+    if stray:
         raise ManifestError(
-            f"{where}: {len(raw_files)} files; the limit is {MAX_FILES}"
+            f"{where}: field 'tags': {', '.join(map(str, stray))} not in catalog.toml tags"
+        )
+    citation = _parse_citation(entry["citation"], where) if "citation" in entry else None
+    files = _parse_files(entry["file"], where)
+    return Dataset(
+        slug=slug,
+        title=_text(entry, "title", where),
+        description=_text(entry, "description", where),
+        license=license,
+        contact=contact,
+        added=added,
+        doi=doi,
+        source=source,
+        tags=tuple(tags),
+        citation=citation,
+        files=files,
+    )
+
+
+def _parse_citation(raw: object, where: str) -> Citation:
+    cwhere = f"{where}, [citation]"
+    if not isinstance(raw, dict):
+        raise ManifestError(f"{cwhere}: must be a table")
+    unknown = set(raw) - CITATION_KEYS
+    if unknown:
+        raise ManifestError(f"{cwhere}: unknown field(s): {', '.join(sorted(unknown))}")
+    for key in CITATION_REQUIRED:
+        if key not in raw:
+            raise ManifestError(f"{cwhere}: missing field '{key}'")
+    authors = raw["authors"]
+    if (
+        not isinstance(authors, list)
+        or not authors
+        or not all(isinstance(a, str) and a.strip() for a in authors)
+    ):
+        raise ManifestError(f"{cwhere}: field 'authors' must be a non-empty list of names")
+    year = raw["year"]
+    if type(year) is not int or not 1900 <= year <= 2100:
+        raise ManifestError(f"{cwhere}: field 'year' must be a year like 2020")
+    url = _text(raw, "url", cwhere) if "url" in raw else None
+    if url is not None and not HTTPS_RE.match(url):
+        raise ManifestError(f"{cwhere}: field 'url' must be an https:// URL")
+    return Citation(
+        authors=tuple(a.strip() for a in authors),
+        year=year,
+        title=_text(raw, "title", cwhere),
+        publisher=_text(raw, "publisher", cwhere),
+        url=url,
+    )
+
+
+def _parse_files(raw: object, where: str) -> tuple[DataFile, ...]:
+    if not isinstance(raw, list) or not raw:
+        raise ManifestError(f"{where}: needs at least one [[file]]")
+    if len(raw) > MAX_FILES:
+        raise ManifestError(
+            f"{where}: {len(raw)} files; the limit is {MAX_FILES}"
             " (package them as .tar.gz or .zip archives)"
         )
-    files = tuple(_parse_file(where, i, f) for i, f in enumerate(raw_files))
+    files = tuple(_parse_file(where, i, f) for i, f in enumerate(raw))
     for attr in ("name", "url"):
         values = [getattr(f, attr) for f in files]
         dupes = sorted({v for v in values if values.count(v) > 1})
         if dupes:
             raise ManifestError(f"{where}: duplicate file {attr}: {dupes[0]}")
-    return Dataset(
-        slug=slug,
-        title=_text(entry, "title", where),
-        description=_text(entry, "description", where),
-        license=_text(entry, "license", where),
-        contact=contact,
-        added=added,
-        doi=doi,
-        source=source,
-        files=files,
-    )
+    folders = {f.url.rsplit("/", 1)[0] for f in files}
+    if len(folders) > 1:
+        raise ManifestError(f"{where}: all files must sit in one folder of the bucket")
+    if not folders.pop().startswith(BUCKET_BASE):
+        raise ManifestError(f"{where}: files must sit in a folder below the bucket, not its root")
+    return files
 
 
 def _parse_file(where: str, index: int, entry: object) -> DataFile:

@@ -1,0 +1,18 @@
+title = "Daily weather at Boston Logan Airport since 1936 (GHCN-Daily)"
+description = "NOAA Global Historical Climatology Network daily observations for station USW00014739: precipitation, snowfall, snow depth, maximum and minimum temperature and other elements, with quality flags. One row per day, 1936 to October 2026. Dataset version 3.35-upd-2026100617; cite Menne et al. (2012), see README."
+license = "CC0-1.0"
+added = 2026-10-07
+tags = ["climate", "boston", "timeseries", "tabular"]
+source = "https://registry.opendata.aws/noaa-ghcn/"
+
+[[file]]
+name = "USW00014739.csv"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/demo/ghcn-daily-boston-logan/USW00014739.csv"
+size = 12316042
+sha256 = "dc6de3702ed95b16b8a3d1d7db12cd04a596b1a374a7fcfcf90f53ae8f712d5f"
+
+[[file]]
+name = "README.md"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/demo/ghcn-daily-boston-logan/README.md"
+size = 1298
+sha256 = "743acdf021688311e420c8419de9449f5a79a66a196a89ffe43546eff194caf6"

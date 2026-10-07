@@ -5,9 +5,9 @@ from __future__ import annotations
 import unittest
 from datetime import date
 
-from scripts.manifest import Catalog, parse_manifest
+from scripts.manifest import Catalog
 from scripts.render import PREVIEW_MARK, Assets, ga_tag, human_size, render_dataset, render_page
-from tests.helpers import dataset_dict, file_dict, url_for
+from tests.helpers import dataset_dict, file_dict, parse, url_for
 
 ASSETS = Assets(
     plate="data:image/png;base64,UExBVEU=",
@@ -19,11 +19,11 @@ ASSETS = Assets(
 
 
 def one(**overrides: object):
-    return parse_manifest({"dataset": [dataset_dict(**overrides)]}).datasets[0]
+    return parse(dataset_dict(**overrides))
 
 
 def page(*datasets, notice: str | None = None, **kw: object) -> str:
-    return render_page(Catalog(notice, list(datasets)), ASSETS, date(2026, 10, 6), None, **kw)
+    return render_page(Catalog(notice, (), list(datasets)), ASSETS, date(2026, 10, 6), None, **kw)
 
 
 class HumanSize(unittest.TestCase):
@@ -120,7 +120,7 @@ class RenderPage(unittest.TestCase):
         self.assertNotIn("<script", html)
 
     def test_ga_tag_after_icon(self) -> None:
-        html = render_page(Catalog(None, [one()]), ASSETS, date(2026, 10, 6), "G-TEST123")
+        html = render_page(Catalog(None, (), [one()]), ASSETS, date(2026, 10, 6), "G-TEST123")
         self.assertIn(ga_tag("G-TEST123"), html)
         self.assertLess(html.index('rel="icon"'), html.index("googletagmanager"))
 
@@ -155,7 +155,7 @@ class Contact(unittest.TestCase):
     def test_no_contact_line_without_contact(self) -> None:
         entry = dataset_dict()
         del entry["contact"]
-        ds = parse_manifest({"dataset": [entry]}).datasets[0]
+        ds = parse(entry)
         self.assertNotIn("Contact:", render_dataset(ds))
 
     def test_intro_points_to_contact_or_source(self) -> None:

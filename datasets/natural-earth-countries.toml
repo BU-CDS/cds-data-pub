@@ -1,0 +1,18 @@
+title = "World country boundaries, 1:110m (Natural Earth)"
+description = "Natural Earth admin-0 country polygons at 1:110 million scale, version 5.1.1, as a zipped ESRI shapefile. Public domain."
+license = "Public domain"
+added = 2026-10-07
+tags = ["geospatial"]
+source = "https://www.naturalearthdata.com/downloads/110m-cultural-vectors/110m-admin-0-countries/"
+
+[[file]]
+name = "ne_110m_admin_0_countries.zip"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/demo/natural-earth-countries/ne_110m_admin_0_countries.zip"
+size = 214976
+sha256 = "0f243aeac8ac6cf26f0417285b0bd33ac47f1b5bdb719fd3e0df37d03ea37110"
+
+[[file]]
+name = "README.md"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/demo/natural-earth-countries/README.md"
+size = 688
+sha256 = "ccb3f323353a8adb5f7ce620e1c6ccf7cd46cab1134fff0cfc50803cfad753fb"

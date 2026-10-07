@@ -15,9 +15,10 @@ DOMAIN="${CATALOG_DOMAIN-data.cds.bu.edu}"   # CATALOG_DOMAIN= (empty): default 
 [ -f "$PAGE" ] || { echo "deploy: no index.html to publish" >&2; exit 1; }
 
 # unconditional gate: the page must pass check_page and must have been built from this
-# checkout's datasets.toml, so a sample or preview build can never reach the page branch.
+# checkout's catalog (catalog.toml + datasets/), so a sample or preview build can never reach
+# the page branch.
 # publish.sh additionally runs check_links and, when pushing, requires GA.
-if ! PYTHONPATH="$ROOT" "$PY" -P -m scripts.check_page "$PAGE" --manifest "$ROOT/datasets.toml"; then
+if ! PYTHONPATH="$ROOT" "$PY" -P -m scripts.check_page "$PAGE" --catalog "$ROOT"; then
   echo "deploy: REFUSED -- index.html fails check_page" >&2
   exit 1
 fi

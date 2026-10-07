@@ -1,0 +1,4 @@
+# Site-wide settings for data.cds.bu.edu. Datasets live in datasets/<slug>.toml.
+notice = "Demo: these datasets are public data re-hosted from their original sources to demonstrate this catalog."
+# Allowed tags. A dataset may use only these; add a tag here before using it.
+tags = ["biology", "boston", "climate", "education", "geospatial", "tabular", "timeseries"]

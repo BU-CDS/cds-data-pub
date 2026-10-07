@@ -1,0 +1,12 @@
+title = "Lab notes"
+description = "Tiny files: checks byte and KiB sizes."
+license = "CC-BY-4.0"
+added = 2026-07-01
+tags = ["education"]
+contact = "notes@example.org"
+
+[[file]]
+name = "notes.txt"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/demo/lab-notes/notes.txt"
+size = 1536
+sha256 = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"

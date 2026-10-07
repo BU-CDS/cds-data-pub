@@ -1,0 +1,59 @@
+title = "Massachusetts appellate court opinions, full text"
+description = "Synthetic stress-case entry: massachusetts appellate court opinions, full text. Used only to exercise layout, filters and scale."
+license = "Public domain"
+added = 2026-09-10
+tags = ["nlp", "tabular"]
+
+[[file]]
+name = "part-000.jsonl"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/ma-appellate-opinions/part-000.jsonl"
+size = 572662306
+sha256 = "9e387b2cb2fcc24e2124525b5d31995af5afe86f5a5eaae1acff1050aefad084"
+
+[[file]]
+name = "part-001.jsonl"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/ma-appellate-opinions/part-001.jsonl"
+size = 572662306
+sha256 = "5ab3593eb1f36a818a5553f378a94e0b21647b92fc7eb1e37684e8436613cc91"
+
+[[file]]
+name = "part-002.jsonl"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/ma-appellate-opinions/part-002.jsonl"
+size = 572662306
+sha256 = "bebe83f0dc967813a223af90d72e440f724de8926284f9aa14cbc9b93d6a4119"
+
+[[file]]
+name = "part-003.jsonl"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/ma-appellate-opinions/part-003.jsonl"
+size = 572662306
+sha256 = "6fee5e17238b13d386dfcb5d3d6592d4622791072efe7a662a893b6104383ce8"
+
+[[file]]
+name = "part-004.jsonl"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/ma-appellate-opinions/part-004.jsonl"
+size = 572662306
+sha256 = "549f4b9c493ae1d419f8d8e2519c666041965b53ff022ec163217e321efd74fd"
+
+[[file]]
+name = "part-005.jsonl"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/ma-appellate-opinions/part-005.jsonl"
+size = 572662306
+sha256 = "322e8a18d60cfae124c57e4b4b3a5a4b2a7e998cda1b362c080ee5bdfcf62679"
+
+[[file]]
+name = "part-006.jsonl"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/ma-appellate-opinions/part-006.jsonl"
+size = 572662306
+sha256 = "93a37e2d0d82b17a10509f35e2608b02f413fa9f1cc21cd4333c0cee0e99c9dc"
+
+[[file]]
+name = "part-007.jsonl"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/ma-appellate-opinions/part-007.jsonl"
+size = 572662306
+sha256 = "e8f719536820fd6e773f085cfbe72e011dfb420849f91056824016ced5baa680"
+
+[[file]]
+name = "README.md"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/ma-appellate-opinions/README.md"
+size = 572662306
+sha256 = "f2d89938726fe8e72c5b341ef071a8c2099abe593ad45a3f10d3157ad29d213c"

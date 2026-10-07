@@ -1,7 +1,7 @@
 # Development
 
-The catalog is one self-contained page built from `datasets.toml` by Python 3.12 (standard library
-only). Design rationale lives in the internal `cds-osn` repo.
+The catalog is one self-contained page built from `catalog.toml` + `datasets/` by Python 3.12
+(standard library only). Design rationale lives in the internal `cds-osn` repo.
 
 ## Setup
 
@@ -14,7 +14,7 @@ with `PUB_CPU_CLONE`. They are never copied into this repo.
 
 | Task | Command |
 |---|---|
-| Preview with stress-case data | `.venv/bin/python -m scripts.build_page --manifest examples/sample.toml --out previews/index.html --preview` |
+| Preview with stress-case data | `.venv/bin/python -m scripts.build_page --catalog examples/sample --out previews/index.html --preview` |
 | Screenshots + overflow check | `scripts/shoot.sh previews/index.html previews` |
 | Unit tests | `.venv/bin/python -m unittest discover -s tests -t .` |
 | Deploy test | `tests/test_deploy.sh` |
@@ -35,11 +35,12 @@ miss `curl` and include failed attempts and source/DOI links.
 
 | Path | What |
 |---|---|
-| `datasets.toml` | The catalog (optional `notice`, one `[[dataset]]` per dataset) |
-| `scripts/manifest.py` | Manifest rules; `BUCKET_BASE` |
+| `catalog.toml` | Site-wide: optional `notice`, the allowed `tags` |
+| `datasets/<slug>.toml` | One dataset each (the file name is the slug) |
+| `scripts/manifest.py` | Catalog rules; `BUCKET_BASE`; `catalog_digest` (the build stamp) |
 | `scripts/render.py`, `scripts/build_page.py` | HTML/CSS and the build CLI |
 | `scripts/check_page.py`, `scripts/check_links.py` | Page gate and anonymous link check |
 | `publish.sh`, `deploy.sh` | Build → gate → link check → `page` branch |
-| `examples/sample.toml` | Stress-case manifest for layout work; never deployed |
+| `examples/sample/` | 24-dataset stress catalog (same layout) for layout work; never deployed |
 
 Last verified: 2026-10-07

@@ -1,8 +1,8 @@
-"""Anonymous HEAD check on every file URL in the manifest.
+"""Anonymous HEAD check on every file URL in the catalog.
 
-Usage: .venv/bin/python -m scripts.check_links [--manifest PATH]
+Usage: .venv/bin/python -m scripts.check_links [--catalog DIR]
 
-Each URL must answer 200 with a Content-Length equal to the manifest size. No credentials are
+Each URL must answer 200 with a Content-Length equal to the catalog size. No credentials are
 sent: this is what a public visitor sees.
 """
 
@@ -15,7 +15,7 @@ import urllib.request
 from collections.abc import Callable
 from pathlib import Path
 
-from scripts.manifest import Dataset, ManifestError, load_manifest
+from scripts.manifest import Dataset, ManifestError, load_catalog
 
 REPO = Path(__file__).resolve().parent.parent
 Head = Callable[[str], tuple[int, int | None]]
@@ -46,17 +46,17 @@ def check_links(datasets: list[Dataset], head: Head = urllib_head) -> list[str]:
             elif length is None:
                 problems.append(f"{label}: no Content-Length on HEAD; size unverified ({f.url})")
             elif length != f.size:
-                problems.append(f"{label}: size {length} on OSN, {f.size} in manifest")
+                problems.append(f"{label}: size {length} on OSN, {f.size} in catalog")
     return problems
 
 
 def main(argv: list[str] | None = None) -> int:
-    """Check every URL in the manifest. Returns a process exit code."""
+    """Check every URL in the catalog. Returns a process exit code."""
     parser = argparse.ArgumentParser(description="HEAD-check every file URL.")
-    parser.add_argument("--manifest", type=Path, default=REPO / "datasets.toml")
+    parser.add_argument("--catalog", type=Path, default=REPO)
     args = parser.parse_args(argv)
     try:
-        datasets = load_manifest(args.manifest).datasets
+        datasets = load_catalog(args.catalog).datasets
     except (ManifestError, OSError) as exc:
         print(f"check_links: {exc}", file=sys.stderr)
         return 1

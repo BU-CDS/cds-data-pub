@@ -1,0 +1,11 @@
+title = "Boston tide-gauge hourly sea level, 1921–2026"
+description = "Synthetic stress-case entry: boston tide-gauge hourly sea level, 1921–2026. Used only to exercise layout, filters and scale."
+license = "Public domain"
+added = 2026-09-11
+tags = ["climate", "boston", "timeseries"]
+
+[[file]]
+name = "boston-tide-gauge.csv"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/boston-tide-gauge/boston-tide-gauge.csv"
+size = 32505856
+sha256 = "6823e605b56f14d61e58eabf059b7a391411b3879db9456d75159388d8596215"

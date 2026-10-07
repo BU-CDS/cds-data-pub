@@ -1,0 +1,29 @@
+title = "Boston 311 service request descriptions, tokenized"
+description = "Synthetic stress-case entry: boston 311 service request descriptions, tokenized. Used only to exercise layout, filters and scale."
+license = "PDDL-1.0"
+added = 2026-09-25
+tags = ["nlp", "boston"]
+
+[[file]]
+name = "part-000.jsonl.gz"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/boston-311-text/part-000.jsonl.gz"
+size = 563714457
+sha256 = "0996ff6c58a68492d01a2c4131c4ab7e4ce2b2277b35bf113fcdd9d702cfddae"
+
+[[file]]
+name = "part-001.jsonl.gz"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/boston-311-text/part-001.jsonl.gz"
+size = 563714457
+sha256 = "f9552677a9467908f21763465f762424fbd13539cea528fa92642476218bddb9"
+
+[[file]]
+name = "part-002.jsonl.gz"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/boston-311-text/part-002.jsonl.gz"
+size = 563714457
+sha256 = "5328900f39e402c2cdf2f7947df5637454f38a10178421cbcf4b6e85a3742c23"
+
+[[file]]
+name = "README.md"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/boston-311-text/README.md"
+size = 563714457
+sha256 = "38b7976e1fc78b66b0f3df3cf65941aea4222a470d9676c501f6285632c422f1"

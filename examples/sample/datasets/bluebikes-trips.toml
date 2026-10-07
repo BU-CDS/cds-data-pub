@@ -1,0 +1,84 @@
+title = "Bluebikes trip records, 2015–2025"
+description = "Synthetic stress-case entry: bluebikes trip records, 2015–2025. Used only to exercise layout, filters and scale."
+license = "CC-BY-4.0"
+added = 2026-09-28
+tags = ["mobility", "boston", "tabular", "timeseries"]
+doi = "10.5072/sample.bluebikes-trips"
+
+[[file]]
+name = "part-000.parquet"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/bluebikes-trips/part-000.parquet"
+size = 561649569
+sha256 = "c7ea4bce8df1e96587138428b0dc892c541f63351e65792e5181071e5f0c67fd"
+
+[[file]]
+name = "part-001.parquet"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/bluebikes-trips/part-001.parquet"
+size = 561649569
+sha256 = "6cc712d472703ba09de61f94ecf003b8955b9f560ee338deca0a959c9313f1a2"
+
+[[file]]
+name = "part-002.parquet"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/bluebikes-trips/part-002.parquet"
+size = 561649569
+sha256 = "a75ea1b0e6c5f3a35b09767812ebaf07664c64cc0644e2e462c2b1386f98f3c7"
+
+[[file]]
+name = "part-003.parquet"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/bluebikes-trips/part-003.parquet"
+size = 561649569
+sha256 = "c21c27b41c11d851b769ddf5271a3cf111d41c8c7d86c72145ca47930e6c010f"
+
+[[file]]
+name = "part-004.parquet"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/bluebikes-trips/part-004.parquet"
+size = 561649569
+sha256 = "d7294c148523c1df667c0882c1a5c63442c665af634250f5e08de772207e835f"
+
+[[file]]
+name = "part-005.parquet"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/bluebikes-trips/part-005.parquet"
+size = 561649569
+sha256 = "263d652141b2883bf83ce7f74ba05bfbb4ee39bda564d0ab9a902fbe1df1cf85"
+
+[[file]]
+name = "part-006.parquet"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/bluebikes-trips/part-006.parquet"
+size = 561649569
+sha256 = "d52150a4f4e9fc83fd69d3cb46e457da8f860a2c8899e584c0b48847023032dd"
+
+[[file]]
+name = "part-007.parquet"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/bluebikes-trips/part-007.parquet"
+size = 561649569
+sha256 = "d98e0f84c8e529fc75a4697eb78b3b7f7a67ea24c6f750140c70af3021f6042f"
+
+[[file]]
+name = "part-008.parquet"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/bluebikes-trips/part-008.parquet"
+size = 561649569
+sha256 = "99aaba26660c590bb8323c1f473c7350495bb682ff09ce628a1150736d695bd1"
+
+[[file]]
+name = "part-009.parquet"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/bluebikes-trips/part-009.parquet"
+size = 561649569
+sha256 = "3533586fa0fef345a617043cf601b2b26acffa92ce6947d012cd14fadc9bdfa9"
+
+[[file]]
+name = "part-010.parquet"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/bluebikes-trips/part-010.parquet"
+size = 561649569
+sha256 = "28ca8e895b715a7d3d4ac426ee6785ca28961ac4f9ffd67f9d9ab71ff1b2e598"
+
+[[file]]
+name = "part-011.parquet"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/bluebikes-trips/part-011.parquet"
+size = 561649569
+sha256 = "29393b6c0cee6b31f5280578f1d6221a1e9d0c471ed79201bdd9e3b6761d9d2e"
+
+[[file]]
+name = "README.md"
+url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/bluebikes-trips/README.md"
+size = 561649569
+sha256 = "78d2a4a8be2795c88ed541ed0fdb9a8b1d12eb3c0837b99e1e6d9741704f3974"
