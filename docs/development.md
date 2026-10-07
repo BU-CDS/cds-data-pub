@@ -22,6 +22,7 @@ with `PUB_CPU_CLONE`. They are never copied into this repo.
 | Lint | `ruff check scripts tests && ruff format --check scripts tests` |
 | Stage the real page without pushing | `DEPLOY_PUSH=0 ./publish.sh` |
 | Publish | `./publish.sh` (from `main` only) |
+| Publish to the default domain (testing; no `CNAME`) | `CATALOG_DOMAIN= ./publish.sh` → `https://bu-cds.github.io/cds-data-pub/` |
 
 `deploy.sh`, `publish.sh`, `test_deploy.sh` (git worktree) and `shoot.sh` (playwright-cli) need to
 run outside a restrictive sandbox. `check_page` is a regression check, not a security boundary: the

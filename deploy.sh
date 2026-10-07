@@ -2,7 +2,8 @@
 # deploy.sh — publish the built index.html (catalog page) to the page branch, which GitHub
 # Pages serves at data.cds.bu.edu. page is kept as one amended commit and force-pushed, so the
 # public page accumulates no history. Adapted from pub-cds-scc/deploy.sh.
-# DEPLOY_PUSH=0 stages the commit locally without pushing. Uses git worktree: run outside a
+# DEPLOY_PUSH=0 stages the commit locally without pushing. CATALOG_DOMAIN= (empty) omits CNAME
+# so the page serves on the default github.io address. Uses git worktree: run outside a
 # restrictive sandbox.
 set -euo pipefail
 
@@ -10,7 +11,7 @@ ROOT="$(cd "$(dirname "$0")" && pwd)"
 REPO="$(git -C "$ROOT" rev-parse --show-toplevel)"
 PAGE="$ROOT/index.html"
 PY="${PYTHON:-$ROOT/.venv/bin/python}"
-DOMAIN="${CATALOG_DOMAIN:-data.cds.bu.edu}"
+DOMAIN="${CATALOG_DOMAIN-data.cds.bu.edu}"   # CATALOG_DOMAIN= (empty): default github.io domain, no CNAME
 [ -f "$PAGE" ] || { echo "deploy: no index.html to publish" >&2; exit 1; }
 
 # unconditional gate: the page must pass check_page and must have been built from this
@@ -51,8 +52,13 @@ WT="$(mktemp -d)"
 trap 'git -C "$REPO" worktree remove --force "$WT" 2>/dev/null || rm -rf "$WT"; git -C "$REPO" worktree prune' EXIT
 git -C "$REPO" worktree add -q "$WT" page
 cp "$PAGE" "$WT/index.html"; : > "$WT/.nojekyll"
-printf '%s\n' "$DOMAIN" > "$WT/CNAME"   # Pages needs CNAME in the published branch
-git -C "$WT" add -f index.html .nojekyll CNAME
+git -C "$WT" add -f index.html .nojekyll
+if [ -n "$DOMAIN" ]; then
+  printf '%s\n' "$DOMAIN" > "$WT/CNAME"   # Pages needs CNAME in the published branch
+  git -C "$WT" add -f CNAME
+else
+  git -C "$WT" rm -q --cached --ignore-unmatch CNAME; rm -f "$WT/CNAME"
+fi
 git -C "$WT" -c commit.gpgsign=false commit -q --amend -m "Publish $(date '+%F %H:%M %Z')"
 if [ "${DEPLOY_PUSH:-1}" = 1 ]; then
   git -C "$WT" push -qf origin page

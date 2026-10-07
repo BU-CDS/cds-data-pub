@@ -40,6 +40,14 @@ DEPLOY_PUSH=0 "$D/deploy.sh" >/dev/null 2>&1 || bad "second deploy failed"
 [ "$(git -C "$D" rev-list --count page)" = 1 ] && ok "page stays a single commit" || bad "page grew history"
 git -C "$D" show page:index.html | grep -q 2026-10-07 && ok "second deploy carries new page" || bad "stale page"
 
+# 2b. CATALOG_DOMAIN= (empty) publishes for the default github.io domain: no CNAME on page;
+#     a later default deploy puts it back
+CATALOG_DOMAIN= DEPLOY_PUSH=0 "$D/deploy.sh" >/dev/null 2>&1 || bad "empty-domain deploy failed"
+files="$(git -C "$D" ls-tree --name-only page | sort | tr '\n' ' ')"
+[ "$files" = ".nojekyll index.html " ] && ok "empty CATALOG_DOMAIN drops CNAME" || bad "page has: $files"
+DEPLOY_PUSH=0 "$D/deploy.sh" >/dev/null 2>&1 || bad "default deploy after empty-domain failed"
+[ "$(git -C "$D" show page:CNAME 2>/dev/null)" = "data.cds.bu.edu" ] && ok "default deploy restores CNAME" || bad "CNAME not restored"
+
 # 3. gate: refused pages never reach the page branch
 for case in fetch preview nostamp; do
   D="$WORK/g-$case"

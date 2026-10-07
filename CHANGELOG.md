@@ -11,3 +11,5 @@
 - Demo catalog: four public datasets (Palmer penguins, GHCN-Daily Boston Logan, Boston street
   trees, Natural Earth countries) re-hosted unmodified under `bu-cds-public-data/demo/`. Runbook:
   one-time anonymous sha256 check after an upload.
+- `CATALOG_DOMAIN= ./publish.sh` publishes without a `CNAME`, for testing on the default
+  `bu-cds.github.io/cds-data-pub/` address before the custom domain moves over.
