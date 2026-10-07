@@ -1,2 +1,91 @@
 # Catalog for data.cds.bu.edu. Hand-edited; see docs/runbook-add-dataset.md and
 # examples/sample.toml for every field. Only data approved for public release.
+
+notice = "Demo: these datasets are public data re-hosted from their original sources to demonstrate this catalog."
+
+[[dataset]]
+slug = "boston-street-trees"
+title = "Boston street and park trees"
+description = "The City of Boston Parks and Recreation tree inventory: species, trunk diameter, planting date, neighborhood and point location for each tree. The same data as CSV and as GeoJSON."
+license = "ODC-PDDL-1.0"
+added = 2026-10-07
+source = "https://data.boston.gov/dataset/bprd-trees"
+
+  [[dataset.file]]
+  name = "bprd_trees.csv"
+  url = "https://mghp.osn.xsede.org/bu-cds-public-data/demo/boston-street-trees/bprd_trees.csv"
+  size = 12469450
+  sha256 = "1f6487b46bf9b3684679e3dd40b65bb6f2062eead8461b693331cf6c66a2ae16"
+
+  [[dataset.file]]
+  name = "bprd_trees.geojson"
+  url = "https://mghp.osn.xsede.org/bu-cds-public-data/demo/boston-street-trees/bprd_trees.geojson"
+  size = 32635356
+  sha256 = "c18ca0c6cb6e268677ab57034a3e5c322fa078391e7ec90a3b54230e6f9b3b4f"
+
+  [[dataset.file]]
+  name = "README.md"
+  url = "https://mghp.osn.xsede.org/bu-cds-public-data/demo/boston-street-trees/README.md"
+  size = 1171
+  sha256 = "181601d858282a496b02f64b8ac7357d185fa9a44e1c88d4832ccd63267656a6"
+
+[[dataset]]
+slug = "ghcn-daily-boston-logan"
+title = "Daily weather at Boston Logan Airport since 1936 (GHCN-Daily)"
+description = "NOAA Global Historical Climatology Network daily observations for station USW00014739: precipitation, snowfall, snow depth, maximum and minimum temperature and other elements, with quality flags. One row per day, 1936 to October 2026. Dataset version 3.35-upd-2026100617; cite Menne et al. (2012), see README."
+license = "CC0-1.0"
+added = 2026-10-07
+source = "https://registry.opendata.aws/noaa-ghcn/"
+
+  [[dataset.file]]
+  name = "USW00014739.csv"
+  url = "https://mghp.osn.xsede.org/bu-cds-public-data/demo/ghcn-daily-boston-logan/USW00014739.csv"
+  size = 12316042
+  sha256 = "dc6de3702ed95b16b8a3d1d7db12cd04a596b1a374a7fcfcf90f53ae8f712d5f"
+
+  [[dataset.file]]
+  name = "README.md"
+  url = "https://mghp.osn.xsede.org/bu-cds-public-data/demo/ghcn-daily-boston-logan/README.md"
+  size = 1298
+  sha256 = "743acdf021688311e420c8419de9449f5a79a66a196a89ffe43546eff194caf6"
+
+[[dataset]]
+slug = "natural-earth-countries"
+title = "World country boundaries, 1:110m (Natural Earth)"
+description = "Natural Earth admin-0 country polygons at 1:110 million scale, version 5.1.1, as a zipped ESRI shapefile. Public domain."
+license = "Public domain"
+added = 2026-10-07
+source = "https://www.naturalearthdata.com/downloads/110m-cultural-vectors/110m-admin-0-countries/"
+
+  [[dataset.file]]
+  name = "ne_110m_admin_0_countries.zip"
+  url = "https://mghp.osn.xsede.org/bu-cds-public-data/demo/natural-earth-countries/ne_110m_admin_0_countries.zip"
+  size = 214976
+  sha256 = "0f243aeac8ac6cf26f0417285b0bd33ac47f1b5bdb719fd3e0df37d03ea37110"
+
+  [[dataset.file]]
+  name = "README.md"
+  url = "https://mghp.osn.xsede.org/bu-cds-public-data/demo/natural-earth-countries/README.md"
+  size = 688
+  sha256 = "ccb3f323353a8adb5f7ce620e1c6ccf7cd46cab1134fff0cfc50803cfad753fb"
+
+[[dataset]]
+slug = "palmer-penguins"
+title = "Palmer Archipelago penguins"
+description = "Body measurements of 344 Adélie, Chinstrap and Gentoo penguins observed on three islands in the Palmer Archipelago, Antarctica, 2007–2009. One tidy CSV, a classic first dataset for exploring, plotting and classifying."
+license = "CC0-1.0"
+added = 2026-10-07
+doi = "10.5281/zenodo.3960218"
+source = "https://github.com/allisonhorst/palmerpenguins"
+
+  [[dataset.file]]
+  name = "penguins.csv"
+  url = "https://mghp.osn.xsede.org/bu-cds-public-data/demo/palmer-penguins/penguins.csv"
+  size = 15241
+  sha256 = "f204db2c753b0937caac3cb35258562c14f073e4bbc76be24b4c51ce22767a93"
+
+  [[dataset.file]]
+  name = "README.md"
+  url = "https://mghp.osn.xsede.org/bu-cds-public-data/demo/palmer-penguins/README.md"
+  size = 901
+  sha256 = "44ce277c4e795e750faa83ee188f02252317b80854fc70da1265e77f84a154a9"

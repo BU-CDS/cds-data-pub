@@ -8,3 +8,6 @@
   the bucket). The runbook's upload command excludes hidden files and hidden folders.
 - `contact` is optional; a card shows a Contact line only when one is set. Demo datasets list no
   contact (questions go to the source).
+- Demo catalog: four public datasets (Palmer penguins, GHCN-Daily Boston Logan, Boston street
+  trees, Natural Earth countries) re-hosted unmodified under `bu-cds-public-data/demo/`. Runbook:
+  one-time anonymous sha256 check after an upload.

@@ -16,6 +16,8 @@ Needs: rclone remote `osn` with the bucket's read-write keys (never in this repo
    `https://mghp.osn.xsede.org/bu-cds-public-data/<slug>/<name>`.
 5. Preview: `.venv/bin/python -m scripts.build_page --out previews/index.html --preview` and look.
 6. Commit on `main`, then `./publish.sh`. It refuses if any link is not public or the size is off.
+7. Once, for the new files: check that an anonymous download matches the listed hash,
+   `curl -fsS <file url> | shasum -a 256`. HEAD checks size, not content.
 
 ## Take down
 
