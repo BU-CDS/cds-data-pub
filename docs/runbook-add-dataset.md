@@ -8,7 +8,7 @@ Needs: rclone remote `osn` with the bucket's read-write keys (never in this repo
 1. Put the files in one local folder, plus a `README.md` (what it is, source, license, contact,
    date). At most 50 files; archive more. Review the folder contents exactly: everything in it
    becomes public, and the bucket lists anonymously.
-2. Upload: `rclone copy ./<folder> osn:bu-cds-public-data/<slug>/ --progress`
+2. Upload: `rclone copy ./<folder> osn:bu-cds-public-data/<slug>/ --exclude '.*' --exclude '.*/**' --progress`
    (demo data goes under `demo/<slug>/`).
 3. Sizes and hashes: `stat -f '%z %N' <folder>/*` and `shasum -a 256 <folder>/*`.
 4. Add a `[[dataset]]` block to `datasets.toml` (fields: `examples/sample.toml`). File URL:

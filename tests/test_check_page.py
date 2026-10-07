@@ -122,7 +122,9 @@ class ManifestBinding(unittest.TestCase):
             manifest.write_bytes(b"# empty\n")
             digest = hashlib.sha256(b"# empty\n").hexdigest()
             page = Path(tmp) / "index.html"
-            page.write_text(render_page(Catalog(None, []), ASSETS, DAY, None, manifest_sha=digest), "utf-8")
+            page.write_text(
+                render_page(Catalog(None, []), ASSETS, DAY, None, manifest_sha=digest), "utf-8"
+            )
             with redirect_stdout(io.StringIO()):
                 self.assertEqual(main([str(page), "--manifest", str(manifest)]), 0)
                 manifest.write_bytes(b"# changed\n")

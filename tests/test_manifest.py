@@ -134,6 +134,18 @@ class Refused(unittest.TestCase):
                 f = file_dict(url=url_for(slug=slug))
                 self.assertRefused("path segment", dataset_dict(file=[f]))
 
+    def test_url_percent_encoding_or_backslash(self) -> None:
+        # browsers decode %2e%2e to .. and treat \ as /, escaping the bucket
+        for url in (
+            url_for(slug="x/%2e%2e/%2E%2e/bu-cds-test/example"),
+            url_for(slug="x\\..\\..\\bu-cds-test\\example"),
+            url_for("a%20b.csv"),
+        ):
+            with self.subTest(url=url):
+                name = url.rsplit("/", 1)[1]
+                f = file_dict(name=name, url=url)
+                self.assertRefused("field 'url'", dataset_dict(file=[f]))
+
     def test_url_with_quote_or_space(self) -> None:
         for name in ("a'b.csv", "a b.csv"):
             with self.subTest(name=name):

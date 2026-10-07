@@ -16,7 +16,8 @@ MAX_FILES = 50
 SLUG_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 DOI_RE = re.compile(r"^10\.\d{4,9}/\S+$")
-URL_RE = re.compile(rf"^{re.escape(BUCKET_BASE)}[^\s\"'<>?#]+$")  # no query or fragment
+# No query, fragment, percent-escape or backslash: browsers decode %2e%2e to .. and read \ as /
+URL_RE = re.compile(rf"^{re.escape(BUCKET_BASE)}[^\s\"'<>?#%\\]+$")
 SOURCE_RE = re.compile(r"^https://[^\s\"'<>]+$")
 
 TOP_KEYS = frozenset(("notice", "dataset"))
