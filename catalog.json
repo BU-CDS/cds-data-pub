@@ -1,0 +1,337 @@
+{
+  "catalog_digest": "7eb26c0616f66facb405544e30f266cba459f1bde1cb2f15951f2b09a0c74ffc",
+  "name": "BU CDS Public Research Data",
+  "url": "https://data.cds.bu.edu/",
+  "updated": "2026-10-09",
+  "notice": "Demo",
+  "datasets": [
+    {
+      "slug": "boston-street-trees",
+      "url": "https://data.cds.bu.edu/#boston-street-trees",
+      "title": "Boston street and park trees",
+      "description": "The City of Boston Parks and Recreation tree inventory: species, trunk diameter, planting date, neighborhood and point location for each tree. The same data as CSV and as GeoJSON.",
+      "license": "PDDL-1.0",
+      "license_url": "https://spdx.org/licenses/PDDL-1.0.html",
+      "tags": [
+        "boston",
+        "geospatial",
+        "tabular"
+      ],
+      "added": "2026-10-07",
+      "doi": null,
+      "source": "https://data.boston.gov/dataset/bprd-trees",
+      "contact": null,
+      "formats": [
+        "CSV",
+        "GeoJSON"
+      ],
+      "total_size": 45105977,
+      "coverage": "Trees maintained by the City of Boston Parks and Recreation Department · snapshot 2026-10-07",
+      "citation": {
+        "apa": "Boston Parks and Recreation Department. (2026). BPRD Trees [Data set]. Boston Maps, City of Boston (Analyze Boston). Retrieved October 7, 2026, from https://data.boston.gov/dataset/bprd-trees",
+        "bibtex": "@misc{boston-street-trees,\n  author = {{Boston Parks and Recreation Department}},\n  title = {{BPRD Trees}},\n  year = {2026},\n  publisher = {Boston Maps, City of Boston (Analyze Boston)},\n  url = {https://data.boston.gov/dataset/bprd-trees},\n  urldate = {2026-10-07}\n}",
+        "ris": "TY  - DATA\nAU  - Boston Parks and Recreation Department\nTI  - BPRD Trees\nPY  - 2026\nPB  - Boston Maps, City of Boston (Analyze Boston)\nUR  - https://data.boston.gov/dataset/bprd-trees\nY2  - 2026/10/07\nER  - "
+      },
+      "files": [
+        {
+          "name": "bprd_trees.csv",
+          "url": "https://mghp.osn.xsede.org/bu-cds-public-data/demo/boston-street-trees/bprd_trees.csv",
+          "size": 12469450,
+          "sha256": "1f6487b46bf9b3684679e3dd40b65bb6f2062eead8461b693331cf6c66a2ae16",
+          "rows": 55227,
+          "columns": [
+            "id",
+            "spp_com",
+            "spp_bot",
+            "numberof_st",
+            "dbh_range",
+            "dbh",
+            "date_plant",
+            "neighborhood",
+            "park",
+            "os_id",
+            "address",
+            "street",
+            "suffix",
+            "site",
+            "x_longitude",
+            "y_latitude",
+            "shape_wkt",
+            "POINT_X",
+            "POINT_Y"
+          ]
+        },
+        {
+          "name": "bprd_trees.geojson",
+          "url": "https://mghp.osn.xsede.org/bu-cds-public-data/demo/boston-street-trees/bprd_trees.geojson",
+          "size": 32635356,
+          "sha256": "c18ca0c6cb6e268677ab57034a3e5c322fa078391e7ec90a3b54230e6f9b3b4f",
+          "rows": null,
+          "columns": []
+        },
+        {
+          "name": "README.md",
+          "url": "https://mghp.osn.xsede.org/bu-cds-public-data/demo/boston-street-trees/README.md",
+          "size": 1171,
+          "sha256": "181601d858282a496b02f64b8ac7357d185fa9a44e1c88d4832ccd63267656a6",
+          "rows": null,
+          "columns": []
+        }
+      ]
+    },
+    {
+      "slug": "ghcn-daily-boston-logan",
+      "url": "https://data.cds.bu.edu/#ghcn-daily-boston-logan",
+      "title": "Daily weather at Boston Logan Airport since 1936 (GHCN-Daily)",
+      "description": "NOAA Global Historical Climatology Network daily observations for station USW00014739: precipitation, snowfall, snow depth, maximum and minimum temperature and other elements, each with its measurement, quality and source flags. One row per day, 1 January 1936 to 29 September 2026. Dataset version 3.35-upd-2026100617; cite Menne et al. (2012), see README.",
+      "license": "CC0-1.0",
+      "license_url": "https://spdx.org/licenses/CC0-1.0.html",
+      "tags": [
+        "climate",
+        "boston",
+        "timeseries",
+        "tabular"
+      ],
+      "added": "2026-10-07",
+      "doi": null,
+      "source": "https://registry.opendata.aws/noaa-ghcn/",
+      "contact": null,
+      "formats": [
+        "CSV"
+      ],
+      "total_size": 12317340,
+      "coverage": "Daily, 1936-01-01 to 2026-09-29 · one station: Boston Logan International Airport",
+      "citation": {
+        "apa": "Menne, M. J., Durre, I., Korzeniewski, B., McNeill, S., Thomas, K., Yin, X., Anthony, S., Ray, R., Vose, R. S., Gleason, B. E., & Houston, T. G. (2012). Global Historical Climatology Network - Daily (GHCN-Daily), Version 3 (station USW00014739, version 3.35-upd-2026100617) [Data set]. NOAA National Climatic Data Center. https://doi.org/10.7289/V5D21VHZ",
+        "bibtex": "@misc{ghcn-daily-boston-logan,\n  author = {Menne, Matthew J. and Durre, Imke and Korzeniewski, Bryant and McNeill, Shelley and Thomas, Kristy and Yin, Xungang and Anthony, Steven and Ray, Ron and Vose, Russell S. and Gleason, Byron E. and Houston, Tamara G.},\n  title = {{Global Historical Climatology Network - Daily (GHCN-Daily), Version 3 (station USW00014739, version 3.35-upd-2026100617)}},\n  year = {2012},\n  publisher = {NOAA National Climatic Data Center},\n  doi = {10.7289/V5D21VHZ},\n  url = {https://doi.org/10.7289/V5D21VHZ}\n}",
+        "ris": "TY  - DATA\nAU  - Menne, Matthew J.\nAU  - Durre, Imke\nAU  - Korzeniewski, Bryant\nAU  - McNeill, Shelley\nAU  - Thomas, Kristy\nAU  - Yin, Xungang\nAU  - Anthony, Steven\nAU  - Ray, Ron\nAU  - Vose, Russell S.\nAU  - Gleason, Byron E.\nAU  - Houston, Tamara G.\nTI  - Global Historical Climatology Network - Daily (GHCN-Daily), Version 3 (station USW00014739, version 3.35-upd-2026100617)\nPY  - 2012\nPB  - NOAA National Climatic Data Center\nDO  - 10.7289/V5D21VHZ\nUR  - https://doi.org/10.7289/V5D21VHZ\nER  - "
+      },
+      "files": [
+        {
+          "name": "USW00014739.csv",
+          "url": "https://mghp.osn.xsede.org/bu-cds-public-data/demo/ghcn-daily-boston-logan/USW00014739.csv",
+          "size": 12316042,
+          "sha256": "dc6de3702ed95b16b8a3d1d7db12cd04a596b1a374a7fcfcf90f53ae8f712d5f",
+          "rows": 33145,
+          "columns": [
+            "STATION",
+            "DATE",
+            "LATITUDE",
+            "LONGITUDE",
+            "ELEVATION",
+            "NAME",
+            "PRCP",
+            "PRCP_ATTRIBUTES",
+            "SNOW",
+            "SNOW_ATTRIBUTES",
+            "SNWD",
+            "SNWD_ATTRIBUTES",
+            "TMAX",
+            "TMAX_ATTRIBUTES",
+            "TMIN",
+            "TMIN_ATTRIBUTES",
+            "ACMH",
+            "ACMH_ATTRIBUTES",
+            "ACSH",
+            "ACSH_ATTRIBUTES",
+            "ADPT",
+            "ADPT_ATTRIBUTES",
+            "ASLP",
+            "ASLP_ATTRIBUTES",
+            "ASTP",
+            "ASTP_ATTRIBUTES",
+            "AWBT",
+            "AWBT_ATTRIBUTES",
+            "AWND",
+            "AWND_ATTRIBUTES",
+            "FMTM",
+            "FMTM_ATTRIBUTES",
+            "FRGT",
+            "FRGT_ATTRIBUTES",
+            "PGTM",
+            "PGTM_ATTRIBUTES",
+            "PSUN",
+            "PSUN_ATTRIBUTES",
+            "RHAV",
+            "RHAV_ATTRIBUTES",
+            "RHMN",
+            "RHMN_ATTRIBUTES",
+            "RHMX",
+            "RHMX_ATTRIBUTES",
+            "TAVG",
+            "TAVG_ATTRIBUTES",
+            "TSUN",
+            "TSUN_ATTRIBUTES",
+            "WDF1",
+            "WDF1_ATTRIBUTES",
+            "WDF2",
+            "WDF2_ATTRIBUTES",
+            "WDF5",
+            "WDF5_ATTRIBUTES",
+            "WDFG",
+            "WDFG_ATTRIBUTES",
+            "WDFM",
+            "WDFM_ATTRIBUTES",
+            "WESD",
+            "WESD_ATTRIBUTES",
+            "WSF1",
+            "WSF1_ATTRIBUTES",
+            "WSF2",
+            "WSF2_ATTRIBUTES",
+            "WSF5",
+            "WSF5_ATTRIBUTES",
+            "WSFG",
+            "WSFG_ATTRIBUTES",
+            "WSFM",
+            "WSFM_ATTRIBUTES",
+            "WT01",
+            "WT01_ATTRIBUTES",
+            "WT02",
+            "WT02_ATTRIBUTES",
+            "WT03",
+            "WT03_ATTRIBUTES",
+            "WT04",
+            "WT04_ATTRIBUTES",
+            "WT05",
+            "WT05_ATTRIBUTES",
+            "WT06",
+            "WT06_ATTRIBUTES",
+            "WT07",
+            "WT07_ATTRIBUTES",
+            "WT08",
+            "WT08_ATTRIBUTES",
+            "WT09",
+            "WT09_ATTRIBUTES",
+            "WT10",
+            "WT10_ATTRIBUTES",
+            "WT11",
+            "WT11_ATTRIBUTES",
+            "WT13",
+            "WT13_ATTRIBUTES",
+            "WT14",
+            "WT14_ATTRIBUTES",
+            "WT15",
+            "WT15_ATTRIBUTES",
+            "WT16",
+            "WT16_ATTRIBUTES",
+            "WT17",
+            "WT17_ATTRIBUTES",
+            "WT18",
+            "WT18_ATTRIBUTES",
+            "WT19",
+            "WT19_ATTRIBUTES",
+            "WT21",
+            "WT21_ATTRIBUTES",
+            "WT22",
+            "WT22_ATTRIBUTES"
+          ]
+        },
+        {
+          "name": "README.md",
+          "url": "https://mghp.osn.xsede.org/bu-cds-public-data/demo/ghcn-daily-boston-logan/README.md",
+          "size": 1298,
+          "sha256": "743acdf021688311e420c8419de9449f5a79a66a196a89ffe43546eff194caf6",
+          "rows": null,
+          "columns": []
+        }
+      ]
+    },
+    {
+      "slug": "natural-earth-countries",
+      "url": "https://data.cds.bu.edu/#natural-earth-countries",
+      "title": "World country boundaries, 1:110m (Natural Earth)",
+      "description": "Natural Earth admin-0 country polygons at 1:110 million scale, version 5.1.1, as a zipped ESRI shapefile. Public domain.",
+      "license": "Public domain",
+      "license_url": null,
+      "tags": [
+        "geospatial"
+      ],
+      "added": "2026-10-07",
+      "doi": null,
+      "source": "https://www.naturalearthdata.com/downloads/110m-cultural-vectors/110m-admin-0-countries/",
+      "contact": null,
+      "formats": [
+        "ZIP"
+      ],
+      "total_size": 215664,
+      "coverage": "World · 1:110 million scale · Natural Earth version 5.1.1",
+      "citation": {
+        "apa": "Natural Earth. (2022). Admin 0 – Countries, 1:110m, version 5.1.1 [Data set]. Retrieved October 7, 2026, from https://www.naturalearthdata.com/downloads/110m-cultural-vectors/110m-admin-0-countries/",
+        "bibtex": "@misc{natural-earth-countries,\n  author = {{Natural Earth}},\n  title = {{Admin 0 – Countries, 1:110m, version 5.1.1}},\n  year = {2022},\n  publisher = {Natural Earth},\n  url = {https://www.naturalearthdata.com/downloads/110m-cultural-vectors/110m-admin-0-countries/},\n  urldate = {2026-10-07}\n}",
+        "ris": "TY  - DATA\nAU  - Natural Earth\nTI  - Admin 0 – Countries, 1:110m, version 5.1.1\nPY  - 2022\nPB  - Natural Earth\nUR  - https://www.naturalearthdata.com/downloads/110m-cultural-vectors/110m-admin-0-countries/\nY2  - 2026/10/07\nER  - "
+      },
+      "files": [
+        {
+          "name": "ne_110m_admin_0_countries.zip",
+          "url": "https://mghp.osn.xsede.org/bu-cds-public-data/demo/natural-earth-countries/ne_110m_admin_0_countries.zip",
+          "size": 214976,
+          "sha256": "0f243aeac8ac6cf26f0417285b0bd33ac47f1b5bdb719fd3e0df37d03ea37110",
+          "rows": null,
+          "columns": []
+        },
+        {
+          "name": "README.md",
+          "url": "https://mghp.osn.xsede.org/bu-cds-public-data/demo/natural-earth-countries/README.md",
+          "size": 688,
+          "sha256": "ccb3f323353a8adb5f7ce620e1c6ccf7cd46cab1134fff0cfc50803cfad753fb",
+          "rows": null,
+          "columns": []
+        }
+      ]
+    },
+    {
+      "slug": "palmer-penguins",
+      "url": "https://data.cds.bu.edu/#palmer-penguins",
+      "title": "Palmer Archipelago penguins",
+      "description": "Body measurements of 344 Adélie, Chinstrap and Gentoo penguins observed on three islands in the Palmer Archipelago, Antarctica, 2007–2009. One tidy CSV, a classic first dataset for exploring, plotting and classifying.",
+      "license": "CC0-1.0",
+      "license_url": "https://spdx.org/licenses/CC0-1.0.html",
+      "tags": [
+        "biology",
+        "tabular",
+        "education"
+      ],
+      "added": "2026-10-07",
+      "doi": null,
+      "source": "https://github.com/allisonhorst/palmerpenguins",
+      "contact": null,
+      "formats": [
+        "CSV"
+      ],
+      "total_size": 16142,
+      "coverage": "2007–2009 · islands of the Palmer Archipelago, Antarctica",
+      "citation": {
+        "apa": "Horst, A. M., Hill, A. P., & Gorman, K. B. (2020). palmerpenguins: Palmer Archipelago (Antarctica) penguin data (R package version 0.1.0) [Data set]. Zenodo. https://doi.org/10.5281/zenodo.3960218",
+        "bibtex": "@misc{palmer-penguins,\n  author = {Horst, A. M. and Hill, A. P. and Gorman, K. B.},\n  title = {{palmerpenguins: Palmer Archipelago (Antarctica) penguin data (R package version 0.1.0)}},\n  year = {2020},\n  publisher = {Zenodo},\n  doi = {10.5281/zenodo.3960218},\n  url = {https://doi.org/10.5281/zenodo.3960218}\n}",
+        "ris": "TY  - DATA\nAU  - Horst, A. M.\nAU  - Hill, A. P.\nAU  - Gorman, K. B.\nTI  - palmerpenguins: Palmer Archipelago (Antarctica) penguin data (R package version 0.1.0)\nPY  - 2020\nPB  - Zenodo\nDO  - 10.5281/zenodo.3960218\nUR  - https://doi.org/10.5281/zenodo.3960218\nER  - "
+      },
+      "files": [
+        {
+          "name": "penguins.csv",
+          "url": "https://mghp.osn.xsede.org/bu-cds-public-data/demo/palmer-penguins/penguins.csv",
+          "size": 15241,
+          "sha256": "f204db2c753b0937caac3cb35258562c14f073e4bbc76be24b4c51ce22767a93",
+          "rows": 344,
+          "columns": [
+            "species",
+            "island",
+            "bill_length_mm",
+            "bill_depth_mm",
+            "flipper_length_mm",
+            "body_mass_g",
+            "sex",
+            "year"
+          ]
+        },
+        {
+          "name": "README.md",
+          "url": "https://mghp.osn.xsede.org/bu-cds-public-data/demo/palmer-penguins/README.md",
+          "size": 901,
+          "sha256": "44ce277c4e795e750faa83ee188f02252317b80854fc70da1265e77f84a154a9",
+          "rows": null,
+          "columns": []
+        }
+      ]
+    }
+  ]
+}
