@@ -44,4 +44,4 @@ Delete `notice` (the short "Demo" tag shown in the header, at most 24 characters
 `catalog.toml` and the demo files in `datasets/`, publish, then
 `rclone purge osn:bu-cds-public-data/demo`.
 
-Last verified: 2026-10-07
+Last verified: 2026-10-08

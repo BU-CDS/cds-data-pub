@@ -29,8 +29,14 @@ with `PUB_CPU_CLONE`. They are never copied into this repo.
 run outside a restrictive sandbox. `check_page` is a regression check, not a security boundary: the
 renderer's escaping is what keeps manifest text inert.
 
-Layout: the header sticks on screens ≥1100px and the search block sticks below that; cards
-turn two-column at ≥1300px; the page caps at 1920px (`--content-max`).
+Layout: in a window ≥1100px wide and ≥38em tall the page is an app shell: it does not scroll,
+only the framed dataset list does, beside one framed filter box. Smaller windows scroll the page
+and keep the search block at the top. Cards turn two-column at ≥1300px; the page caps at 1920px
+(`--content-max`). Light theme only, like cluster.cds.bu.edu.
+
+Custom domain: `./publish.sh` writes the `CNAME` (`data.cds.bu.edu`) and force-pushes `page`, so
+a `CNAME` added in the GitHub Pages settings is replaced on the next publish. Switch domains with
+`CATALOG_DOMAIN`, not in the settings page.
 
 Analytics: GA4 `G-MTV6EXSR2V`. Outbound clicks are **download-link clicks**, not downloads: they
 miss `curl` and include failed attempts and source/DOI links. Like cluster.cds.bu.edu (checked
@@ -59,4 +65,4 @@ optional url) — without one the dataset cites its catalog entry. The full rule
 | `scripts/catalog_json.py` | `catalog.json`: every dataset, file, checksum and citation, built beside `index.html` and published with it |
 | `examples/sample/` | 24-dataset stress catalog (same layout) for layout work; never deployed |
 
-Last verified: 2026-10-07
+Last verified: 2026-10-08

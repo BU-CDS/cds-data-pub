@@ -49,6 +49,8 @@
   wide screens (it was slimmed to 48px) and the footer links are 0.75rem.
 - Two-column cards: a hairline and more space separate the Cite / Get data buttons from the
   license and tag badges (chosen from five rendered options).
+- Docs: the development guide describes the app-shell layout (the sticky-header note was stale)
+  and why the custom domain is set with `CATALOG_DOMAIN`, not in the Pages settings.
 - The sidebar fade follows the list's real size (it went stale after "More tags"); Copy and
   more get their dataset name from the script that shows them.
 
