@@ -51,6 +51,17 @@ pw resize 390 600 >/dev/null
 pw eval '() => document.querySelector(".acts details.pop:last-of-type > summary").click()' >/dev/null
 check "short viewport: open popover's Copy is reachable" \
   "$(val '() => { const b = document.querySelector("details.pop[open] .copy"); b.scrollIntoView(); const r = b.getBoundingClientRect(); return r.height > 0 && r.bottom <= innerHeight && r.top >= 0; }')" "true"
+pw resize 1440 900 >/dev/null
+pw goto "$URL" >/dev/null
+pw eval '() => scrollTo(0, document.body.scrollHeight)' >/dev/null
+check "header stays at the top while scrolling (≥1100)" "$(val '() => Math.round(document.querySelector("header").getBoundingClientRect().top)')" "0"
+last="$(val '() => [...document.querySelectorAll(".ds")].at(-1).id')"
+pw goto "$URL#$last" >/dev/null
+check "anchor target lands below the sticky header" "$(val "() => { const h = document.querySelector(\"header\").getBoundingClientRect().bottom; return h > 0 && document.getElementById(\"$last\").getBoundingClientRect().top >= h; }")" "true"
+pw resize 390 844 >/dev/null
+pw goto "$URL" >/dev/null
+pw eval '() => scrollTo(0, 2000)' >/dev/null
+check "search stays visible on phones after scrolling" "$(val '() => { const r = document.getElementById("q").getBoundingClientRect(); return r.top >= 0 && r.bottom <= innerHeight; }')" "true"
 for theme in light dark; do
   pw run-code "async page => { await page.emulateMedia({ colorScheme: '$theme' }); }" >/dev/null
   for w in 1440 390; do

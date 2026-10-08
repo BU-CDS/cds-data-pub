@@ -7,6 +7,10 @@
   A citation's DOI always belongs to the work it cites (our own DOI never lands on the original's
   reference). In `catalog.json`, `doi` is likewise our own; the original's DOI is in its
   `citation` strings.
+- Layout: the header stays visible on wide screens (on phones the search row does); body text
+  1rem with two smaller steps; from 1300px cards are two columns (title, summary line, description
+  left; buttons and badges right); page width up to 1920px; on phones the terms note moves below
+  the list; printing drops the sidebar.
 
 ## 2026-10-07 (v2)
 

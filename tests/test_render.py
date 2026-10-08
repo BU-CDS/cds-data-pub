@@ -204,6 +204,31 @@ class Page(unittest.TestCase):
             page(),
         )
 
+    def test_v21_layout_rules(self) -> None:
+        html = page(one())
+        for rule in (
+            "html{font-size:110%;height:100%;}",
+            "--content-max:1920px",
+            "@media(min-width:1100px){header{position:sticky;top:0;",
+            "html{scroll-padding-top:calc(var(--hdr) + 12px);}",
+            "@media(max-width:1099px){.wrap{display:block;}.side{position:sticky;top:0;",
+            "@media(min-width:1300px){.ds{display:grid;",
+            ".meta{grid-area:2/1;}",
+            ".badges{grid-area:2/2/5/3;",
+            "@media print{",
+            "@media(max-width:700px){main{display:flex;flex-direction:column;}.terms{order:9;}}",
+        ):
+            with self.subTest(rule=rule):
+                self.assertIn(rule, html)
+        self.assertIn("background:var(--bg);font-size:1rem;", html)
+
+    def test_terms_outside_intro_and_separator_hidden(self) -> None:
+        html = page(one())
+        intro = html[html.index('<section class="intro">') : html.index("</section>")]
+        self.assertNotIn("terms", intro)
+        self.assertIn('<p class="terms">', html)
+        self.assertIn('<span class="hsep" aria-hidden="true">|</span>', html)
+
     def test_dark_tokens_and_rules(self) -> None:
         html = page()
         self.assertIn("color-scheme:light dark", html)

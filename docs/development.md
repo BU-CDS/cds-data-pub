@@ -29,6 +29,9 @@ with `PUB_CPU_CLONE`. They are never copied into this repo.
 run outside a restrictive sandbox. `check_page` is a regression check, not a security boundary: the
 renderer's escaping is what keeps manifest text inert.
 
+Layout: the header sticks on screens ≥1100px and the search block sticks below that; cards
+turn two-column at ≥1300px; the page caps at 1920px (`--content-max`).
+
 Analytics: GA4 `G-MTV6EXSR2V`. Outbound clicks are **download-link clicks**, not downloads: they
 miss `curl` and include failed attempts and source/DOI links.
 
