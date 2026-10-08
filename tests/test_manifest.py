@@ -226,6 +226,7 @@ class LoadCatalog(unittest.TestCase):
             ('tags = ["Bad Tag"]\n', "tags"),
             ('tags = ["a", "a"]\n', "tags"),
             ('notice = " "\ntags = ["a"]\n', "notice"),
+            ('notice = "A label much too long for the header"\ntags = ["a"]\n', "notice"),
         ):
             with self.subTest(body=body):
                 write_catalog(self.root, {}, catalog=body)

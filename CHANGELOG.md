@@ -29,6 +29,8 @@
   paragraph is removed.
 - Light only, like cluster.cds.bu.edu: dark mode, its colour tokens and the dark footer logo are
   removed.
+- The demo notice is a small "Demo" tag in the header instead of a yellow box; `notice` is a
+  short label (at most 24 characters).
 - The sidebar fade follows the list's real size (it went stale after "More tags"); Copy and
   more get their dataset name from the script that shows them.
 

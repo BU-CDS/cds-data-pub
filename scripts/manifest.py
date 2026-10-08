@@ -15,6 +15,7 @@ from pathlib import Path
 BUCKET_BASE = "https://mghp.osn.xsede.org/bu-cds-public-data/"
 MAX_FILES = 50
 MAX_TAGS = 5
+MAX_NOTICE = 24  # the notice is a tag in the page header, e.g. "Demo"
 RESERVED_SLUGS = frozenset(("q", "live", "chips", "chips-hd"))  # element ids the page uses
 SLUG_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
@@ -156,6 +157,10 @@ def _parse_catalog_toml(data: dict) -> tuple[str | None, tuple[str, ...]]:
     if extra:
         raise ManifestError(f"catalog.toml: unknown top-level key(s): {', '.join(sorted(extra))}")
     notice = _text(data, "notice", "catalog.toml") if "notice" in data else None
+    if notice is not None and len(notice) > MAX_NOTICE:
+        raise ManifestError(
+            f"catalog.toml: field 'notice' is a short header tag (at most {MAX_NOTICE} characters)"
+        )
     tags = data.get("tags", [])
     if (
         not isinstance(tags, list)

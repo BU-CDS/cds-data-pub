@@ -16,7 +16,7 @@ with `PUB_CPU_CLONE`. They are never copied into this repo.
 |---|---|
 | Preview with stress-case data | `.venv/bin/python -m scripts.build_page --catalog examples/sample --out previews/index.html --preview` |
 | Screenshots + overflow check (1920–320 px, also with a popover open) | `scripts/shoot.sh previews/index.html previews` |
-| Browser behaviour: filters, URL state, `#slug`, Escape focus, light + dark screenshots | `scripts/smoke.sh previews/index.html previews` (build from `examples/sample` first) |
+| Browser behaviour: filters, URL state, `#slug`, Escape focus, app-shell layout, screenshots | `scripts/smoke.sh previews/index.html previews` (build from `examples/sample` first) |
 | Unit tests | `.venv/bin/python -m unittest discover -s tests -t .` |
 | Deploy test | `tests/test_deploy.sh` |
 | Coverage (≥ 80%) | `uvx --from 'coverage==7.16.2' coverage run --source=scripts -m unittest discover -s tests -t . && uvx --from 'coverage==7.16.2' coverage report --fail-under=80` |

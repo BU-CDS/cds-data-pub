@@ -206,8 +206,10 @@ class Page(unittest.TestCase):
         self.assertIn("No datasets published yet.", html)
         self.assertNotIn('<nav class="toc"', html)
 
-    def test_notice_escaped(self) -> None:
-        self.assertIn('<p class="notice">Demo &lt;b&gt;</p>', page(one(), notice="Demo <b>"))
+    def test_notice_is_a_header_tag(self) -> None:
+        html = page(one(), notice="Demo <b>")
+        self.assertIn('Public Research Data <span class="hdr-tag">Demo &lt;b&gt;</span></h1>', html)
+        self.assertNotIn('class="notice"', html)
 
     def test_empty_state_and_live_regions(self) -> None:
         html = page(one())

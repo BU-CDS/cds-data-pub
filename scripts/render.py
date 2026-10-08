@@ -39,9 +39,6 @@ TOKENS = {
     "code-fg": "#f2efec",
     "chip-on-bg": "#2d2926",
     "chip-on-fg": "#ffffff",
-    "notice-bg": "#fff4d6",
-    "notice-border": "#e6c97a",
-    "notice-fg": "#2d2926",
 }
 CONTRAST_TEXT = (  # >= 4.5:1
     ("text", "bg"),
@@ -55,7 +52,6 @@ CONTRAST_TEXT = (  # >= 4.5:1
     ("on-accent", "accent"),
     ("code-fg", "code-bg"),
     ("chip-on-fg", "chip-on-bg"),
-    ("notice-fg", "notice-bg"),
 )
 CONTRAST_UI = (("focus", "bg"), ("focus", "surface"))  # >= 3:1 (focus ring)
 
@@ -99,8 +95,8 @@ gap:20px;}
 .side-in{position:sticky;top:calc(var(--hdr) + 12px);\
 max-height:calc(100vh - var(--hdr) - 24px);display:flex;flex-direction:column;}}
 main{min-width:0;}
-.notice{background:var(--notice-bg);border:1px solid var(--notice-border);color:var(--notice-fg);\
-border-radius:6px;padding:8px 12px;margin:0 0 12px;max-width:80ch;}
+.hdr-tag{display:inline-block;margin-left:.6em;padding:1px 8px;border-radius:999px;background:#cc0000;\
+color:#ffffff;font-size:0.7em;font-weight:600;letter-spacing:.04em;vertical-align:.15em;}
 .intro p{margin:0 0 8px;}
 .summary{color:var(--muted);font-size:0.875rem;margin:0 0 12px;font-variant-numeric:tabular-nums;}
 .side input[type=search]{width:100%;padding:7px 9px;border:1px solid var(--muted);\
@@ -492,7 +488,7 @@ def render_page(
     )
     n = len(catalog.datasets)
     total = sum(ds.total_size for ds in catalog.datasets)
-    notice = f'<p class="notice">{_e(catalog.notice)}</p>' if catalog.notice else ""
+    notice = f' <span class="hdr-tag">{_e(catalog.notice)}</span>' if catalog.notice else ""
     summary = (
         f'<p class="summary">{n} dataset{"s" * (n != 1)} · {human_size(total)} total download · '
         f'updated <span class="nw">{updated.isoformat()}</span></p>'
@@ -517,9 +513,10 @@ def render_page(
         + f"<style>{css}</style></head><body>"
         f'<header><div class="hwrap"><h1><img class="buplate" src="{assets.plate}" '
         'alt="Boston University"><span class="orgname">Faculty of Computing &amp; Data '
-        'Sciences</span> <span class="hsep" aria-hidden="true">|</span> Public Research Data</h1>'
+        'Sciences</span> <span class="hsep" aria-hidden="true">|</span> Public Research Data'
+        f"{notice}</h1>"
         "</div></header>"
-        f'<div class="wrap">{_sidebar(catalog)}<main>{notice}<section class="intro">'
+        f'<div class="wrap">{_sidebar(catalog)}<main><section class="intro">'
         "<p>Public datasets from research at the Boston University Faculty of Computing &amp; "
         'Data Sciences, hosted on the NSF-funded <a href="https://www.openstoragenetwork.org/">'
         "Open Storage Network</a>. Every file downloads directly, with no account.</p>"
