@@ -253,6 +253,16 @@ class Page(unittest.TestCase):
                 self.assertIn(rule, html)
         self.assertIn("background:var(--bg);font-size:1rem;", html)
 
+    def test_sidebar_groups_framed_on_wide_screens(self) -> None:
+        html = page(one())
+        self.assertIn('<div class="toc-box"><p class="toc-hd">Datasets</p><nav class="toc"', html)
+        self.assertIn(
+            ".filters,.toc-box{border:1px solid var(--border);border-radius:10px;"
+            "background:var(--surface2);",
+            html,
+        )
+        self.assertIn(("accent", "surface2"), CONTRAST_TEXT)  # Clear filters, More tags
+
     def test_intro_full_width_and_no_terms_paragraph(self) -> None:
         html = page(one())
         self.assertIn(".intro p{margin:0 0 8px;}", html)

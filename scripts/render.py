@@ -49,6 +49,7 @@ CONTRAST_TEXT = (  # >= 4.5:1
     ("muted", "surface2"),
     ("accent", "bg"),
     ("accent", "surface"),
+    ("accent", "surface2"),
     ("on-accent", "accent"),
     ("code-fg", "code-bg"),
     ("chip-on-fg", "chip-on-bg"),
@@ -92,7 +93,11 @@ padding:14px var(--content-pad) 60px;flex:1 0 auto;display:grid;\
 grid-template-columns:minmax(0,1fr);\
 gap:20px;}
 @media(min-width:1100px){.wrap{grid-template-columns:270px minmax(0,1fr);}\
-.side-in{max-height:100%;display:flex;flex-direction:column;}}
+.side-in{max-height:100%;display:flex;flex-direction:column;gap:12px;}\
+.filters,.toc-box{border:1px solid var(--border);border-radius:10px;\
+background:var(--surface2);padding:10px 12px;}\
+.toc-box{display:flex;flex-direction:column;min-height:0;}.toc-box .toc-hd{margin-top:0;}\
+.side .chip{background:var(--surface);}}
 main{min-width:0;}
 .hdr-tag{display:inline-block;margin-left:.6em;padding:1px 8px;border-radius:999px;\
 background:#cc0000;color:#ffffff;font-size:0.7em;font-weight:600;letter-spacing:.04em;vertical-align:.15em;}
@@ -122,10 +127,10 @@ margin:14px 0 4px;}
 .toc{overflow:auto;min-height:0;padding:4px;scroll-padding-block:3.5rem;}
 .toc ol{list-style:none;margin:0;padding:0;}
 .toc a{display:flex;justify-content:space-between;gap:8px;padding:3px 4px;border-radius:4px;\
-color:var(--text);text-decoration:none;font-size:0.875rem;}.toc a:hover{background:var(--surface2);}
+color:var(--text);text-decoration:none;font-size:0.875rem;}.toc a:hover{background:var(--surface);}
 .toc .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .toc .sz,.flist .sz{color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums;}
-@media(max-width:1099px){.toc,.toc-hd{display:none;}.ftoggle{display:inline-block;}\
+@media(max-width:1099px){.toc-box{display:none;}.ftoggle{display:inline-block;}\
 .chips-wrap:not(.open){display:none;}}
 .ds{background:var(--surface);border:1px solid var(--border);border-radius:8px;\
 box-shadow:0 1px 2px var(--shadow);padding:14px 16px;margin:0 0 14px;}
@@ -443,7 +448,8 @@ def _sidebar(catalog: Catalog) -> str:
         for ds in catalog.datasets
     )
     nav = (
-        f'<p class="toc-hd">Datasets</p><nav class="toc" aria-label="Datasets"><ol>{toc}</ol></nav>'
+        f'<div class="toc-box"><p class="toc-hd">Datasets</p>'
+        f'<nav class="toc" aria-label="Datasets"><ol>{toc}</ol></nav></div>'
     )
     return (
         '<aside class="side" aria-label="Find datasets"><div class="side-in">'
