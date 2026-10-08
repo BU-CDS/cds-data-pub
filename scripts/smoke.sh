@@ -30,7 +30,6 @@ check "page has dataset cards (else every count check is vacuous)" "$([ "${total
 want="$(val "$expect_boston")"
 pw goto "$URL?tag=boston" >/dev/null
 check "?tag=boston shows only boston cards" "$(val "$visible")" "$want"
-check "sidebar list follows the filter" "$(val '() => document.querySelectorAll(".toc li:not([hidden])").length')" "$want"
 pw goto "$URL?q=zzqqxx-no-such-thing" >/dev/null
 check "nonsense query shows the empty state" "$(val '() => !document.querySelector(".empty").hidden')" "true"
 pw goto "$URL?tag=no-such-tag" >/dev/null
@@ -82,11 +81,11 @@ check "a real click on text inside a popover keeps it open" "$(val '() => docume
 check "Copy and more buttons name their dataset" "$(val '() => [...document.querySelectorAll(".copy, .more")].every(b => b.getAttribute("aria-describedby") === "t-" + b.closest(".ds").id)')" "true"
 check "a one-paragraph short description gets no more button" "$(val '() => [...document.querySelectorAll(".desc")].filter(d => d.children.length === 1 && d.firstElementChild.textContent.length < 60).every(d => d.nextElementSibling.hidden)')" "true"
 check "clamped descriptions show only their first paragraph" "$(val '() => [...document.querySelectorAll(".desc.clamp")].every(d => [...d.children].slice(1).every(p => getComputedStyle(p).display === "none"))')" "true"
-pw resize 1440 1100 >/dev/null
+pw resize 1280 400 >/dev/null
 pw goto "$URL" >/dev/null
 pw eval '() => { const m = document.querySelector(".more-tags"); if (m) m.click(); }' >/dev/null
-check "sidebar list fade matches real overflow after More tags" \
-  "$(val '() => { const t = document.querySelector(".toc"); return (t.scrollTop + t.clientHeight < t.scrollHeight - 2) === t.classList.contains("more-below"); }')" "true"
+check "all tags shown: the sidebar scrolls, the page does not" \
+  "$(val '() => { const s = document.querySelector(".side-in"); s.scrollTop = s.scrollHeight; const c = document.querySelector(".count").getBoundingClientRect(), r = document.querySelector(".side").getBoundingClientRect(); return c.bottom <= r.bottom + 1 && document.scrollingElement.scrollHeight <= innerHeight; }')" "true"
 pw resize 390 844 >/dev/null
 bmid="$(val '() => { const b = [...document.querySelectorAll(".ds")].filter(c => c.dataset.tags.split(" ").includes("boston")); return b[Math.floor(b.length / 2)].id; }')"
 pw goto "$URL?tag=boston#$bmid" >/dev/null
@@ -101,9 +100,6 @@ pw run-code "async page => { const b = await page.locator('.acts details.pop[ope
 check "drag-select ending outside keeps the popover open" "$(val '() => document.querySelector(".acts details.pop:last-of-type").open')" "true"
 pw resize 1280 700 >/dev/null
 pw goto "$URL" >/dev/null
-pw eval '() => document.querySelector(".toc").querySelectorAll("a")[0].focus()' >/dev/null
-for _ in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19; do pw press Tab >/dev/null; done
-check "keyboard-focused sidebar link stays clear of the fade" "$(val '() => { const t = document.querySelector(".toc"); const a = document.activeElement; if (!t.contains(a)) return "focus left the list"; const ar = a.getBoundingClientRect(), tr = t.getBoundingClientRect(); return ar.bottom <= tr.bottom - 0.2 * tr.height; }')" "true"
 check "More tags moves focus to the first revealed chip" "$(val '() => { const m = document.querySelector(".more-tags"); m.focus(); m.click(); return document.activeElement.matches(".chip.extra"); }')" "true"
 pw resize 1440 900 >/dev/null
 pw goto "$URL" >/dev/null

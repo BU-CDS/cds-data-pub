@@ -179,8 +179,6 @@ class Page(unittest.TestCase):
         html = render_page(SAMPLE, ASSETS, DAY, None)
         ids = re.findall(r'<article class="ds" id="([^"]+)"', html)
         self.assertEqual(ids, [d.slug for d in SAMPLE.datasets])
-        toc = re.findall(r'<li><a href="#([^"]+)"', html)
-        self.assertEqual(toc, ids)
         self.assertIn('<div class="filters" hidden>', html)
         self.assertIn(f"{len(ids)} of {len(ids)} datasets", html)
 
@@ -204,7 +202,6 @@ class Page(unittest.TestCase):
     def test_empty_catalog(self) -> None:
         html = page()
         self.assertIn("No datasets published yet.", html)
-        self.assertNotIn('<nav class="toc"', html)
 
     def test_notice_is_a_header_tag(self) -> None:
         html = page(one(), notice="Demo <b>")
@@ -253,11 +250,11 @@ class Page(unittest.TestCase):
                 self.assertIn(rule, html)
         self.assertIn("background:var(--bg);font-size:1rem;", html)
 
-    def test_sidebar_groups_framed_on_wide_screens(self) -> None:
+    def test_sidebar_is_one_framed_filter_box(self) -> None:
         html = page(one())
-        self.assertIn('<div class="toc-box"><p class="toc-hd">Datasets</p><nav class="toc"', html)
+        self.assertNotIn("toc", html)  # the cards are the only dataset list
         self.assertIn(
-            ".filters,.toc-box{border:1px solid var(--border);border-radius:10px;"
+            ".filters{border:1px solid var(--border);border-radius:10px;"
             "background:var(--surface2);",
             html,
         )

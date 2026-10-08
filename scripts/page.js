@@ -9,7 +9,6 @@
   const cards = $$(".ds");
   const chips = $$(".chip");
   const live = d.getElementById("live");
-  const toc = new Map($$(".toc a").map((a) => [a.hash.slice(1), a.parentElement]));
   const tags = new Map(cards.map((c) => [c, c.dataset.tags.split(" ")]));
   const selected = new Set();
   // Below 1100px the sidebar block is sticky and its height varies (Clear filters, open chips):
@@ -33,7 +32,6 @@
     for (const card of cards) {
       const on = hit(card);
       card.hidden = !on;
-      if (toc.has(card.id)) toc.get(card.id).hidden = !on;
       shown += on ? 1 : 0;
     }
     for (const chip of chips) {
@@ -57,20 +55,6 @@
     const s = p.toString();
     history.replaceState(history.state, "", location.pathname + (s ? `?${s}` : "") + location.hash);
     stick();
-  }
-
-  // Sidebar list: fade its bottom edge while more entries are below. Its size changes with the
-  // window, filtering and "More tags", so watch it rather than each cause.
-  const tocNav = d.querySelector(".toc");
-  if (tocNav) {
-    const edge = () => {
-      const below = tocNav.scrollTop + tocNav.clientHeight < tocNav.scrollHeight - 2;
-      tocNav.classList.toggle("more-below", below);
-    };
-    tocNav.addEventListener("scroll", edge);
-    const watch = new ResizeObserver(edge);
-    watch.observe(tocNav);
-    watch.observe(tocNav.firstElementChild);
   }
 
   function clearAll() {

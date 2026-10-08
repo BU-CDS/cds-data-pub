@@ -93,10 +93,9 @@ padding:14px var(--content-pad) 60px;flex:1 0 auto;display:grid;\
 grid-template-columns:minmax(0,1fr);\
 gap:20px;}
 @media(min-width:1100px){.wrap{grid-template-columns:270px minmax(0,1fr);}\
-.side-in{max-height:100%;display:flex;flex-direction:column;gap:12px;}\
-.filters,.toc-box{border:1px solid var(--border);border-radius:10px;\
+.side-in{max-height:100%;overflow:auto;}\
+.filters{border:1px solid var(--border);border-radius:10px;\
 background:var(--surface2);padding:10px 12px;}\
-.toc-box{display:flex;flex-direction:column;min-height:0;}.toc-box .toc-hd{margin-top:0;}\
 .side .chip{background:var(--surface);}}
 main{min-width:0;}
 .hdr-tag{display:inline-block;margin-left:.6em;padding:1px 8px;border-radius:999px;\
@@ -122,15 +121,8 @@ color:var(--accent);\
 cursor:pointer;font-size:0.875rem;text-decoration:underline;}
 .ftoggle{display:none;}
 .count{font-size:0.875rem;color:var(--muted);margin:8px 0 2px;font-variant-numeric:tabular-nums;}
-.toc-hd{font-size:0.8rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);\
-margin:14px 0 4px;}
-.toc{overflow:auto;min-height:0;padding:4px;scroll-padding-block:3.5rem;}
-.toc ol{list-style:none;margin:0;padding:0;}
-.toc a{display:flex;justify-content:space-between;gap:8px;padding:3px 4px;border-radius:4px;\
-color:var(--text);text-decoration:none;font-size:0.875rem;}.toc a:hover{background:var(--surface);}
-.toc .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.toc .sz,.flist .sz{color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums;}
-@media(max-width:1099px){.toc-box{display:none;}.ftoggle{display:inline-block;}\
+.flist .sz{color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums;}
+@media(max-width:1099px){.ftoggle{display:inline-block;}\
 .chips-wrap:not(.open){display:none;}}
 .ds{background:var(--surface);border:1px solid var(--border);border-radius:8px;\
 box-shadow:0 1px 2px var(--shadow);padding:14px 16px;margin:0 0 14px;}
@@ -148,8 +140,6 @@ border-radius:999px;padding:1px 8px;font-size:0.875rem;text-decoration:none;}.li
 .desc.clamp p:not(:first-child){display:none;}\
 .desc.clamp p:first-child{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;\
 line-clamp:2;overflow:hidden;}
-.toc.more-below{-webkit-mask-image:linear-gradient(to bottom,#000 80%,transparent);\
-mask-image:linear-gradient(to bottom,#000 80%,transparent);}
 details.det>summary{cursor:pointer;color:var(--accent);font-size:0.875rem;padding:6px 0;}
 .src,.contact{font-size:0.875rem;margin:4px 0;overflow-wrap:anywhere;}
 .files{width:100%;border-collapse:collapse;font-size:0.875rem;margin-top:6px;}
@@ -442,15 +432,6 @@ def _sidebar(catalog: Catalog) -> str:
         else ""
     )
     n = len(catalog.datasets)
-    toc = "".join(
-        f'<li><a href="#{ds.slug}" title="{_e(ds.title)}"><span class="t">{_e(ds.title)}</span>'
-        f'<span class="sz">{human_size(ds.total_size)}</span></a></li>'
-        for ds in catalog.datasets
-    )
-    nav = (
-        f'<div class="toc-box"><p class="toc-hd">Datasets</p>'
-        f'<nav class="toc" aria-label="Datasets"><ol>{toc}</ol></nav></div>'
-    )
     return (
         '<aside class="side" aria-label="Find datasets"><div class="side-in">'
         '<div class="filters" hidden>'
@@ -461,9 +442,7 @@ def _sidebar(catalog: Catalog) -> str:
         '<div class="chips-wrap" id="chips"><p class="chips-hd" id="chips-hd">Match all selected '
         f'tags</p><div class="chips" role="group" aria-labelledby="chips-hd">{chips}</div>{more}'
         f'</div><p class="count" aria-live="polite">{n} of {n} datasets</p>'
-        '<button type="button" class="clear" hidden>Clear filters</button></div>'
-        + (nav if n else "")
-        + "</div></aside>"
+        '<button type="button" class="clear" hidden>Clear filters</button></div></div></aside>'
     )
 
 

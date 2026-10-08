@@ -36,8 +36,9 @@
   and tag taps scroll inside it, and an opened Cite / Get data popover is scrolled fully into
   view. Clicking text in a popover no longer closes it (this crashed Chromium's tab). Phones keep
   normal page scrolling.
-- Wide-screen sidebar: the tag filter (search, tags, count) and the Datasets list each sit in
-  their own framed box, matching the dataset list's frame; tags are white on it.
+- Wide-screen sidebar: the tag filter (search, tags, count) sits in a framed box matching the
+  dataset list's frame (tags white on it), and scrolls on its own in very short windows. The
+  sidebar's "Datasets" jump list is removed: it only repeated the card titles.
 - The sidebar fade follows the list's real size (it went stale after "More tags"); Copy and
   more get their dataset name from the script that shows them.
 
