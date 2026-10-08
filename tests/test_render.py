@@ -102,6 +102,24 @@ class Card(unittest.TestCase):
         self.assertIn("<legend>Citation style</legend>", html)
         self.assertIn('download="example.bib" href="data:application/x-bibtex;charset=utf-8,', html)
 
+    def test_citation_doi_not_on_card_meta(self) -> None:
+        html = render_dataset(
+            one(
+                citation={
+                    "authors": ["A, B."],
+                    "year": 2020,
+                    "title": "T",
+                    "publisher": "P",
+                    "doi": "10.7289/V5D21VHZ",
+                }
+            )
+        )
+        meta = html[
+            html.index('<p class="meta">') : html.index("</p>", html.index('<p class="meta">'))
+        ]
+        self.assertNotIn("DOI", meta)
+        self.assertIn("10.7289/V5D21VHZ", html)  # still in the Cite popover
+
     def test_escaping(self) -> None:
         html = render_dataset(one(title="<script>x</script> & co"))
         self.assertNotIn("<script>x", html)

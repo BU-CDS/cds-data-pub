@@ -102,5 +102,13 @@ class Ris(unittest.TestCase):
         self.assertEqual(lines[-1], "ER  - ")
 
 
+class CitationDoi(unittest.TestCase):
+    def test_citation_doi_used_everywhere(self) -> None:
+        d = ds(citation={**FULL, "doi": "10.7289/V5D21VHZ"})
+        self.assertEqual(cite.link(d), "https://doi.org/10.7289/V5D21VHZ")
+        self.assertIn("  doi = {10.7289/V5D21VHZ},", cite.bibtex(d))
+        self.assertIn("DO  - 10.7289/V5D21VHZ", cite.ris(d).splitlines())
+
+
 if __name__ == "__main__":
     unittest.main()

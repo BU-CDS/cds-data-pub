@@ -40,6 +40,10 @@ class Valid(unittest.TestCase):
         self.assertEqual(ds.citation.authors, ("Horst, Allison M.",))
         self.assertIsNone(ds.citation.url)
 
+    def test_citation_doi(self) -> None:
+        ds = parse(dataset_dict(citation={**CITE, "doi": "10.7289/V5D21VHZ"}))
+        self.assertEqual(ds.citation.doi, "10.7289/V5D21VHZ")
+
     def test_contact_optional(self) -> None:
         entry = dataset_dict()
         del entry["contact"]
@@ -104,6 +108,7 @@ class Refused(unittest.TestCase):
             "authors": {**CITE, "authors": []},
             "year": {**CITE, "year": 1800},
             "url": {**CITE, "url": "http://x.org"},
+            "doi": {**CITE, "doi": "https://doi.org/10.1/x"},
             "publisher": {k: v for k, v in CITE.items() if k != "publisher"},
         }
         for fragment, cite in cases.items():

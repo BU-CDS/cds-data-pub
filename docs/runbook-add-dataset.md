@@ -18,7 +18,9 @@ Needs: rclone remote `osn` with the bucket's read-write keys (never in this repo
    optional and is shown publicly; leave it out unless the researcher wants an address listed.
    File URL: `https://mghp.osn.xsede.org/bu-cds-public-data/<slug>/<name>`; all of a dataset's
    files sit in that one folder. Add a `[citation]` table (authors, year, title, publisher, optional
-   url) for data first published elsewhere; leave it out to cite the catalog entry itself.
+   url) for data first published elsewhere; leave it out to cite the catalog entry itself. For
+   re-hosted data put the original's DOI in `[citation].doi`; a top-level `doi` is for datasets we
+   publish and shows on the card.
 5. Preview: `.venv/bin/python -m scripts.build_page --out previews/index.html --preview` and look.
 6. Commit on `main`, then `./publish.sh`. It refuses if any link is not public or the size is off.
 7. Once, for the new files: check that an anonymous download matches the listed hash,

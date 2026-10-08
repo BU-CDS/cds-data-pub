@@ -28,15 +28,20 @@ _TEX = {
 def effective(ds: Dataset) -> Citation:
     """The dataset's own citation, or one for its catalog entry."""
     return ds.citation or Citation(
-        authors=(ORG,), year=ds.added.year, title=ds.title, publisher=PUBLISHER, url=None
+        authors=(ORG,), year=ds.added.year, title=ds.title, publisher=PUBLISHER, url=None, doi=None
     )
+
+
+def doi(ds: Dataset) -> str | None:
+    """The dataset's own DOI, else its original publication's ([citation].doi)."""
+    return ds.doi or (ds.citation.doi if ds.citation else None)
 
 
 def link(ds: Dataset) -> str:
     """Citation URL: the DOI (APA 7 prefers it), else [citation].url, else the source, else the
     catalog anchor."""
-    if ds.doi:
-        return f"https://doi.org/{ds.doi}"
+    if d := doi(ds):
+        return f"https://doi.org/{d}"
     if ds.citation and ds.citation.url:
         return ds.citation.url
     return ds.source or f"{PAGE_URL}#{ds.slug}"
@@ -77,8 +82,8 @@ def bibtex(ds: Dataset) -> str:
         ("year", str(c.year)),
         ("publisher", _tex(c.publisher)),
     ]
-    if ds.doi:
-        rows.append(("doi", ds.doi))
+    if d := doi(ds):
+        rows.append(("doi", d))
     rows.append(("url", link(ds)))
     body = ",\n".join(f"  {k} = {{{v}}}" for k, v in rows)
     return f"@misc{{{ds.slug},\n{body}\n}}"  # slugs are unique keys
@@ -89,7 +94,7 @@ def ris(ds: Dataset) -> str:
     c = effective(ds)
     lines = ["TY  - DATA", *(f"AU  - {a}" for a in c.authors), f"TI  - {c.title}"]
     lines += [f"PY  - {c.year}", f"PB  - {c.publisher}"]
-    if ds.doi:
-        lines.append(f"DO  - {ds.doi}")
+    if d := doi(ds):
+        lines.append(f"DO  - {d}")
     lines += [f"UR  - {link(ds)}", "ER  - "]
     return "\n".join(lines)

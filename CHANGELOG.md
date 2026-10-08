@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-10-07 (v2.1)
+
+- The DOI of re-hosted data (GHCN, penguins) moves into `[citation].doi`: it appears in Cite
+  (link, BibTeX, RIS) but not on the card, which shows a DOI only for datasets we publish.
+
 ## 2026-10-07 (v2)
 
 - Catalog is a folder: `catalog.toml` (notice, allowed tags) plus one `datasets/<slug>.toml` per

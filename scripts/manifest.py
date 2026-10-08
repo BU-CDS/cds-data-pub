@@ -28,7 +28,7 @@ CATALOG_KEYS = frozenset(("notice", "tags"))
 REQUIRED = ("title", "description", "license", "added", "tags", "file")
 DATASET_KEYS = frozenset((*REQUIRED, "contact", "doi", "source", "citation"))
 CITATION_REQUIRED = ("authors", "year", "title", "publisher")
-CITATION_KEYS = frozenset((*CITATION_REQUIRED, "url"))
+CITATION_KEYS = frozenset((*CITATION_REQUIRED, "url", "doi"))
 FILE_KEYS = ("name", "url", "size", "sha256")
 
 
@@ -45,6 +45,7 @@ class Citation:
     title: str
     publisher: str
     url: str | None
+    doi: str | None  # the original publication's DOI (re-hosted data)
 
 
 @dataclass(frozen=True)
@@ -252,12 +253,16 @@ def _parse_citation(raw: object, where: str) -> Citation:
     url = _text(raw, "url", cwhere) if "url" in raw else None
     if url is not None and not HTTPS_RE.match(url):
         raise ManifestError(f"{cwhere}: field 'url' must be an https:// URL")
+    doi = _text(raw, "doi", cwhere) if "doi" in raw else None
+    if doi is not None and not DOI_RE.match(doi):
+        raise ManifestError(f"{cwhere}: field 'doi' must be a bare DOI like 10.1234/example")
     return Citation(
         authors=tuple(a.strip() for a in authors),
         year=year,
         title=_text(raw, "title", cwhere),
         publisher=_text(raw, "publisher", cwhere),
         url=url,
+        doi=doi,
     )
 
 
