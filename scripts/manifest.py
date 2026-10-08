@@ -26,7 +26,7 @@ LICENSE_RE = re.compile(r"^(?:Public domain|[A-Za-z0-9][A-Za-z0-9.+-]*)$")
 URL_RE = re.compile(rf"^{re.escape(BUCKET_BASE)}[^\s\"'<>?#%\\]+$")
 HTTPS_RE = re.compile(r"^https://[^\s\"'<>]+$")
 
-CATALOG_KEYS = frozenset(("notice", "tags"))
+CATALOG_KEYS = frozenset(("notice", "tags", "steward"))
 REQUIRED = ("title", "description", "license", "added", "tags", "file")
 DATASET_KEYS = frozenset((*REQUIRED, "contact", "doi", "source", "citation", "coverage"))
 CITATION_REQUIRED = ("authors", "year", "title", "publisher")
@@ -100,6 +100,7 @@ class Catalog:
     notice: str | None
     tags: tuple[str, ...]
     datasets: list[Dataset]
+    steward: str | None = None  # public contact for "Publish your data"; unset until live
 
 
 def license_url(license: str) -> str | None:
@@ -109,13 +110,13 @@ def license_url(license: str) -> str | None:
 
 def load_catalog(root: Path) -> Catalog:
     """Read catalog.toml and datasets/*.toml under root; datasets newest ``added`` first."""
-    notice, vocab = _parse_catalog_toml(_read(root / "catalog.toml", "catalog.toml"))
+    notice, vocab, steward = _parse_catalog_toml(_read(root / "catalog.toml", "catalog.toml"))
     datasets = []
     for path in _dataset_paths(root, strict=True):
         where = f"datasets/{path.name}"
         datasets.append(parse_dataset(path.stem, _read(path, where), vocab, where))
     datasets.sort(key=lambda d: (-d.added.toordinal(), d.slug))
-    return Catalog(notice=notice, tags=vocab, datasets=datasets)
+    return Catalog(notice=notice, tags=vocab, datasets=datasets, steward=steward)
 
 
 def catalog_digest(root: Path) -> str:
@@ -159,7 +160,7 @@ def _text(table: dict, key: str, where: str) -> str:
     return value.strip()
 
 
-def _parse_catalog_toml(data: dict) -> tuple[str | None, tuple[str, ...]]:
+def _parse_catalog_toml(data: dict) -> tuple[str | None, tuple[str, ...], str | None]:
     extra = set(data) - CATALOG_KEYS
     if extra:
         raise ManifestError(f"catalog.toml: unknown top-level key(s): {', '.join(sorted(extra))}")
@@ -177,7 +178,10 @@ def _parse_catalog_toml(data: dict) -> tuple[str | None, tuple[str, ...]]:
         raise ManifestError(
             "catalog.toml: field 'tags' must be a list of unique lowercase-hyphen tags"
         )
-    return notice, tuple(tags)
+    steward = _text(data, "steward", "catalog.toml") if "steward" in data else None
+    if steward is not None and "@" not in steward:
+        raise ManifestError("catalog.toml: field 'steward' must be an email address")
+    return notice, tuple(tags), steward
 
 
 def parse_dataset(slug: str, entry: dict, vocab: tuple[str, ...], where: str) -> Dataset:

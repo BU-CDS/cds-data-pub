@@ -3,6 +3,22 @@
 Settled choices for this project's data pages. Newest first. A decision is reopened only when the
 user asks, or new data or a reader test contradicts it — then add a new entry that supersedes it.
 
+## 2026-10-08 — Fixes from the blind review of the redesign
+
+- **Page / view:** catalog page after the band and the first review fixes; second review report in
+  `clean-claude`, `evals/design-review/real/cds-data-pub/2026-10-08-after-report.md` (8 findings).
+- **Chosen:** search matches every word in any order and covers formats, file names, columns,
+  producer and coverage (#2, #3); "Publish your data with CDS" is the filled button only once
+  `catalog.toml` names a `steward` contact, and the Publish section says the contact is coming
+  until then (#1 — keeps the band, removes the dead end); white focus ring on the dark header,
+  14.4:1 (#4); GHCN description ends 29 September 2026 like its data (#5); "more" re-measured when
+  the width changes (#6); band named "Catalog summary" so region names are unique (#8).
+- **Not changed:** the list shows about 1.5 cards at 1280×800 under the band (#7, a design opinion);
+  the band stays, as chosen above. Reopen if the reader test shows people miss the list.
+- **Evidence:** before/after browser probes: "boston trees", "trees boston", "street trees",
+  "dbh" and "PRCP" found nothing before, the right dataset after; "csv" found 2 of 3 CSV datasets
+  before, 3 after; widening 320→1280 left 4 stale "more" buttons before, 1 correct one after.
+
 ## 2026-10-08 — Present CDS with an identity band above the list
 
 - **Page / view:** catalog page (`index.html`), top of the main column

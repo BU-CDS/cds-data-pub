@@ -200,6 +200,17 @@ class Refused(unittest.TestCase):
             with self.subTest(bad=str(bad)[:20]):
                 self.assertRefused("field 'columns'", dataset_dict(file=[file_dict(columns=bad)]))
 
+    def test_steward_must_be_an_address(self) -> None:
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            (root / "datasets").mkdir()
+            (root / "catalog.toml").write_text('tags = ["example"]\nsteward = "the steward"\n')
+            with self.assertRaises(ManifestError) as ctx:
+                load_catalog(root)
+            self.assertIn("field 'steward'", str(ctx.exception))
+            (root / "catalog.toml").write_text('tags = ["example"]\nsteward = "data@bu.edu"\n')
+            self.assertEqual(load_catalog(root).steward, "data@bu.edu")
+
     def test_coverage_is_one_short_line(self) -> None:
         self.assertRefused("field 'coverage'", dataset_dict(coverage="x" * 161))
 

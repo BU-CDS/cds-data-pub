@@ -173,6 +173,24 @@ class Card(unittest.TestCase):
         for anchor in ('href="#publish"', 'href="#about"', 'id="about"', 'id="publish"'):
             self.assertIn(anchor, html)
 
+    def test_publish_never_dead_ends(self) -> None:
+        live = Catalog(None, (), [one()], steward="data@example.edu")
+        with_contact = render_page(live, ASSETS, DAY, None)
+        self.assertIn('class="cta primary" href="#publish"', with_contact)
+        self.assertIn('href="mailto:data@example.edu"', with_contact)
+        without = page(one())
+        self.assertNotIn('class="cta primary" href="#publish"', without)  # not the filled button
+        self.assertIn("contact will be listed here when the catalog goes live", without)
+        self.assertNotIn("mailto:", without[without.index('id="publish"') :])
+
+    def test_regions_named_once(self) -> None:
+        html = page(one())
+        self.assertEqual(html.count('aria-label="About this catalog"'), 1)
+        self.assertIn('class="band" aria-label="Catalog summary"', html)
+
+    def test_header_focus_ring_is_light(self) -> None:
+        self.assertIn("header :focus-visible{outline-color:var(--on-accent);}", page())
+
     def test_empty_catalog_has_no_band(self) -> None:
         html = page()
         self.assertNotIn('class="band"', html)
@@ -211,7 +229,12 @@ class Card(unittest.TestCase):
     def test_filter_data_attributes(self) -> None:
         html = render_dataset(one(title="Big Trees", tags=["example", "other"]))
         self.assertIn('data-tags="example other"', html)
-        self.assertRegex(html, r'data-text="big trees [^"]*example other"')
+        self.assertRegex(html, r'data-text="big trees [^"]*example other ')
+        table = file_dict(rows=3, columns=["DBH", "spp_com"])
+        cov = render_dataset(one(coverage="Boston, 2026", file=[table]))
+        text = cov[cov.index('data-text="') : cov.index('"', cov.index('data-text="') + 11)]
+        for word in ("csv", "data.csv", "dbh", "spp_com", "boston, 2026"):  # format, file, columns
+            self.assertIn(word, text)
 
     def test_js_only_controls_hidden(self) -> None:
         html = render_dataset(one())

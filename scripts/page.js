@@ -22,9 +22,10 @@
   };
   const hit = (card, extra) => {
     const want = extra ? [...selected, extra] : [...selected];
-    const text = q.value.trim().toLowerCase();
+    // Every word must appear, in any order: "boston trees" finds "Boston street and park trees".
+    const words = q.value.trim().toLowerCase().split(/\s+/).filter(Boolean);
     return want.every((t) => tags.get(card).includes(t)) &&
-      (!text || card.dataset.text.includes(text));
+      words.every((w) => card.dataset.text.includes(w));
   };
 
   function apply() {
@@ -63,25 +64,37 @@
     apply();
   }
 
-  // Descriptions: clamp to two lines only when they overflow.
-  // Measured before filtering, while every card is still visible.
-  for (const desc of $$(".desc")) {
+  // Descriptions: clamp to two lines only when they overflow. Measured first before filtering,
+  // while every card is still visible, then again when the width changes (a page loaded narrow
+  // and widened kept "more" buttons that did nothing). A description the reader opened stays open;
+  // a hidden card cannot be measured and keeps its last state.
+  const descs = $$(".desc");
+  const measure = (desc) => {
     const more = desc.nextElementSibling;
-    more.setAttribute("aria-describedby", `t-${desc.closest(".ds").id}`);
+    if (more.getAttribute("aria-expanded") === "true" || desc.closest(".ds").hidden) return;
     const first = desc.firstElementChild;
     desc.classList.add("clamp");
     const overflow = desc.children.length > 1 || first.scrollHeight > first.clientHeight + 1;
-    if (!overflow) {
-      desc.classList.remove("clamp");
-      continue;
-    }
-    more.hidden = false;
+    desc.classList.toggle("clamp", overflow);
+    more.hidden = !overflow;
+  };
+  for (const desc of descs) {
+    const more = desc.nextElementSibling;
+    more.setAttribute("aria-describedby", `t-${desc.closest(".ds").id}`);
     more.addEventListener("click", () => {
       const open = !desc.classList.toggle("clamp");
       more.textContent = open ? "less" : "more";
       more.setAttribute("aria-expanded", String(open));
     });
+    measure(desc);
   }
+  let lastWidth = innerWidth, remeasure = 0;
+  addEventListener("resize", () => {
+    if (innerWidth === lastWidth) return; // height-only changes (mobile toolbars) wrap nothing
+    lastWidth = innerWidth;
+    clearTimeout(remeasure);
+    remeasure = setTimeout(() => descs.forEach(measure), 150);
+  });
 
   const params = new URLSearchParams(location.search);
   q.value = params.get("q") || "";

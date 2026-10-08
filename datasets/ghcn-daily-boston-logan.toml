@@ -1,5 +1,5 @@
 title = "Daily weather at Boston Logan Airport since 1936 (GHCN-Daily)"
-description = "NOAA Global Historical Climatology Network daily observations for station USW00014739: precipitation, snowfall, snow depth, maximum and minimum temperature and other elements, with quality flags. One row per day, 1936 to October 2026. Dataset version 3.35-upd-2026100617; cite Menne et al. (2012), see README."
+description = "NOAA Global Historical Climatology Network daily observations for station USW00014739: precipitation, snowfall, snow depth, maximum and minimum temperature and other elements, with quality flags. One row per day, 1 January 1936 to 29 September 2026. Dataset version 3.35-upd-2026100617; cite Menne et al. (2012), see README."
 license = "CC0-1.0"
 added = 2026-10-07
 tags = ["climate", "boston", "timeseries", "tabular"]

@@ -54,7 +54,11 @@ CONTRAST_TEXT = (  # >= 4.5:1
     ("code-fg", "code-bg"),
     ("chip-on-fg", "chip-on-bg"),
 )
-CONTRAST_UI = (("focus", "bg"), ("focus", "surface"))  # >= 3:1 (focus ring)
+CONTRAST_UI = (  # >= 3:1 (focus ring)
+    ("focus", "bg"),
+    ("focus", "surface"),
+    ("on-accent", "text"),  # the ring on the header, whose background is the text colour
+)
 
 
 def _vars() -> str:
@@ -87,6 +91,7 @@ gap:14px;flex-wrap:wrap;}
 @media(max-width:480px){header h1{font-size:0.9rem;}}
 a{color:var(--accent);}
 :focus-visible{outline:2px solid var(--focus);outline-offset:2px;}
+header :focus-visible{outline-color:var(--on-accent);}
 button{font:inherit;}
 .wrap{max-width:min(var(--content-max),98vw);width:100%;margin:0 auto;\
 padding:14px var(--content-pad) 60px;flex:1 0 auto;display:grid;\
@@ -446,7 +451,19 @@ def _badges(ds: Dataset) -> str:
 
 def render_dataset(ds: Dataset) -> str:
     """One compact card: header with popovers, meta line, badges, description, Details."""
-    text = " ".join(" ".join((ds.title, ds.description, *ds.tags)).lower().split())
+    # Search covers what the card shows: names, description, tags, producer, coverage, formats,
+    # file names and column names ("csv" finds every CSV dataset, "dbh" the trees table).
+    found = (
+        ds.title,
+        ds.description,
+        *ds.tags,
+        producer(ds) or "",
+        ds.coverage or "",
+        *snippets.formats(ds),
+        *(f.name for f in ds.files),
+        *(c for f in ds.files for c in f.columns),
+    )
+    text = " ".join(" ".join(found).lower().split())
     source = (
         f'<p class="src">Source: <a href="{_e(ds.source)}">{_e(ds.source)}</a></p>'
         if ds.source
@@ -498,7 +515,7 @@ def _sidebar(catalog: Catalog) -> str:
         '<aside class="side" aria-label="Find datasets"><div class="side-in">'
         '<div class="filters" hidden>'
         '<input type="search" id="q" placeholder="Search datasets" '
-        'aria-label="Search titles, descriptions and tags">'
+        'aria-label="Search names, descriptions, tags, formats and columns">'
         '<button type="button" class="ftoggle" aria-expanded="false" aria-controls="chips">'
         'Filters<span class="fcount"></span></button>'
         '<div class="chips-wrap" id="chips"><p class="chips-hd" id="chips-hd">Match all selected '
@@ -519,7 +536,20 @@ INTRO_SHORT = (  # under the band, which already says who curates it and the no-
     '<p>Hosted on the NSF-funded <a href="https://www.openstoragenetwork.org/">Open Storage '
     "Network</a>. Each dataset names who produced it.</p>"
 )
-ABOUT = (  # from the README; the steward's contact is not public yet, so none is invented here
+
+
+def _about(steward: str | None) -> str:
+    """About and Publish sections, from the README. Without a public steward contact the
+    Publish section says one is coming instead of inventing an address."""
+    reach = (
+        f'<p><a class="cta primary" href="mailto:{_e(steward)}">Email the CDS data steward</a></p>'
+        if steward
+        else "<p>The data steward's contact will be listed here when the catalog goes live.</p>"
+    )
+    return ABOUT + reach + "</div></section>"
+
+
+ABOUT = (  # from the README
     '<section class="about" aria-label="About this catalog"><div id="about">'
     "<h2>About this catalog</h2><ol>"
     "<li>A CDS researcher asks the CDS data steward to publish a dataset approved for public "
@@ -532,16 +562,16 @@ ABOUT = (  # from the README; the steward's contact is not public yet, so none i
     '<div id="publish"><h2>Publish your data with CDS</h2>'
     "<p>CDS researchers can share public datasets here at no cost: files are hosted on OSN, "
     "listed with sizes and checksums, and citable from this page. Ask the CDS data steward to "
-    "start.</p></div></section>"
+    "start.</p>"
 )
 
 
-def _band(n: int, total: int, updated: date) -> str:
+def _band(n: int, total: int, updated: date, steward: str | None) -> str:
     """The identity band above the list: what the catalog is, its facts (computed, never
     typed) and the calls to action. Chosen over header links on 2026-10-08
     (docs/design-decisions.md)."""
     return (
-        '<section class="band" aria-label="About this catalog">'
+        '<section class="band" aria-label="Catalog summary">'
         # "curated and hosted by", not "from": the datasets are produced by others (review #1)
         '<p class="lede">Open datasets, curated and hosted by BU Computing &amp; Data Sciences, '
         "free for research and teaching.</p>"
@@ -549,7 +579,9 @@ def _band(n: int, total: int, updated: date) -> str:
         f"<span><b>{human_size(total)}</b> to download</span>"
         "<span><b>No account</b> needed</span><span><b>Checksums</b> on every file</span>"
         f'<span>updated <span class="nw">{updated.isoformat()}</span></span></p>'
-        '<p class="ctas"><a class="cta primary" href="#publish">Publish your data with CDS</a>'
+        # the filled button goes to Publish only once it reaches a real contact (no dead end)
+        f'<p class="ctas"><a class="cta{" primary" if steward else ""}" href="#publish">'
+        "Publish your data with CDS</a>"
         '<a class="cta" href="#about">How it works</a>'
         '<a class="cta" href="catalog.json">Use from code: catalog.json</a></p></section>'
     )
@@ -612,12 +644,12 @@ def render_page(
         f"{notice}</h1>"
         "</div></header>"
         f'<div class="wrap">{_sidebar(catalog)}<main>'
-        + (_band(n, total, updated) if n else "")
+        + (_band(n, total, updated, catalog.steward) if n else "")
         + f'<section class="intro">{INTRO_SHORT if n else INTRO}</section>'
         '<div class="list" role="region" tabindex="0" aria-label="Datasets">'
         '<p class="empty" hidden>No datasets match. '
         '<button type="button" class="clear">Clear filters</button></p>'
-        f"{body}{ABOUT}"
+        f"{body}{_about(catalog.steward)}"
         "</div></main></div>"
         f'<footer class="pagefoot"><div class="ft-l"><img class="ft-emblem" '
         f'src="{assets.signature}" alt="Boston University Faculty of Computing &amp; Data '

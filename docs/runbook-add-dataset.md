@@ -44,6 +44,12 @@ removed only from the page is still discoverable.
 2. Confirm: `curl -sI <file url> | head -1` shows 403 or 404 for each file.
 3. Delete `datasets/<slug>.toml`, commit, `./publish.sh`.
 
+## Go live: the steward contact
+
+Add `steward = "<public email>"` to `catalog.toml`. "Publish your data with CDS" then becomes the
+band's filled button and its section gets an email link; without it the section says a contact is
+coming.
+
 ## Remove the demo
 
 Delete `notice` (the short "Demo" tag shown in the header, at most 24 characters) from

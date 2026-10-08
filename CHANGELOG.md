@@ -22,8 +22,13 @@ From the 2026-10-08 design review (all six findings confirmed by the steward):
   `rows` / `columns` per table file in the manifest, validated; the card shows "rows × columns",
   Details shows coverage and the column names; `catalog.json` carries all three. The four demo
   datasets carry values read from the files themselves (sha256 checked against the manifest).
-- `docs/reader-test.md`: a 15-minute test with 3–5 real readers. Still open: the data steward's
-  contact for the Publish section.
+- `docs/reader-test.md`: a 15-minute test with 3–5 real readers.
+- From the blind review of the redesign: search matches every word in any order and also covers
+  formats, file names, columns, producer and coverage; optional `steward` in `catalog.toml` (an
+  email) — until it is set, Publish is an outline button and its section says the contact is
+  coming, so the page has no dead end; white focus ring on the header (14.4:1, now in the
+  contrast checks); "more" re-measured on width changes; the band is the "Catalog summary"
+  region; GHCN's description ends 29 September 2026, like its data.
 
 ## 2026-10-07 (v2.1)
 
