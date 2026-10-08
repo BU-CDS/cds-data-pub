@@ -241,8 +241,8 @@ class Page(unittest.TestCase):
         html = page(one())
         for rule in (
             "--content-max:1920px",
-            "@media(min-width:1100px){header{position:sticky;top:0;",
-            "html{scroll-padding-top:calc(var(--hdr) + 12px);}",
+            "@media(min-width:1100px){html,body{height:100%;overflow:hidden;}",
+            ".list{flex:1 1 auto;min-height:0;overflow:auto;",
             "@media(max-width:1099px){.wrap{display:block;}.side{position:sticky;top:0;",
             "@media(min-width:1300px){.ds{display:grid;",
             ".meta{grid-area:2/1;}",
@@ -264,6 +264,13 @@ class Page(unittest.TestCase):
         intro = html[html.index('<section class="intro">') : html.index("</section>")]
         self.assertNotIn("terms", intro)
         self.assertIn('<span class="hsep" aria-hidden="true">|</span>', html)
+
+    def test_cards_live_in_a_focusable_list(self) -> None:
+        html = page(one())
+        self.assertIn('<div class="list" tabindex="0" aria-label="Datasets">', html)
+        lst = html[html.index('<div class="list"') :]
+        self.assertLess(lst.index('<article class="ds"'), lst.index("</main>"))
+        self.assertGreater(html.index('<div class="list"'), html.index('<p class="summary">'))
 
     def test_light_only_like_cluster_page(self) -> None:
         html = page()

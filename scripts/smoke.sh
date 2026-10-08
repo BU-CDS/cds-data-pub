@@ -57,11 +57,18 @@ check "short viewport: open popover's Copy is reachable" \
   "$(val '() => { const p = document.querySelector("details.pop[open]"); p.querySelectorAll("label")[1].click(); const b = [...p.querySelectorAll(".copy")].find(x => x.offsetParent); b.scrollIntoView(); const r = b.getBoundingClientRect(); return r.height > 0 && r.bottom <= innerHeight && r.top >= 0; }')" "true"
 pw resize 1440 900 >/dev/null
 pw goto "$URL" >/dev/null
-pw eval '() => scrollTo(0, document.body.scrollHeight)' >/dev/null
-check "header stays at the top while scrolling (≥1100)" "$(val '() => Math.round(document.querySelector("header").getBoundingClientRect().top)')" "0"
+check "app shell (≥1100): the page itself does not scroll, the list does" "$(val '() => { const l = document.querySelector(".list"); return document.documentElement.scrollHeight <= innerHeight + 1 && l.scrollHeight > l.clientHeight; }')" "true"
 mid="$(val '() => { const c = document.querySelectorAll(".ds"); return c[Math.floor(c.length / 2)].id; }')"
 pw goto "$URL#$mid" >/dev/null
-check "anchor target lands below the sticky header" "$(val "() => { const h = document.querySelector(\"header\").getBoundingClientRect().bottom; return h > 0 && document.getElementById(\"$mid\").getBoundingClientRect().top >= h; }")" "true"
+check "anchor target is scrolled into view inside the list" "$(val "() => { const l = document.querySelector(\".list\").getBoundingClientRect(), r = document.getElementById(\"$mid\").getBoundingClientRect(); return document.querySelector(\".list\").scrollTop > 0 && r.top >= l.top && r.top < l.bottom; }")" "true"
+pw goto "$URL" >/dev/null
+pw eval '() => { document.querySelector(".list").scrollTop = 1500; }' >/dev/null
+pw run-code "async page => { await page.waitForTimeout(400); await page.reload(); await page.waitForTimeout(200); }" >/dev/null
+check "reload keeps the list's scroll position" "$(val '() => document.querySelector(".list").scrollTop > 1000')" "true"
+pw goto "$URL" >/dev/null
+pw eval '() => document.querySelector(".list").focus()' >/dev/null
+pw press PageDown >/dev/null
+check "the list scrolls by keyboard once focused" "$(val '() => document.querySelector(".list").scrollTop > 0')" "true"
 pw resize 390 844 >/dev/null
 pw goto "$URL" >/dev/null
 pw eval '() => scrollTo(0, 2000)' >/dev/null
@@ -98,6 +105,11 @@ pw eval '() => document.querySelector(".toc").querySelectorAll("a")[0].focus()' 
 for _ in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19; do pw press Tab >/dev/null; done
 check "keyboard-focused sidebar link stays clear of the fade" "$(val '() => { const t = document.querySelector(".toc"); const a = document.activeElement; if (!t.contains(a)) return "focus left the list"; const ar = a.getBoundingClientRect(), tr = t.getBoundingClientRect(); return ar.bottom <= tr.bottom - 0.2 * tr.height; }')" "true"
 check "More tags moves focus to the first revealed chip" "$(val '() => { const m = document.querySelector(".more-tags"); m.focus(); m.click(); return document.activeElement.matches(".chip.extra"); }')" "true"
+pw resize 1440 900 >/dev/null
+pw goto "$URL" >/dev/null
+pw eval '() => { const l = document.querySelector(".list"), lr = l.getBoundingClientRect(); const c = [...l.querySelectorAll(".ds")].find(c => c.getBoundingClientRect().top > lr.top + 0.55 * lr.height); c.querySelector(".acts details.pop:last-of-type > summary").click(); }' >/dev/null
+pw run-code "async page => { await page.waitForTimeout(300); }" >/dev/null
+check "a popover opened low in the list is scrolled fully into view" "$(val '() => { const l = document.querySelector(".list").getBoundingClientRect(), b = document.querySelector(".pop[open] .pop-body").getBoundingClientRect(); return b.bottom <= l.bottom + 1; }')" "true"
 for w in 1440 390; do
   pw resize "$w" 900 >/dev/null
   pw eval '() => scrollTo(0, 0)' >/dev/null

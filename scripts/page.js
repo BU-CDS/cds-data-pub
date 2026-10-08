@@ -55,7 +55,7 @@
     if (q.value.trim()) p.set("q", q.value.trim());
     selected.forEach((t) => p.append("tag", t));
     const s = p.toString();
-    history.replaceState(null, "", location.pathname + (s ? `?${s}` : "") + location.hash);
+    history.replaceState(history.state, "", location.pathname + (s ? `?${s}` : "") + location.hash);
     stick();
   }
 
@@ -107,9 +107,21 @@
   $$(cards.length ? ".filters, .copy" : ".copy").forEach((el) => { el.hidden = false; });
   apply();
   const target = location.hash && d.getElementById(location.hash.slice(1));
+  // Wide screens scroll the list, not the page: keep its position across reload and Back in
+  // the history entry (no storage).
+  const list = d.querySelector(".list");
+  let saving = 0;
+  list.addEventListener("scroll", () => {
+    clearTimeout(saving);
+    saving = setTimeout(() => {
+      history.replaceState({ ...history.state, listTop: list.scrollTop }, "");
+    }, 150);
+  });
   if (target) {
     if (target.hidden) clearAll();
     target.scrollIntoView(); // again, now that the sticky bar has its final height
+  } else if (history.state && history.state.listTop) {
+    list.scrollTop = history.state.listTop;
   }
 
   q.addEventListener("input", apply);
@@ -126,7 +138,8 @@
       ev.preventDefault();
       selected.add(new URL(a.href).searchParams.get("tag"));
       apply();
-      d.querySelector("main").scrollIntoView(); // the top of the filtered results
+      list.scrollTop = 0; // the top of the filtered results (wide screens)
+      d.querySelector("main").scrollIntoView(); // (phones)
     });
   }
   const moreTags = d.querySelector(".more-tags");
@@ -161,12 +174,15 @@
   const pops = $$("details.pop");
   for (const pop of pops) {
     pop.addEventListener("toggle", () => {
-      if (pop.open) pops.forEach((o) => { if (o !== pop) o.open = false; });
+      if (!pop.open) return;
+      pops.forEach((o) => { if (o !== pop) o.open = false; });
+      pop.querySelector(".pop-body").scrollIntoView({ block: "nearest" }); // not cut off by the list
     });
     pop.addEventListener("focusout", (ev) => {
-      // Tab out closes it (WCAG 2.4.11); a click on plain text inside does not
-      // (focus then goes nowhere, so relatedTarget is null).
-      if (ev.relatedTarget && !pop.contains(ev.relatedTarget)) pop.open = false;
+      // Tab out closes it (WCAG 2.4.11). A click on plain text inside does not: focus then goes
+      // nowhere (relatedTarget null) or to a focusable ancestor such as the scrolling list.
+      const to = ev.relatedTarget;
+      if (to && !pop.contains(to) && !to.contains(pop)) pop.open = false;
     });
   }
   // An outside click closes popovers, unless the press began inside one (a drag-select

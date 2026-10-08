@@ -63,7 +63,7 @@ def _vars() -> str:
 CSS = """\
 :root{--t-sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;\
 --t-mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;\
---content-max:1920px;--content-pad:12px;--hdr:48px;}
+--content-max:1920px;--content-pad:12px;}
 @font-face{font-family:"Whitney SSm A";font-weight:600;font-style:normal;font-display:swap;\
 src:url("@@FONT_SEMIBOLD@@") format("woff2");}
 @font-face{font-family:"Whitney SSm A";font-weight:400;font-style:normal;font-display:swap;\
@@ -92,11 +92,10 @@ padding:14px var(--content-pad) 60px;flex:1 0 auto;display:grid;\
 grid-template-columns:minmax(0,1fr);\
 gap:20px;}
 @media(min-width:1100px){.wrap{grid-template-columns:270px minmax(0,1fr);}\
-.side-in{position:sticky;top:calc(var(--hdr) + 12px);\
-max-height:calc(100vh - var(--hdr) - 24px);display:flex;flex-direction:column;}}
+.side-in{max-height:100%;display:flex;flex-direction:column;}}
 main{min-width:0;}
-.hdr-tag{display:inline-block;margin-left:.6em;padding:1px 8px;border-radius:999px;background:#cc0000;\
-color:#ffffff;font-size:0.7em;font-weight:600;letter-spacing:.04em;vertical-align:.15em;}
+.hdr-tag{display:inline-block;margin-left:.6em;padding:1px 8px;border-radius:999px;\
+background:#cc0000;color:#ffffff;font-size:0.7em;font-weight:600;letter-spacing:.04em;vertical-align:.15em;}
 .intro p{margin:0 0 8px;}
 .summary{color:var(--muted);font-size:0.875rem;margin:0 0 12px;font-variant-numeric:tabular-nums;}
 .side input[type=search]{width:100%;padding:7px 9px;border:1px solid var(--muted);\
@@ -208,8 +207,14 @@ details.det>summary,.more-files summary,.files .fn a{min-height:40px;display:inl
 align-items:center;}}
 @media(pointer:coarse) and (max-width:1099px){.ftoggle{min-height:40px;display:inline-flex;\
 align-items:center;}}
-@media(min-width:1100px){header{position:sticky;top:0;z-index:6;padding-top:8px;\
-padding-bottom:8px;}html{scroll-padding-top:calc(var(--hdr) + 12px);}}
+@media(min-width:1100px){html,body{height:100%;overflow:hidden;}\
+header{padding-top:8px;padding-bottom:8px;}\
+.wrap{flex:1 1 auto;min-height:0;padding-bottom:10px;}.side{min-height:0;}\
+main{display:flex;flex-direction:column;min-height:0;height:100%;}\
+.list{flex:1 1 auto;min-height:0;overflow:auto;border:1px solid var(--border);\
+border-radius:10px;background:var(--surface2);padding:14px 16px;scroll-padding-top:14px;}\
+.list .ds:last-child{margin-bottom:0;}.pagefoot{margin-top:0;padding-top:10px;\
+padding-bottom:12px;}}
 @media(max-width:1099px){.wrap{display:block;}.side{position:sticky;top:0;z-index:4;\
 background:var(--bg);margin:-8px calc(-1*var(--content-pad)) 16px;\
 padding:8px var(--content-pad);border-bottom:1px solid var(--border);}\
@@ -223,7 +228,8 @@ minmax(240px,1fr);grid-template-rows:auto auto auto 1fr auto;column-gap:28px;}\
 .meta{grid-area:2/1;}.badges{grid-area:2/2/5/3;align-self:start;margin-top:6px;}\
 .desc{grid-area:3/1;margin-top:6px;}.more{grid-area:4/1;justify-self:start;}\
 .det{grid-area:5/1/6/3;}}
-@media print{header{position:static;}.side{display:none;}}
+@media print{html,body{height:auto;overflow:visible;}.side{display:none;}\
+.list{overflow:visible;border:0;padding:0;background:none;}}
 .btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent);\
 font-weight:600;}
 .flist{list-style:none;margin:0;padding:0;max-height:18rem;overflow:auto;}\
@@ -522,10 +528,11 @@ def render_page(
         "Open Storage Network</a>. Every file downloads directly, with no account.</p>"
         "</section>"
         f"{summary}"
+        '<div class="list" tabindex="0" aria-label="Datasets">'
         '<p class="empty" hidden>No datasets match. '
         '<button type="button" class="clear">Clear filters</button></p>'
         f"{body}"
-        "</main></div>"
+        "</div></main></div>"
         f'<footer class="pagefoot"><div class="ft-l"><img class="ft-emblem" '
         f'src="{assets.signature}" alt="Boston University Faculty of Computing &amp; Data '
         f'Sciences"></div>'

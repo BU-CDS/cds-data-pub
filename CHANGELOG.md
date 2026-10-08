@@ -31,6 +31,11 @@
   removed.
 - The demo notice is a small "Demo" tag in the header instead of a yellow box; `notice` is a
   short label (at most 24 characters).
+- App shell from 1100px: the page no longer scrolls; only the framed dataset list does (header,
+  intro and footer stay put). The list keeps its scroll position across a reload, anchor links
+  and tag taps scroll inside it, and an opened Cite / Get data popover is scrolled fully into
+  view. Clicking text in a popover no longer closes it (this crashed Chromium's tab). Phones keep
+  normal page scrolling.
 - The sidebar fade follows the list's real size (it went stale after "More tags"); Copy and
   more get their dataset name from the script that shows them.
 
