@@ -4,12 +4,18 @@ license = "CC0-1.0"
 added = 2026-10-07
 tags = ["biology", "tabular", "education"]
 source = "https://github.com/allisonhorst/palmerpenguins"
+coverage = "2007–2009 · islands of the Palmer Archipelago, Antarctica"
 
 [[file]]
 name = "penguins.csv"
 url = "https://mghp.osn.xsede.org/bu-cds-public-data/demo/palmer-penguins/penguins.csv"
 size = 15241
 sha256 = "f204db2c753b0937caac3cb35258562c14f073e4bbc76be24b4c51ce22767a93"
+rows = 344
+columns = [
+  "species", "island", "bill_length_mm", "bill_depth_mm", "flipper_length_mm", "body_mass_g",
+  "sex", "year",
+]
 
 [[file]]
 name = "README.md"

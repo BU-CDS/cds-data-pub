@@ -28,10 +28,13 @@ HTTPS_RE = re.compile(r"^https://[^\s\"'<>]+$")
 
 CATALOG_KEYS = frozenset(("notice", "tags"))
 REQUIRED = ("title", "description", "license", "added", "tags", "file")
-DATASET_KEYS = frozenset((*REQUIRED, "contact", "doi", "source", "citation"))
+DATASET_KEYS = frozenset((*REQUIRED, "contact", "doi", "source", "citation", "coverage"))
 CITATION_REQUIRED = ("authors", "year", "title", "publisher")
 CITATION_KEYS = frozenset((*CITATION_REQUIRED, "url", "doi"))
 FILE_KEYS = ("name", "url", "size", "sha256")
+FILE_OPTIONAL = ("rows", "columns")  # a table's shape, read from the file itself
+MAX_COVERAGE = 160
+MAX_COLUMNS = 1000
 
 
 class ManifestError(ValueError):
@@ -58,6 +61,8 @@ class DataFile:
     url: str
     size: int
     sha256: str
+    rows: int | None = None  # data rows, header excluded (tables only)
+    columns: tuple[str, ...] = ()  # column names in file order (tables only)
 
 
 @dataclass(frozen=True)
@@ -75,6 +80,7 @@ class Dataset:
     tags: tuple[str, ...]
     citation: Citation | None
     files: tuple[DataFile, ...]
+    coverage: str | None = None  # what the data spans: years, place, scale
 
     @property
     def total_size(self) -> int:
@@ -220,6 +226,11 @@ def parse_dataset(slug: str, entry: dict, vocab: tuple[str, ...], where: str) ->
     if len(set(tags)) != len(tags):
         raise ManifestError(f"{where}: field 'tags' has a duplicate tag")
     citation = _parse_citation(entry["citation"], where) if "citation" in entry else None
+    coverage = _text(entry, "coverage", where) if "coverage" in entry else None
+    if coverage is not None and len(coverage) > MAX_COVERAGE:
+        raise ManifestError(
+            f"{where}: field 'coverage' is one short line (at most {MAX_COVERAGE} characters)"
+        )
     files = _parse_files(entry["file"], where)
     return Dataset(
         slug=slug,
@@ -233,6 +244,7 @@ def parse_dataset(slug: str, entry: dict, vocab: tuple[str, ...], where: str) ->
         tags=tuple(tags),
         citation=citation,
         files=files,
+        coverage=coverage,
     )
 
 
@@ -300,7 +312,7 @@ def _parse_file(where: str, index: int, entry: object) -> DataFile:
         raise ManifestError(f"{fwhere}: must be a table")
     if isinstance(entry.get("name"), str) and entry["name"].strip():
         fwhere = f"{where}, file '{entry['name'].strip()}'"
-    unknown = set(entry) - set(FILE_KEYS)
+    unknown = set(entry) - set(FILE_KEYS) - set(FILE_OPTIONAL)
     if unknown:
         raise ManifestError(f"{fwhere}: unknown field(s): {', '.join(sorted(unknown))}")
     for key in FILE_KEYS:
@@ -322,4 +334,14 @@ def _parse_file(where: str, index: int, entry: object) -> DataFile:
     sha = _text(entry, "sha256", fwhere).lower()
     if not SHA256_RE.match(sha):
         raise ManifestError(f"{fwhere}: field 'sha256' must be 64 hex characters")
-    return DataFile(name=name, url=url, size=size, sha256=sha)
+    rows = entry.get("rows")
+    if rows is not None and (type(rows) is not int or rows < 0):
+        raise ManifestError(f"{fwhere}: field 'rows' must be a whole number of data rows")
+    columns = entry.get("columns", [])
+    if not isinstance(columns, list) or not all(isinstance(c, str) and c for c in columns):
+        raise ManifestError(f"{fwhere}: field 'columns' must list the column names")
+    if len(columns) > MAX_COLUMNS or len(set(columns)) != len(columns):
+        raise ManifestError(
+            f"{fwhere}: field 'columns' must hold at most {MAX_COLUMNS} distinct names"
+        )
+    return DataFile(name=name, url=url, size=size, sha256=sha, rows=rows, columns=tuple(columns))

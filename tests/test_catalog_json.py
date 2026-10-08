@@ -26,6 +26,16 @@ class ToJson(unittest.TestCase):
         self.assertIn("bibtex", first["citation"])
         self.assertTrue(to_json(cat, DAY).endswith("}\n"))
 
+    def test_shape_fields_published(self) -> None:
+        cat = load_catalog(Path("."))  # the real catalog carries rows, columns and coverage
+        data = {d["slug"]: d for d in json.loads(to_json(cat, DAY))["datasets"]}
+        pen = data["palmer-penguins"]
+        self.assertTrue(pen["coverage"])
+        csv = next(f for f in pen["files"] if f["name"] == "penguins.csv")
+        self.assertEqual((csv["rows"], len(csv["columns"])), (344, 8))
+        readme = next(f for f in pen["files"] if f["name"] == "README.md")
+        self.assertEqual((readme["rows"], readme["columns"]), (None, []))
+
     def test_digest_stamped(self) -> None:
         cat = load_catalog(Path("examples/sample"))
         self.assertEqual(json.loads(to_json(cat, DAY, digest="ab"))["catalog_digest"], "ab")

@@ -66,10 +66,6 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--preview", action="store_true", help="local preview: no GA tag, marked")
     parser.add_argument("--assets", type=Path, default=None, help="sibling clone's assets/ dir")
     parser.add_argument("--updated", type=date.fromisoformat, default=None, help=argparse.SUPPRESS)
-    # Design comparison only (data-story, 2026-10-08): removed once one identity is chosen.
-    parser.add_argument(
-        "--identity", choices=("links", "band"), default="links", help=argparse.SUPPRESS
-    )
     args = parser.parse_args(argv)
 
     ga_id = None if args.preview else (GA_ID or None)
@@ -91,7 +87,6 @@ def main(argv: list[str] | None = None) -> int:
         ga_id,
         preview=args.preview,
         manifest_sha=manifest_sha,
-        identity=args.identity,
     )
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(html, encoding="utf-8")

@@ -24,9 +24,18 @@ def _dataset(ds: Dataset) -> dict:
         "contact": ds.contact,
         "formats": snippets.formats(ds),
         "total_size": ds.total_size,
+        "coverage": ds.coverage,
         "citation": {"apa": cite.apa(ds), "bibtex": cite.bibtex(ds), "ris": cite.ris(ds)},
         "files": [
-            {"name": f.name, "url": f.url, "size": f.size, "sha256": f.sha256} for f in ds.files
+            {
+                "name": f.name,
+                "url": f.url,
+                "size": f.size,
+                "sha256": f.sha256,
+                "rows": f.rows,
+                "columns": list(f.columns),
+            }
+            for f in ds.files
         ],
     }
 

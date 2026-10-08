@@ -13,10 +13,17 @@ From the 2026-10-08 design review (all six findings confirmed by the steward):
 - Each dataset title links to its `#slug`; the targeted card is outlined.
 - The header's CDS name links to the CDS site; an "About this catalog" and a "Publish your data
   with CDS" section close the list (text from the README).
-- Under comparison, not final: how the page presents CDS — header links (`--identity links`) or
-  an identity band with facts and calls to action (`--identity band`). The hidden flag goes once
-  one is chosen. Not yet done: columns, rows and coverage per dataset (review #5) and the data
-  steward's contact.
+- An identity band opens the page: what the catalog is ("curated and hosted by", never "from",
+  CDS), computed facts (datasets, total size, no account, checksums, updated) and three calls to
+  action (Publish your data with CDS, How it works, Use from code: catalog.json). It replaces the
+  summary line. Chosen over header links after a rendered comparison
+  (`docs/design-decisions.md`).
+- Readers can judge fit before downloading (review #5): optional `coverage` per dataset and
+  `rows` / `columns` per table file in the manifest, validated; the card shows "rows × columns",
+  Details shows coverage and the column names; `catalog.json` carries all three. The four demo
+  datasets carry values read from the files themselves (sha256 checked against the manifest).
+- `docs/reader-test.md`: a 15-minute test with 3–5 real readers. Still open: the data steward's
+  contact for the Publish section.
 
 ## 2026-10-07 (v2.1)
 

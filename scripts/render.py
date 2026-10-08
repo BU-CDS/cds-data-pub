@@ -101,7 +101,6 @@ main{min-width:0;}
 .hdr-tag{display:inline-block;margin-left:.6em;padding:1px 8px;border-radius:999px;\
 background:#cc0000;color:#ffffff;font-size:0.7em;font-weight:600;letter-spacing:.04em;vertical-align:.15em;}
 .intro p{margin:0 0 8px;}
-.summary{color:var(--muted);font-size:0.875rem;margin:0 0 12px;font-variant-numeric:tabular-nums;}
 .side input[type=search]{width:100%;padding:7px 9px;border:1px solid var(--muted);\
 border-radius:6px;background:var(--surface);color:var(--text);font:inherit;}
 .chips-hd{font-size:0.875rem;color:var(--muted);margin:10px 0 4px;}
@@ -134,8 +133,11 @@ margin:0;overflow-wrap:anywhere;}
 .perma{color:inherit;text-decoration:none;}.perma:hover{text-decoration:underline;}\
 .ds:target{outline:2px solid var(--accent);outline-offset:2px;}
 .meta .who{color:var(--text);}
-.hnav{margin-left:auto;display:flex;flex-wrap:wrap;gap:4px 16px;font-size:0.875rem;}\
-.hnav a,header .orglink{color:#ffffff;}.hnav a{text-decoration:underline;text-underline-offset:3px;}\
+.cov{margin:8px 0 4px;}.cols{margin:4px 0 8px;}.cols summary{cursor:pointer;}\
+.colnames{margin:6px 0 0;line-height:1.9;overflow-wrap:anywhere;}\
+.colnames code{font-family:var(--t-mono);font-size:0.8rem;background:var(--surface2);\
+padding:1px 5px;border-radius:4px;}
+header .orglink{color:#ffffff;}\
 header .orglink{text-decoration:none;}header .orglink:hover{text-decoration:underline;}
 .band{background:var(--surface2);border:1px solid var(--border);border-radius:10px;\
 padding:16px 18px;margin:0 0 14px;}
@@ -410,8 +412,20 @@ def _meta(ds: Dataset) -> str:
     n, fmts = len(ds.files), snippets.formats(ds)
     who = producer(ds)
     parts = [f'from <span class="who">{_e(who)}</span>'] if who else []
+    table = next((f for f in ds.files if f.rows is not None or f.columns), None)
+    shape = (
+        [
+            " × ".join(
+                ([f"{table.rows:,} rows"] if table.rows is not None else [])
+                + ([f"{len(table.columns)} columns"] if table.columns else [])
+            )
+        ]
+        if table
+        else []
+    )
     parts += [
         f"{n} file{'s' * (n != 1)}" + (f" ({', '.join(fmts)})" if fmts else ""),
+        *shape,
         f"{_size(ds.total_size)} download",
         f'added <span class="nw">{ds.added.isoformat()}</span>',
     ]
@@ -443,6 +457,14 @@ def render_dataset(ds: Dataset) -> str:
         if ds.contact
         else ""
     )
+    coverage = f'<p class="cov">Coverage: {_e(ds.coverage)}</p>' if ds.coverage else ""
+    columns = "".join(
+        f'<details class="cols"><summary>Columns in {_e(f.name)} ({len(f.columns)})</summary>'
+        f'<p class="colnames">{", ".join(f"<code>{_e(c)}</code>" for c in f.columns)}</p>'
+        "</details>"
+        for f in ds.files
+        if f.columns
+    )
     return (
         f'<article class="ds" id="{ds.slug}" data-tags="{" ".join(ds.tags)}" '
         f'data-text="{_e(text)}"><div class="ds-hd"><h2 id="t-{ds.slug}">'
@@ -452,7 +474,7 @@ def render_dataset(ds: Dataset) -> str:
         f'<div class="desc">{_paragraphs(ds.description)}</div>'
         '<button type="button" class="more" aria-expanded="false" hidden>more</button>'
         f'<details class="det"><summary aria-describedby="t-{ds.slug}">Details</summary>'
-        f"{source}{contact}{_files_table(ds)}"
+        f"{coverage}{source}{contact}{columns}{_files_table(ds)}"
         "</details></article>"
     )
 
@@ -515,7 +537,9 @@ ABOUT = (  # from the README; the steward's contact is not public yet, so none i
 
 
 def _band(n: int, total: int, updated: date) -> str:
-    """Option B: an identity band above the list (facts are computed, never typed)."""
+    """The identity band above the list: what the catalog is, its facts (computed, never
+    typed) and the calls to action. Chosen over header links on 2026-10-08
+    (docs/design-decisions.md)."""
     return (
         '<section class="band" aria-label="About this catalog">'
         # "curated and hosted by", not "from": the datasets are produced by others (review #1)
@@ -538,7 +562,6 @@ def render_page(
     ga_id: str | None,
     preview: bool = False,
     manifest_sha: str = "",
-    identity: str = "links",
 ) -> str:
     """The whole page.
 
@@ -550,8 +573,6 @@ def render_page(
         preview: Mark the page as a local preview (``check_page`` refuses to publish it).
         manifest_sha: catalog digest stamped so ``deploy.sh`` can refuse a page built from any
             other catalog. Empty = no stamp.
-        identity: how the page presents CDS — "links" (header links to CDS, About and Publish)
-            or "band" (an identity band with facts and calls to action above the list).
 
     Returns:
         A complete HTML document.
@@ -568,12 +589,6 @@ def render_page(
     n = len(catalog.datasets)
     total = sum(ds.total_size for ds in catalog.datasets)
     notice = f' <span class="hdr-tag">{_e(catalog.notice)}</span>' if catalog.notice else ""
-    summary = (
-        f'<p class="summary">{n} dataset{"s" * (n != 1)} · {human_size(total)} total download · '
-        f'updated <span class="nw">{updated.isoformat()}</span></p>'
-        if n
-        else ""
-    )
     body = (
         "".join(render_dataset(ds) for ds in catalog.datasets)
         if n
@@ -595,18 +610,11 @@ def render_page(
         "Faculty of Computing &amp; Data Sciences</span></a> "
         '<span class="hsep" aria-hidden="true">|</span> Public Research Data'
         f"{notice}</h1>"
-        + (
-            '<nav class="hnav" aria-label="About this catalog"><a href="#about">About</a>'
-            '<a href="#publish">Publish your data</a><a href="catalog.json">catalog.json</a></nav>'
-            if identity == "links"
-            else ""
-        )
-        + "</div></header>"
+        "</div></header>"
         f'<div class="wrap">{_sidebar(catalog)}<main>'
-        + (_band(n, total, updated) if identity == "band" and n else "")
-        + f'<section class="intro">{INTRO_SHORT if identity == "band" and n else INTRO}</section>'
-        + (summary if identity != "band" else "")  # the band already states these facts
-        + '<div class="list" role="region" tabindex="0" aria-label="Datasets">'
+        + (_band(n, total, updated) if n else "")
+        + f'<section class="intro">{INTRO_SHORT if n else INTRO}</section>'
+        '<div class="list" role="region" tabindex="0" aria-label="Datasets">'
         '<p class="empty" hidden>No datasets match. '
         '<button type="button" class="clear">Clear filters</button></p>'
         f"{body}{ABOUT}"

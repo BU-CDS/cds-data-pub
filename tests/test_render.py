@@ -163,19 +163,32 @@ class Card(unittest.TestCase):
         self.assertNotIn("datasets from research at", html)
         self.assertIn("Each dataset names who produced it.", html)
 
-    def test_identity_options(self) -> None:
-        links = render_page(SAMPLE, ASSETS, DAY, None, identity="links")
-        band = render_page(SAMPLE, ASSETS, DAY, None, identity="band")
-        self.assertIn('<nav class="hnav"', links)
-        self.assertNotIn('class="band"', links)
-        self.assertIn('class="band"', band)
-        self.assertNotIn('<nav class="hnav"', band)
-        self.assertNotIn('class="summary"', band)  # the band states the facts once
-        self.assertNotIn("Open data from", band)  # curated and hosted, not produced, by CDS
-        for html in (links, band):  # both link CDS and keep About / Publish reachable by anchor
-            self.assertIn('class="orglink" href="https://www.bu.edu/cds-faculty/"', html)
-            self.assertIn('id="about"', html)
-            self.assertIn('id="publish"', html)
+    def test_identity_band(self) -> None:  # chosen 2026-10-08 (docs/design-decisions.md)
+        html = render_page(SAMPLE, ASSETS, DAY, None)
+        self.assertIn('class="band"', html)
+        self.assertIn(f"<b>{len(SAMPLE.datasets)}</b> datasets", html)  # computed, not typed
+        self.assertNotIn('class="summary"', html)  # the band states the facts once
+        self.assertNotIn("Open data from", html)  # curated and hosted, not produced, by CDS
+        self.assertIn('class="orglink" href="https://www.bu.edu/cds-faculty/"', html)
+        for anchor in ('href="#publish"', 'href="#about"', 'id="about"', 'id="publish"'):
+            self.assertIn(anchor, html)
+
+    def test_empty_catalog_has_no_band(self) -> None:
+        html = page()
+        self.assertNotIn('class="band"', html)
+        self.assertIn("Each dataset names who produced it.", html)
+
+    def test_table_shape_coverage_and_columns(self) -> None:
+        table = file_dict(rows=33145, columns=["STATION", "DATE", "PRCP"])
+        html = render_dataset(one(coverage="1936–2026, one station", file=[table]))
+        self.assertIn("33,145 rows × 3 columns", html)  # on the card, before Details
+        self.assertIn('<p class="cov">Coverage: 1936–2026, one station</p>', html)
+        self.assertIn("Columns in data.csv (3)", html)
+        self.assertIn("<code>STATION</code>, <code>DATE</code>, <code>PRCP</code>", html)
+        plain = render_dataset(one())
+        self.assertNotIn(" rows", plain)
+        self.assertNotIn('class="cov"', plain)
+        self.assertNotIn('class="cols"', plain)
 
     def test_chip_count_named_without_aria_label(self) -> None:
         html = render_page(SAMPLE, ASSETS, DAY, None)
@@ -229,14 +242,13 @@ class Page(unittest.TestCase):
         self.assertEqual(sum(1 for extra, _ in chips if extra), len(chips) - 12)
         self.assertIn('class="more-tags"', html)
 
-    def test_summary_line(self) -> None:
+    def test_summary_facts_in_band(self) -> None:  # the band replaced the summary line
         total = sum(d.total_size for d in SAMPLE.datasets)
         html = render_page(SAMPLE, ASSETS, DAY, None)
-        self.assertIn(
-            f"24 datasets · {human_size(total)} total download · "
-            'updated <span class="nw">2026-10-06</span>',
-            html,
-        )
+        band = html[html.index('<section class="band"') : html.index("</section>")]
+        self.assertIn("<b>24</b> datasets", band)
+        self.assertIn(f"<b>{human_size(total)}</b> to download", band)
+        self.assertIn('updated <span class="nw">2026-10-06</span>', band)
 
     def test_empty_catalog(self) -> None:
         html = page()
@@ -330,7 +342,7 @@ class Page(unittest.TestCase):
         self.assertIn('<div class="list" role="region" tabindex="0" aria-label="Datasets">', html)
         lst = html[html.index('<div class="list"') :]
         self.assertLess(lst.index('<article class="ds"'), lst.index("</main>"))
-        self.assertGreater(html.index('<div class="list"'), html.index('<p class="summary">'))
+        self.assertGreater(html.index('<div class="list"'), html.index('<section class="band"'))
 
     def test_light_only_like_cluster_page(self) -> None:
         html = page()

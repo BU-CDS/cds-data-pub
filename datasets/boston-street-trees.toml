@@ -4,12 +4,19 @@ license = "PDDL-1.0"
 added = 2026-10-07
 tags = ["boston", "geospatial", "tabular"]
 source = "https://data.boston.gov/dataset/bprd-trees"
+coverage = "Trees maintained by the City of Boston Parks and Recreation Department · snapshot 2026-10-07"
 
 [[file]]
 name = "bprd_trees.csv"
 url = "https://mghp.osn.xsede.org/bu-cds-public-data/demo/boston-street-trees/bprd_trees.csv"
 size = 12469450
 sha256 = "1f6487b46bf9b3684679e3dd40b65bb6f2062eead8461b693331cf6c66a2ae16"
+rows = 55227
+columns = [
+  "id", "spp_com", "spp_bot", "numberof_st", "dbh_range", "dbh", "date_plant", "neighborhood",
+  "park", "os_id", "address", "street", "suffix", "site", "x_longitude", "y_latitude",
+  "shape_wkt", "POINT_X", "POINT_Y",
+]
 
 [[file]]
 name = "bprd_trees.geojson"

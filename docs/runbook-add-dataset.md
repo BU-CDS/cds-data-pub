@@ -10,7 +10,10 @@ Needs: rclone remote `osn` with the bucket's read-write keys (never in this repo
    becomes public, and the bucket lists anonymously.
 2. Upload: `rclone copy ./<folder> osn:bu-cds-public-data/<slug>/ --exclude '.*' --exclude '.*/**' --progress`
    (demo data goes under `demo/<slug>/`).
-3. Sizes and hashes: `stat -f '%z %N' <folder>/*` and `shasum -a 256 <folder>/*`.
+3. Sizes and hashes: `stat -f '%z %N' <folder>/*` and `shasum -a 256 <folder>/*`. For each CSV,
+   its shape (shown on the card so readers can judge fit without downloading):
+   `python3 -c 'import csv,sys; r=csv.reader(open(sys.argv[1],newline="",encoding="utf-8-sig")); h=next(r); print(sum(1 for _ in r), h)' <file>.csv`
+   prints the data rows (header excluded) and the column names.
 4. Create `datasets/<slug>.toml`: the file name is the slug (not `q`, `live`, `chips` or
    `chips-hd`, and not starting `t-`, `ct-` or `gd-`, which the page uses; fields: any file in
    `examples/sample/datasets/`). `tags` lists 1–5 tags from `catalog.toml`; add a new tag there
@@ -20,7 +23,10 @@ Needs: rclone remote `osn` with the bucket's read-write keys (never in this repo
    files sit in that one folder. Add a `[citation]` table (authors, year, title, publisher, optional
    url) for data first published elsewhere; leave it out to cite the catalog entry itself. For
    re-hosted data put the original's DOI in `[citation].doi`; a top-level `doi` is for datasets we
-   publish and shows on the card.
+   publish and shows on the card. Optional, for readers judging fit: `coverage`, one line of at
+   most 160 characters saying what the data spans (years, place, scale); and on a table's
+   `[[file]]`, `rows` and `columns` from step 3 — read from the file, never estimated. The card
+   names the producer from `[citation]` ("from …"), so keep its authors accurate.
 5. Preview: `.venv/bin/python -m scripts.build_page --out previews/index.html --preview` and look.
 6. Commit on `main`, then `./publish.sh`. It refuses if any link is not public or the size is off.
 7. Once, for the new files: check that an anonymous download matches the listed hash,

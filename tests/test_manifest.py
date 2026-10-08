@@ -190,6 +190,36 @@ class Refused(unittest.TestCase):
     def test_bad_sha(self) -> None:
         self.assertRefused("field 'sha256'", dataset_dict(file=[file_dict(sha256=SHA[:-1])]))
 
+    def test_bad_rows(self) -> None:
+        for bad in (-1, True, 1.5, "10"):
+            with self.subTest(bad=bad):
+                self.assertRefused("field 'rows'", dataset_dict(file=[file_dict(rows=bad)]))
+
+    def test_bad_columns(self) -> None:
+        for bad in ("a,b", ["a", ""], ["a", 1], ["a", "a"], ["c"] * 1001):
+            with self.subTest(bad=str(bad)[:20]):
+                self.assertRefused("field 'columns'", dataset_dict(file=[file_dict(columns=bad)]))
+
+    def test_coverage_is_one_short_line(self) -> None:
+        self.assertRefused("field 'coverage'", dataset_dict(coverage="x" * 161))
+
+
+class Shape(unittest.TestCase):
+    def test_rows_columns_and_coverage_parsed(self) -> None:
+        ds = parse(
+            dataset_dict(
+                coverage="2007–2009, Palmer Archipelago",
+                file=[file_dict(rows=344, columns=["species", "island"])],
+            )
+        )
+        self.assertEqual(ds.coverage, "2007–2009, Palmer Archipelago")
+        self.assertEqual((ds.files[0].rows, ds.files[0].columns), (344, ("species", "island")))
+
+    def test_all_optional(self) -> None:
+        ds = parse()
+        self.assertIsNone(ds.coverage)
+        self.assertEqual((ds.files[0].rows, ds.files[0].columns), (None, ()))
+
 
 class LoadCatalog(unittest.TestCase):
     def setUp(self) -> None:
