@@ -33,7 +33,9 @@ Layout: the header sticks on screens ≥1100px and the search block sticks below
 turn two-column at ≥1300px; the page caps at 1920px (`--content-max`).
 
 Analytics: GA4 `G-MTV6EXSR2V`. Outbound clicks are **download-link clicks**, not downloads: they
-miss `curl` and include failed attempts and source/DOI links.
+miss `curl` and include failed attempts and source/DOI links. Like cluster.cds.bu.edu (checked
+2026-10-07), GA sets two first-party cookies, `_ga` and `_ga_<id>`, on `.bu.edu`: a random visitor
+ID kept about 13 months, no personal data. The page's own script uses no storage or cookies.
 
 ## Catalog rules
 
