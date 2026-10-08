@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # smoke.sh — behaviour checks for a built page in headless Chromium (playwright-cli):
-# URL tag filter, empty state, unknown tag ignored, #slug reveal, Escape focus return, and light
-# and dark screenshots. Usage: scripts/smoke.sh [PAGE] [OUTDIR]  (defaults: previews/index.html,
+# URL tag filter, empty state, unknown tag ignored, #slug reveal, Escape focus return, layout and
+# screenshots. Usage: scripts/smoke.sh [PAGE] [OUTDIR]  (defaults: previews/index.html,
 # previews). Build the page from examples/sample first. Run outside a restrictive sandbox.
 set -euo pipefail
 
@@ -98,13 +98,10 @@ pw eval '() => document.querySelector(".toc").querySelectorAll("a")[0].focus()' 
 for _ in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19; do pw press Tab >/dev/null; done
 check "keyboard-focused sidebar link stays clear of the fade" "$(val '() => { const t = document.querySelector(".toc"); const a = document.activeElement; if (!t.contains(a)) return "focus left the list"; const ar = a.getBoundingClientRect(), tr = t.getBoundingClientRect(); return ar.bottom <= tr.bottom - 0.2 * tr.height; }')" "true"
 check "More tags moves focus to the first revealed chip" "$(val '() => { const m = document.querySelector(".more-tags"); m.focus(); m.click(); return document.activeElement.matches(".chip.extra"); }')" "true"
-for theme in light dark; do
-  pw run-code "async page => { await page.emulateMedia({ colorScheme: '$theme' }); }" >/dev/null
-  for w in 1440 390; do
-    pw resize "$w" 900 >/dev/null
-    pw eval '() => scrollTo(0, 0)' >/dev/null
-    pw screenshot --full-page --filename="$OUT_ABS/smoke-$theme-$w.png" >/dev/null
-  done
+for w in 1440 390; do
+  pw resize "$w" 900 >/dev/null
+  pw eval '() => scrollTo(0, 0)' >/dev/null
+  pw screenshot --full-page --filename="$OUT_ABS/smoke-$w.png" >/dev/null
 done
-echo "smoke: screenshots in $OUT_ABS/smoke-{light,dark}-{1440,390}.png"
+echo "smoke: screenshots in $OUT_ABS/smoke-{1440,390}.png"
 [ "$FAILS" -eq 0 ]

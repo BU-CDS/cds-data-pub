@@ -18,7 +18,6 @@ from tests.helpers import write_catalog
 SIBLING_FILES = (
     "bu_plate_white.png",
     "faculty_compt_data_sci_signature_toptier_rgb.png",
-    "faculty_compt_data_sci_signature_toptier_rgbwhite.png",
     "WhitneySSmAdvancedSemibold.woff2",
     "WhitneySSmAdvancedBook.woff2",
 )

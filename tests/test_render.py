@@ -27,7 +27,6 @@ from tests.helpers import dataset_dict, file_dict, parse, url_for
 ASSETS = Assets(
     plate="data:image/png;base64,UExBVEU=",
     signature="data:image/png;base64,U0lH",
-    signature_dark="data:image/png;base64,REFSSw==",
     font_semibold="data:font/woff2;base64,U0VNSQ==",
     font_book="data:font/woff2;base64,Qk9PSw==",
     favicon="data:image/x-icon;base64,SUNP",
@@ -219,7 +218,7 @@ class Page(unittest.TestCase):
     def test_footer(self) -> None:
         html = page()
         self.assertIn('<a class="ft-link" href="catalog.json">catalog.json</a>', html)
-        self.assertIn(ASSETS.signature_dark, html)
+        self.assertEqual(html.count('class="ft-emblem"'), 1)  # light logo only
         self.assertIn("Updated 2026-10-06", html)
 
     def test_ga_and_preview(self) -> None:
@@ -264,27 +263,22 @@ class Page(unittest.TestCase):
         self.assertNotIn("terms", intro)
         self.assertIn('<span class="hsep" aria-hidden="true">|</span>', html)
 
-    def test_dark_tokens_and_rules(self) -> None:
+    def test_light_only_like_cluster_page(self) -> None:
         html = page()
-        self.assertIn("color-scheme:light dark", html)
-        dark = html[html.index("@media(prefers-color-scheme:dark){:root{") :]
-        self.assertIn("--bg:#14110e", dark.split("}", 1)[0])
-        self.assertEqual(html.count("prefers-color-scheme:dark){:root{"), 1)  # one dark block
-        self.assertIn("[hidden]{display:none!important}", html)
+        self.assertIn(":root{color-scheme:light;", html)
+        self.assertNotIn("prefers-color-scheme", html)
 
 
 class Contrast(unittest.TestCase):
     def test_text_pairs_meet_aa(self) -> None:
-        for theme in (0, 1):
-            for fg, bg in CONTRAST_TEXT:
-                with self.subTest(theme=theme, fg=fg, bg=bg):
-                    self.assertGreaterEqual(ratio(TOKENS[fg][theme], TOKENS[bg][theme]), 4.5)
+        for fg, bg in CONTRAST_TEXT:
+            with self.subTest(fg=fg, bg=bg):
+                self.assertGreaterEqual(ratio(TOKENS[fg], TOKENS[bg]), 4.5)
 
     def test_ui_pairs_meet_3_to_1(self) -> None:
-        for theme in (0, 1):
-            for fg, bg in CONTRAST_UI:
-                with self.subTest(theme=theme, fg=fg, bg=bg):
-                    self.assertGreaterEqual(ratio(TOKENS[fg][theme], TOKENS[bg][theme]), 3.0)
+        for fg, bg in CONTRAST_UI:
+            with self.subTest(fg=fg, bg=bg):
+                self.assertGreaterEqual(ratio(TOKENS[fg], TOKENS[bg]), 3.0)
 
 
 if __name__ == "__main__":

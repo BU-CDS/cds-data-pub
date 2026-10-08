@@ -1,7 +1,7 @@
 """Render the catalog page: sidebar filter, compact cards, Cite / Get data popovers.
 
-Header, footer and phone rules descend from pub-cds-scc (cluster.cds.bu.edu); dark tokens reuse
-gpu-cds-scc's warm dark palette. Every manifest string is escaped here. Behaviour lives in
+Header, footer, palette and phone rules descend from pub-cds-scc (cluster.cds.bu.edu), which is
+light-only by design; so is this page. Every manifest string is escaped here. Behaviour lives in
 scripts/page.js, embedded once; check_page admits it by sha256.
 """
 
@@ -23,27 +23,27 @@ TAGS_SHOWN = 12  # more tags sit behind "More tags"
 PREVIEW_MARK = '<meta name="cds-build" content="preview">'
 PAGE_JS = Path(__file__).with_name("page.js").read_text(encoding="utf-8")
 
-# name: (light, dark). Dark values from gpu-cds-scc/build_gpu_portal.R; notice and code are ours.
+# Colour tokens (light only, like cluster.cds.bu.edu).
 TOKENS = {
-    "bg": ("#f2efec", "#14110e"),
-    "surface": ("#ffffff", "#1c1815"),
-    "surface2": ("#ebe6e0", "#241f1a"),
-    "text": ("#2d2926", "#ece7e1"),
-    "muted": ("#6b6158", "#b0a598"),
-    "border": ("#dcd5cd", "#3d342b"),
-    "accent": ("#0b7468", "#2bb39f"),
-    "on-accent": ("#ffffff", "#14110e"),
-    "focus": ("#0b7468", "#2bb39f"),
-    "shadow": ("rgba(15,30,45,.10)", "rgba(0,0,0,.5)"),
-    "code-bg": ("#2d2926", "#0e0c0a"),
-    "code-fg": ("#f2efec", "#ece7e1"),
-    "chip-on-bg": ("#2d2926", "#ece7e1"),
-    "chip-on-fg": ("#ffffff", "#14110e"),
-    "notice-bg": ("#fff4d6", "#3a3115"),
-    "notice-border": ("#e6c97a", "#6b5a24"),
-    "notice-fg": ("#2d2926", "#f3e6c0"),
+    "bg": "#f2efec",
+    "surface": "#ffffff",
+    "surface2": "#ebe6e0",
+    "text": "#2d2926",
+    "muted": "#6b6158",
+    "border": "#dcd5cd",
+    "accent": "#0b7468",
+    "on-accent": "#ffffff",
+    "focus": "#0b7468",
+    "shadow": "rgba(15,30,45,.10)",
+    "code-bg": "#2d2926",
+    "code-fg": "#f2efec",
+    "chip-on-bg": "#2d2926",
+    "chip-on-fg": "#ffffff",
+    "notice-bg": "#fff4d6",
+    "notice-border": "#e6c97a",
+    "notice-fg": "#2d2926",
 }
-CONTRAST_TEXT = (  # >= 4.5:1 in both themes
+CONTRAST_TEXT = (  # >= 4.5:1
     ("text", "bg"),
     ("text", "surface"),
     ("text", "surface2"),
@@ -60,8 +60,8 @@ CONTRAST_TEXT = (  # >= 4.5:1 in both themes
 CONTRAST_UI = (("focus", "bg"), ("focus", "surface"))  # >= 3:1 (focus ring)
 
 
-def _vars(theme: int) -> str:
-    return ";".join(f"--{name}:{pair[theme]}" for name, pair in TOKENS.items())
+def _vars() -> str:
+    return ";".join(f"--{name}:{value}" for name, value in TOKENS.items())
 
 
 CSS = """\
@@ -200,8 +200,7 @@ align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;}
 .pagefoot .ft-l{flex:1 1 200px;display:flex;align-items:center;}
 .pagefoot .ft-c{flex:0 0 auto;text-align:center;}
 .pagefoot .ft-r{flex:1 1 200px;text-align:right;display:flex;gap:14px;justify-content:flex-end;}
-.ft-emblem{height:30px;width:auto;display:block;}.ft-emblem.dark{display:none;}
-@media(prefers-color-scheme:dark){.ft-emblem.light{display:none;}.ft-emblem.dark{display:block;}}
+.ft-emblem{height:30px;width:auto;display:block;}
 .stamp{color:var(--muted);font-size:0.875rem;}
 .ft-link{color:var(--muted);font-size:0.875rem;text-decoration:none;display:inline-flex;\
 align-items:center;}.ft-link:hover{color:var(--accent);text-decoration:underline;}
@@ -247,7 +246,6 @@ class Assets:
 
     plate: str
     signature: str
-    signature_dark: str
     font_semibold: str
     font_book: str
     favicon: str
@@ -484,10 +482,9 @@ def render_page(
         A complete HTML document.
     """
     css = (
-        ":root{color-scheme:light dark;" + _vars(0) + "}"
-        "@media(prefers-color-scheme:dark){:root{"
-        + _vars(1)
-        + "}}"
+        ":root{color-scheme:light;"
+        + _vars()
+        + "}"
         + CSS.replace("@@FONT_SEMIBOLD@@", assets.font_semibold).replace(
             "@@FONT_BOOK@@", assets.font_book
         )
@@ -532,9 +529,9 @@ def render_page(
         '<button type="button" class="clear">Clear filters</button></p>'
         f"{body}"
         "</main></div>"
-        f'<footer class="pagefoot"><div class="ft-l"><img class="ft-emblem light" '
+        f'<footer class="pagefoot"><div class="ft-l"><img class="ft-emblem" '
         f'src="{assets.signature}" alt="Boston University Faculty of Computing &amp; Data '
-        f'Sciences"><img class="ft-emblem dark" src="{assets.signature_dark}" alt=""></div>'
+        f'Sciences"></div>'
         f'<div class="ft-c"><span class="stamp">Updated {updated.isoformat()}</span></div>'
         '<div class="ft-r"><a class="ft-link" href="catalog.json">catalog.json</a>'
         '<a class="ft-link" href="https://www.bu.edu/policies/digital-privacy-statement/" '

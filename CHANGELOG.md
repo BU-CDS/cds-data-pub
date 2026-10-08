@@ -27,6 +27,8 @@
   the page heading keeps its word break for screen readers.
 - The intro paragraph spans the full width of the dataset list; the "provided as is" terms
   paragraph is removed.
+- Light only, like cluster.cds.bu.edu: dark mode, its colour tokens and the dark footer logo are
+  removed.
 - The sidebar fade follows the list's real size (it went stale after "More tags"); Copy and
   more get their dataset name from the script that shows them.
 
