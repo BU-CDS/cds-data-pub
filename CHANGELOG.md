@@ -15,6 +15,10 @@
 - Get data is the primary button (dark text on the lighter teal in dark mode) and opens on a Files
   tab with one plain download link per file; the command-line tabs follow.
 - A test ties the tab CSS to the number of Get data tabs, so a new tab cannot silently never show.
+- Accessibility: a Cite / Get data popover closes when focus tabs out of it (it no longer covers
+  the next card), and Escape only moves focus back when it was inside; descriptions clamp by line
+  with an ellipsis (first paragraph only); chips, Copy, more and Details name their dataset; the
+  header separator is silent to screen readers; the sidebar list fades when more is below.
 
 ## 2026-10-07 (v2)
 

@@ -135,7 +135,8 @@ color:var(--text);text-decoration:none;font-size:0.875rem;}.toc a:hover{backgrou
 .ds{background:var(--surface);border:1px solid var(--border);border-radius:8px;\
 box-shadow:0 1px 2px var(--shadow);padding:14px 16px;margin:0 0 14px;}
 .ds-hd{display:flex;align-items:flex-start;gap:12px;}
-.ds h2{flex:1;min-width:0;font-family:"Whitney SSm A",var(--t-sans);font-size:1.125rem;font-weight:600;\
+.ds h2{flex:1;min-width:0;font-family:"Whitney SSm A",var(--t-sans);font-size:1.125rem;\
+font-weight:600;\
 margin:0;overflow-wrap:anywhere;}
 .acts{display:flex;gap:6px;flex-shrink:0;}
 .meta{color:var(--muted);font-size:0.875rem;margin:4px 0 6px;font-variant-numeric:tabular-nums;\
@@ -144,7 +145,11 @@ overflow-wrap:anywhere;}
 .lic,.tag{border:1px solid var(--border);background:var(--surface2);color:var(--text);\
 border-radius:999px;padding:1px 8px;font-size:0.875rem;text-decoration:none;}.lic{font-weight:600;}
 .desc{max-width:80ch;}.desc p{margin:0 0 6px;}.desc p:last-child{margin-bottom:0;}
-.desc.clamp{max-height:2.9em;overflow:hidden;}
+.desc.clamp p:not(:first-child){display:none;}\
+.desc.clamp p:first-child{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;\
+line-clamp:2;overflow:hidden;}
+.toc.more-below{-webkit-mask-image:linear-gradient(to bottom,#000 80%,transparent);\
+mask-image:linear-gradient(to bottom,#000 80%,transparent);}
 details.det>summary{cursor:pointer;color:var(--accent);font-size:0.875rem;padding:6px 0;}
 .src,.contact{font-size:0.875rem;margin:4px 0;overflow-wrap:anywhere;}
 .files{width:100%;border-collapse:collapse;font-size:0.875rem;margin-top:6px;}
@@ -173,7 +178,8 @@ box-shadow:none;}}
 .fmt{border:0;margin:0;padding:0;min-width:0;}
 .fmt legend{font-size:0.875rem;color:var(--muted);margin-bottom:4px;padding:0;}
 .fmt input{position:absolute;opacity:0;width:1px;height:1px;}
-.fmt label{display:inline-block;padding:3px 8px;border-radius:5px;font-size:0.875rem;cursor:pointer;\
+.fmt label{display:inline-block;padding:3px 8px;border-radius:5px;font-size:0.875rem;\
+cursor:pointer;\
 color:var(--muted);}
 .fmt input:checked+label{background:var(--surface2);color:var(--text);font-weight:600;}
 .fmt input:focus-visible+label{outline:2px solid var(--focus);outline-offset:1px;}
@@ -279,18 +285,19 @@ def ga_tag(ga_id: str) -> str:
     )
 
 
-COPY = '<button type="button" class="copy" hidden>Copy</button>'
+def _copy(slug: str) -> str:
+    return f'<button type="button" class="copy" aria-describedby="t-{slug}" hidden>Copy</button>'
 
 
 def _size(n: int) -> str:
     return f'<span title="{n:,} bytes">{human_size(n)}</span>'
 
 
-def _rows(files: tuple[DataFile, ...]) -> str:
+def _rows(files: tuple[DataFile, ...], slug: str) -> str:
     return "".join(
         f'<tr><td class="fn"><a href="{_e(f.url)}">{_e(f.name)}</a></td>'
         f'<td class="sz">{_size(f.size)}</td>'
-        f'<td class="hash"><code>{f.sha256}</code>{COPY}</td></tr>'
+        f'<td class="hash"><code>{f.sha256}</code>{_copy(slug)}</td></tr>'
         for f in files
     )
 
@@ -299,13 +306,13 @@ def _files_table(ds: Dataset) -> str:
     shown, rest = ds.files[:FILES_SHOWN], ds.files[FILES_SHOWN:]
     table = (
         '<table class="files"><thead><tr><th>File</th><th class="sz">Size</th>'
-        f'<th class="hash">sha256</th></tr></thead><tbody>{_rows(shown)}</tbody></table>'
+        f'<th class="hash">sha256</th></tr></thead><tbody>{_rows(shown, ds.slug)}</tbody></table>'
     )
     if rest:
         more = f"Show {len(rest)} more file{'s' * (len(rest) != 1)}"
         table += (
             f'<details class="more-files"><summary>{more}</summary>'
-            f'<table class="files"><tbody>{_rows(rest)}</tbody></table></details>'
+            f'<table class="files"><tbody>{_rows(rest, ds.slug)}</tbody></table></details>'
         )
     return table
 
@@ -320,9 +327,9 @@ def _choices(group: str, legend: str, panels: list[tuple[str, str]]) -> str:
     return f'<fieldset class="fmt"><legend>{legend}</legend>{radios}{bodies}</fieldset>'
 
 
-def _code(hint: str, code: str, prose: bool = False) -> str:
+def _code(hint: str, code: str, slug: str, prose: bool = False) -> str:
     cls = ' class="prose"' if prose else ""
-    return f'<p class="hint">{hint}</p><pre{cls}><code>{_e(code)}</code></pre>{COPY}'
+    return f'<p class="hint">{hint}</p><pre{cls}><code>{_e(code)}</code></pre>{_copy(slug)}'
 
 
 def _pop(label: str, aria: str, body: str, cls: str = "btn") -> str:
@@ -343,7 +350,7 @@ def _get_data(ds: Dataset) -> str:
         f'each link downloads one file</p><ul class="flist">{items}</ul>'
     )
     panels = [("Files", files)] + [
-        (s.label, _code(f'{_e(s.hint)} · <a href="{_e(s.docs)}">docs</a>', s.code))
+        (s.label, _code(f'{_e(s.hint)} · <a href="{_e(s.docs)}">docs</a>', s.code, ds.slug))
         for s in snippets.get_data(ds)
     ]
     return _pop(
@@ -357,9 +364,9 @@ def _get_data(ds: Dataset) -> str:
 def _cite(ds: Dataset) -> str:
     bib = cite.bibtex(ds)
     panels = [
-        ("APA", _code("APA 7", cite.apa(ds), prose=True)),
-        ("BibTeX", _code("BibTeX", bib)),
-        ("RIS", _code("RIS", cite.ris(ds))),
+        ("APA", _code("APA 7", cite.apa(ds), ds.slug, prose=True)),
+        ("BibTeX", _code("BibTeX", bib, ds.slug)),
+        ("RIS", _code("RIS", cite.ris(ds), ds.slug)),
     ]
     download = (
         f'<a class="bib" download="{ds.slug}.bib" '
@@ -406,12 +413,14 @@ def render_dataset(ds: Dataset) -> str:
     )
     return (
         f'<article class="ds" id="{ds.slug}" data-tags="{" ".join(ds.tags)}" '
-        f'data-text="{_e(text)}"><div class="ds-hd"><h2>{_e(ds.title)}</h2>'
+        f'data-text="{_e(text)}"><div class="ds-hd"><h2 id="t-{ds.slug}">{_e(ds.title)}</h2>'
         f'<div class="acts">{_cite(ds)}{_get_data(ds)}</div></div>'
         f'<p class="meta">{_meta(ds)}</p><p class="badges">{_badges(ds)}</p>'
         f'<div class="desc">{_paragraphs(ds.description)}</div>'
-        '<button type="button" class="more" aria-expanded="false" hidden>more</button>'
-        f'<details class="det"><summary>Details</summary>{source}{contact}{_files_table(ds)}'
+        f'<button type="button" class="more" aria-expanded="false" aria-describedby="t-{ds.slug}" '
+        "hidden>more</button>"
+        f'<details class="det"><summary aria-describedby="t-{ds.slug}">Details</summary>'
+        f"{source}{contact}{_files_table(ds)}"
         "</details></article>"
     )
 
@@ -421,7 +430,8 @@ def _sidebar(catalog: Catalog) -> str:
     order = sorted(counts, key=lambda t: (-counts[t], t))
     chips = "".join(
         f'<button type="button" class="chip{" extra" if i >= TAGS_SHOWN else ""}" '
-        f'data-tag="{t}" aria-pressed="false">{t}<span class="n">{counts[t]}</span></button>'
+        f'data-tag="{t}" aria-pressed="false" aria-label="{t}, {counts[t]} dataset'
+        f'{"s" * (counts[t] != 1)}">{t}<span class="n">{counts[t]}</span></button>'
         for i, t in enumerate(order)
     )
     more = (
@@ -513,7 +523,8 @@ def render_page(
         + f"<style>{css}</style></head><body>"
         f'<header><div class="hwrap"><h1><img class="buplate" src="{assets.plate}" '
         'alt="Boston University"><span class="orgname">Faculty of Computing &amp; Data '
-        'Sciences</span><span class="hsep" aria-hidden="true">|</span>Public Research Data</h1></div></header>'
+        'Sciences</span><span class="hsep" aria-hidden="true">|</span>Public Research Data</h1>'
+        "</div></header>"
         f'<div class="wrap">{_sidebar(catalog)}<main>{notice}<section class="intro">'
         "<p>Public datasets from research at the Boston University Faculty of Computing &amp; "
         'Data Sciences, hosted on the NSF-funded <a href="https://www.openstoragenetwork.org/">'

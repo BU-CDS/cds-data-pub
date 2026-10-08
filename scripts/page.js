@@ -37,6 +37,7 @@
       chip.setAttribute("aria-pressed", String(on));
       chip.disabled = !on && n === 0;
       chip.querySelector(".n").textContent = n;
+      chip.setAttribute("aria-label", `${chip.dataset.tag}, ${n} dataset${n === 1 ? "" : "s"}`);
     }
     const active = selected.size > 0 || q.value.trim() !== "";
     d.querySelector(".count").textContent = `${shown} of ${cards.length} datasets`;
@@ -50,7 +51,17 @@
     selected.forEach((t) => p.append("tag", t));
     const s = p.toString();
     history.replaceState(null, "", location.pathname + (s ? `?${s}` : "") + location.hash);
+    edge();
   }
+
+  const tocNav = d.querySelector(".toc");
+  const edge = () => {
+    if (!tocNav) return;
+    const below = tocNav.scrollTop + tocNav.clientHeight < tocNav.scrollHeight - 2;
+    tocNav.classList.toggle("more-below", below);
+  };
+  if (tocNav) tocNav.addEventListener("scroll", edge);
+  addEventListener("resize", edge);
 
   function clearAll() {
     selected.clear();
@@ -62,8 +73,10 @@
   // Measured before filtering, while every card is still visible.
   for (const desc of $$(".desc")) {
     const more = desc.nextElementSibling;
+    const first = desc.firstElementChild;
     desc.classList.add("clamp");
-    if (desc.scrollHeight <= desc.clientHeight + 1) {
+    const overflow = desc.children.length > 1 || first.scrollHeight > first.clientHeight + 1;
+    if (!overflow) {
       desc.classList.remove("clamp");
       continue;
     }
@@ -137,6 +150,11 @@
     pop.addEventListener("toggle", () => {
       if (pop.open) pops.forEach((o) => { if (o !== pop) o.open = false; });
     });
+    pop.addEventListener("focusout", (ev) => {
+      // Tab out closes it (WCAG 2.4.11); a click on plain text inside does not
+      // (focus then goes nowhere, so relatedTarget is null).
+      if (pop.open && ev.relatedTarget && !pop.contains(ev.relatedTarget)) pop.open = false;
+    });
   }
   d.addEventListener("click", (ev) => {
     pops.forEach((p) => { if (p.open && !p.contains(ev.target)) p.open = false; });
@@ -144,9 +162,9 @@
   d.addEventListener("keydown", (ev) => {
     if (ev.key !== "Escape") return;
     const open = pops.find((p) => p.open);
-    if (open) {
-      open.open = false;
-      open.querySelector("summary").focus();
-    }
+    if (!open) return;
+    const inside = open.contains(d.activeElement);
+    open.open = false;
+    if (inside) open.querySelector("summary").focus();
   });
 })();

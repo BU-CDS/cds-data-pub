@@ -43,10 +43,14 @@ check "other query parameters are kept" "$(val '() => new URLSearchParams(locati
 pw goto "$URL#%E0" >/dev/null
 check "a malformed #fragment leaves filtering alive" "$(val '() => { const c = document.querySelector(".chip"); c.click(); return c.getAttribute("aria-pressed"); }')" "true"
 pw goto "$URL" >/dev/null
-pw eval '() => document.querySelector(".acts details.pop:last-of-type > summary").click()' >/dev/null
+pw eval '() => { const s = document.querySelector(".acts details.pop:last-of-type > summary"); s.focus(); s.click(); }' >/dev/null
 pw press Escape >/dev/null
 check "Escape closes popover and returns focus" \
   "$(val '() => { const p = document.querySelector(".acts details.pop:last-of-type"); return !p.open && document.activeElement === p.querySelector("summary"); }')" "true"
+pw eval '() => { document.querySelector(".acts details.pop:last-of-type").open = true; document.getElementById("q").focus(); }' >/dev/null
+pw press Escape >/dev/null
+check "Escape pressed elsewhere closes the popover but leaves focus where it was" \
+  "$(val '() => !document.querySelector(".acts details.pop:last-of-type").open && document.activeElement.id === "q"')" "true"
 pw resize 390 600 >/dev/null
 pw eval '() => document.querySelector(".acts details.pop:last-of-type > summary").click()' >/dev/null
 check "short viewport: open popover's Copy is reachable" \
@@ -62,6 +66,12 @@ pw resize 390 844 >/dev/null
 pw goto "$URL" >/dev/null
 pw eval '() => scrollTo(0, 2000)' >/dev/null
 check "search stays visible on phones after scrolling" "$(val '() => { const r = document.getElementById("q").getBoundingClientRect(); return r.top >= 0 && r.bottom <= innerHeight; }')" "true"
+pw resize 1440 900 >/dev/null
+pw goto "$URL" >/dev/null
+check "Tab out of an open popover closes it" "$(val '() => { const ps = document.querySelectorAll(".acts details.pop:last-of-type"); ps[0].open = true; ps[0].querySelector("summary").focus(); ps[1].querySelector("summary").focus(); return ps[0].open; }')" "false"
+check "a click on text inside a popover keeps it open" "$(val '() => { const p = document.querySelector(".acts details.pop:last-of-type"); p.open = true; p.querySelector(".hint").dispatchEvent(new MouseEvent("click", {bubbles: true})); return p.open; }')" "true"
+check "a one-paragraph short description gets no more button" "$(val '() => [...document.querySelectorAll(".desc")].filter(d => d.children.length === 1 && d.firstElementChild.textContent.length < 60).every(d => d.nextElementSibling.hidden)')" "true"
+check "clamped descriptions show only their first paragraph" "$(val '() => [...document.querySelectorAll(".desc.clamp")].every(d => [...d.children].slice(1).every(p => getComputedStyle(p).display === "none"))')" "true"
 for theme in light dark; do
   pw run-code "async page => { await page.emulateMedia({ colorScheme: '$theme' }); }" >/dev/null
   for w in 1440 390; do
