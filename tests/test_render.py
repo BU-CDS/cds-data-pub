@@ -245,6 +245,8 @@ class Page(unittest.TestCase):
             "@media(min-width:1300px){.ds{display:grid;",
             ".meta{grid-area:2/1;}",
             ".badges{grid-area:2/2/5/3;",
+            # owner chose option B (2026-10-08): gap + hairline between buttons and tags
+            "align-self:start;margin-top:12px;padding-top:10px;border-top:1px solid var(--border);",
             "@media print{",
         ):
             with self.subTest(rule=rule):
