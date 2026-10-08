@@ -12,6 +12,8 @@
   left; buttons and badges right); page width up to 1920px; on phones the terms note moves below
   the list; printing drops the sidebar.
 - Badges no longer touch the Cite / Get data buttons on wide cards; overridden and dead CSS removed.
+- Get data is the primary button (dark text on the lighter teal in dark mode) and opens on a Files
+  tab with one plain download link per file; the command-line tabs follow.
 
 ## 2026-10-07 (v2)
 

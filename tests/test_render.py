@@ -96,7 +96,17 @@ class Card(unittest.TestCase):
 
     def test_popovers(self) -> None:
         html = render_dataset(one())
-        for label in ("Download all", "AWS CLI", "rclone", "Python", "R", "APA", "BibTeX", "RIS"):
+        for label in (
+            "Files",
+            "Download all",
+            "AWS CLI",
+            "rclone",
+            "Python",
+            "R",
+            "APA",
+            "BibTeX",
+            "RIS",
+        ):
             self.assertIn(f">{label}</label>", html)
         self.assertIn("<legend>Format</legend>", html)
         self.assertIn("<legend>Citation style</legend>", html)
@@ -119,6 +129,14 @@ class Card(unittest.TestCase):
         ]
         self.assertNotIn("DOI", meta)
         self.assertIn("10.7289/V5D21VHZ", html)  # still in the Cite popover
+
+    def test_get_data_primary_with_files_tab(self) -> None:
+        html = render_dataset(one())
+        self.assertIn('<summary class="btn primary" aria-label="Get data for', html)
+        self.assertIn('<summary class="btn" aria-label="Cite', html)
+        gd = html[html.index("Get data for") :]
+        self.assertLess(gd.index(">Files</label>"), gd.index(">Download all</label>"))
+        self.assertIn('<ul class="flist"><li><a href="', gd)
 
     def test_escaping(self) -> None:
         html = render_dataset(one(title="<script>x</script> & co"))

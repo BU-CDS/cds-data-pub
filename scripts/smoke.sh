@@ -50,7 +50,7 @@ check "Escape closes popover and returns focus" \
 pw resize 390 600 >/dev/null
 pw eval '() => document.querySelector(".acts details.pop:last-of-type > summary").click()' >/dev/null
 check "short viewport: open popover's Copy is reachable" \
-  "$(val '() => { const b = document.querySelector("details.pop[open] .copy"); b.scrollIntoView(); const r = b.getBoundingClientRect(); return r.height > 0 && r.bottom <= innerHeight && r.top >= 0; }')" "true"
+  "$(val '() => { const p = document.querySelector("details.pop[open]"); p.querySelectorAll("label")[1].click(); const b = [...p.querySelectorAll(".copy")].find(x => x.offsetParent); b.scrollIntoView(); const r = b.getBoundingClientRect(); return r.height > 0 && r.bottom <= innerHeight && r.top >= 0; }')" "true"
 pw resize 1440 900 >/dev/null
 pw goto "$URL" >/dev/null
 pw eval '() => scrollTo(0, document.body.scrollHeight)' >/dev/null

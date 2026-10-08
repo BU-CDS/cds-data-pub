@@ -32,6 +32,7 @@ TOKENS = {
     "muted": ("#6b6158", "#b0a598"),
     "border": ("#dcd5cd", "#3d342b"),
     "accent": ("#0b7468", "#2bb39f"),
+    "on-accent": ("#ffffff", "#14110e"),
     "focus": ("#0b7468", "#2bb39f"),
     "shadow": ("rgba(15,30,45,.10)", "rgba(0,0,0,.5)"),
     "code-bg": ("#2d2926", "#0e0c0a"),
@@ -51,6 +52,7 @@ CONTRAST_TEXT = (  # >= 4.5:1 in both themes
     ("muted", "surface2"),
     ("accent", "bg"),
     ("accent", "surface"),
+    ("on-accent", "accent"),
     ("code-fg", "code-bg"),
     ("chip-on-fg", "chip-on-bg"),
     ("notice-fg", "notice-bg"),
@@ -222,10 +224,16 @@ minmax(240px,1fr);grid-template-rows:auto auto auto 1fr auto;column-gap:28px;}\
 .det{grid-area:5/1/6/3;}}
 @media(max-width:700px){main{display:flex;flex-direction:column;}.terms{order:9;}}
 @media print{header{position:static;}.side{display:none;}}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent);\
+font-weight:600;}
+.flist{list-style:none;margin:0;padding:0;max-height:18rem;overflow:auto;}\
+.flist li{display:flex;justify-content:space-between;gap:12px;padding:4px 0;\
+border-bottom:1px solid var(--border);}.flist a{min-width:0;overflow-wrap:anywhere;}\
+.flist .sz{color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums;}
 """
 PANEL_CSS = "".join(
     f".fmt input:nth-of-type({i}):checked~.panel:nth-of-type({i}){{display:block;}}"
-    for i in range(1, 6)
+    for i in range(1, 7)
 )
 
 
@@ -318,19 +326,33 @@ def _code(hint: str, code: str, prose: bool = False) -> str:
     return f'<p class="hint">{hint}</p><pre{cls}><code>{_e(code)}</code></pre>{COPY}'
 
 
-def _pop(label: str, aria: str, body: str) -> str:
+def _pop(label: str, aria: str, body: str, cls: str = "btn") -> str:
     return (
-        f'<details class="pop"><summary class="btn" aria-label="{_e(aria)}">{label} '
+        f'<details class="pop"><summary class="{cls}" aria-label="{_e(aria)}">{label} '
         f'<span aria-hidden="true">▾</span></summary><div class="pop-body">{body}</div></details>'
     )
 
 
 def _get_data(ds: Dataset) -> str:
-    panels = [
+    n = len(ds.files)
+    items = "".join(
+        f'<li><a href="{_e(f.url)}">{_e(f.name)}</a><span class="sz">{_size(f.size)}</span></li>'
+        for f in ds.files
+    )
+    files = (
+        f'<p class="hint">{n} file{"s" * (n != 1)} · {_size(ds.total_size)} · '
+        f'each link downloads one file</p><ul class="flist">{items}</ul>'
+    )
+    panels = [("Files", files)] + [
         (s.label, _code(f'{_e(s.hint)} · <a href="{_e(s.docs)}">docs</a>', s.code))
         for s in snippets.get_data(ds)
     ]
-    return _pop("Get data", f"Get data for {ds.title}", _choices(f"gd-{ds.slug}", "Format", panels))
+    return _pop(
+        "Get data",
+        f"Get data for {ds.title}",
+        _choices(f"gd-{ds.slug}", "Format", panels),
+        "btn primary",
+    )
 
 
 def _cite(ds: Dataset) -> str:
