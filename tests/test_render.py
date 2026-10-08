@@ -207,7 +207,6 @@ class Page(unittest.TestCase):
     def test_v21_layout_rules(self) -> None:
         html = page(one())
         for rule in (
-            "html{font-size:110%;height:100%;}",
             "--content-max:1920px",
             "@media(min-width:1100px){header{position:sticky;top:0;",
             "html{scroll-padding-top:calc(var(--hdr) + 12px);}",

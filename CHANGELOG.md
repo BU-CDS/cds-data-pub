@@ -11,6 +11,7 @@
   1rem with two smaller steps; from 1300px cards are two columns (title, summary line, description
   left; buttons and badges right); page width up to 1920px; on phones the terms note moves below
   the list; printing drops the sidebar.
+- Badges no longer touch the Cite / Get data buttons on wide cards; overridden and dead CSS removed.
 
 ## 2026-10-07 (v2)
 

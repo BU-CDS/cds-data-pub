@@ -55,9 +55,9 @@ pw resize 1440 900 >/dev/null
 pw goto "$URL" >/dev/null
 pw eval '() => scrollTo(0, document.body.scrollHeight)' >/dev/null
 check "header stays at the top while scrolling (≥1100)" "$(val '() => Math.round(document.querySelector("header").getBoundingClientRect().top)')" "0"
-last="$(val '() => [...document.querySelectorAll(".ds")].at(-1).id')"
-pw goto "$URL#$last" >/dev/null
-check "anchor target lands below the sticky header" "$(val "() => { const h = document.querySelector(\"header\").getBoundingClientRect().bottom; return h > 0 && document.getElementById(\"$last\").getBoundingClientRect().top >= h; }")" "true"
+mid="$(val '() => { const c = document.querySelectorAll(".ds"); return c[Math.floor(c.length / 2)].id; }')"
+pw goto "$URL#$mid" >/dev/null
+check "anchor target lands below the sticky header" "$(val "() => { const h = document.querySelector(\"header\").getBoundingClientRect().bottom; return h > 0 && document.getElementById(\"$mid\").getBoundingClientRect().top >= h; }")" "true"
 pw resize 390 844 >/dev/null
 pw goto "$URL" >/dev/null
 pw eval '() => scrollTo(0, 2000)' >/dev/null

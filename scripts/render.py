@@ -71,7 +71,7 @@ src:url("@@FONT_SEMIBOLD@@") format("woff2");}
 @font-face{font-family:"Whitney SSm A";font-weight:400;font-style:normal;font-display:swap;\
 src:url("@@FONT_BOOK@@") format("woff2");}
 [hidden]{display:none!important}
-*{box-sizing:border-box}html{font-size:110%;height:100%;}\
+*{box-sizing:border-box}html{font-size:110%;}\
 body{display:flex;flex-direction:column;min-height:100vh;min-height:100dvh;\
 font-family:var(--t-sans);color:var(--text);margin:0;background:var(--bg);font-size:1rem;\
 line-height:1.45;-webkit-font-smoothing:antialiased;}
@@ -94,8 +94,8 @@ padding:14px var(--content-pad) 60px;flex:1 0 auto;display:grid;\
 grid-template-columns:minmax(0,1fr);\
 gap:20px;}
 @media(min-width:1100px){.wrap{grid-template-columns:270px minmax(0,1fr);}\
-.side-in{position:sticky;top:12px;max-height:calc(100vh - 24px);display:flex;\
-flex-direction:column;}}
+.side-in{position:sticky;top:calc(var(--hdr) + 12px);\
+max-height:calc(100vh - var(--hdr) - 24px);display:flex;flex-direction:column;}}
 main{min-width:0;}
 .notice{background:var(--notice-bg);border:1px solid var(--notice-border);color:var(--notice-fg);\
 border-radius:6px;padding:8px 12px;margin:0 0 12px;max-width:80ch;}
@@ -206,8 +206,7 @@ align-items:center;}}
 @media(pointer:coarse) and (max-width:1099px){.ftoggle{min-height:40px;display:inline-flex;\
 align-items:center;}}
 @media(min-width:1100px){header{position:sticky;top:0;z-index:6;padding-top:8px;\
-padding-bottom:8px;}html{scroll-padding-top:calc(var(--hdr) + 12px);}\
-.side-in{top:calc(var(--hdr) + 12px);max-height:calc(100vh - var(--hdr) - 24px);}}
+padding-bottom:8px;}html{scroll-padding-top:calc(var(--hdr) + 12px);}}
 @media(max-width:1099px){.wrap{display:block;}.side{position:sticky;top:0;z-index:4;\
 background:var(--bg);margin:-8px calc(-1*var(--content-pad)) 16px;\
 padding:8px var(--content-pad);border-bottom:1px solid var(--border);}\
@@ -217,12 +216,12 @@ html{scroll-padding-top:90px;}\
 .count{margin:4px 0 0;}.chips-wrap.open{max-height:50dvh;overflow:auto;}}
 @media(min-width:1300px){.ds{display:grid;grid-template-columns:minmax(0,80ch) \
 minmax(240px,1fr);grid-template-rows:auto auto auto 1fr auto;column-gap:28px;}\
-.ds-hd{display:contents;}.ds h2{grid-area:1/1;}.acts{grid-area:1/2;justify-self:start;}\
-.meta{grid-area:2/1;}.badges{grid-area:2/2/5/3;align-self:start;align-content:flex-start;}\
+.ds-hd{display:contents;}.ds h2{grid-area:1/1;}.acts{grid-area:1/2;}\
+.meta{grid-area:2/1;}.badges{grid-area:2/2/5/3;align-self:start;margin-top:6px;}\
 .desc{grid-area:3/1;margin-top:6px;}.more{grid-area:4/1;justify-self:start;}\
 .det{grid-area:5/1/6/3;}}
 @media(max-width:700px){main{display:flex;flex-direction:column;}.terms{order:9;}}
-@media print{header,.side-in,.side{position:static;}.side{display:none;}}
+@media print{header{position:static;}.side{display:none;}}
 """
 PANEL_CSS = "".join(
     f".fmt input:nth-of-type({i}):checked~.panel:nth-of-type({i}){{display:block;}}"
