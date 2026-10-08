@@ -20,6 +20,11 @@
   with an ellipsis (first paragraph only); chips, Copy, more and Details name their dataset; the
   header separator is silent to screen readers; the sidebar list fades when more is below.
 - Docs: the GA cookie behaviour (same as cluster.cds.bu.edu) is written down.
+- Review fixes: on phones an anchor jump clears the sticky search bar even with a filter on, and
+  tapping a tag badge shows the top of the results; drag-selecting a command no longer closes its
+  popover; keyboard focus in the sidebar list stays clear of the fade; chips read "boston 9" with
+  a hidden "datasets" (no aria-label, axe clean); "More tags" keeps focus on the first new chip;
+  the page heading keeps its word break for screen readers.
 - The sidebar fade follows the list's real size (it went stale after "More tags"); Copy and
   more get their dataset name from the script that shows them.
 

@@ -111,7 +111,7 @@ border-radius:6px;background:var(--surface);color:var(--text);font:inherit;}
 .chip{border:1px solid var(--border);background:var(--surface2);color:var(--text);\
 border-radius:999px;padding:2px 9px;font-size:0.875rem;cursor:pointer;\
 font-variant-numeric:tabular-nums;}
-.chip .n{color:var(--muted);margin-left:4px;}
+.chip .n{color:var(--muted);}
 .chip[aria-pressed=true]{background:var(--chip-on-bg);color:var(--chip-on-fg);\
 border-color:var(--chip-on-bg);}.chip[aria-pressed=true]::before{content:"\\2713\\00a0";}
 .chip[aria-pressed=true] .n{color:inherit;}
@@ -125,7 +125,8 @@ cursor:pointer;font-size:0.875rem;text-decoration:underline;}
 .count{font-size:0.875rem;color:var(--muted);margin:8px 0 2px;font-variant-numeric:tabular-nums;}
 .toc-hd{font-size:0.8rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);\
 margin:14px 0 4px;}
-.toc{overflow:auto;min-height:0;}.toc ol{list-style:none;margin:0;padding:0;}
+.toc{overflow:auto;min-height:0;padding:4px;scroll-padding-block:3.5rem;}
+.toc ol{list-style:none;margin:0;padding:0;}
 .toc a{display:flex;justify-content:space-between;gap:8px;padding:3px 4px;border-radius:4px;\
 color:var(--text);text-decoration:none;font-size:0.875rem;}.toc a:hover{background:var(--surface2);}
 .toc .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
@@ -218,7 +219,7 @@ padding-bottom:8px;}html{scroll-padding-top:calc(var(--hdr) + 12px);}}
 @media(max-width:1099px){.wrap{display:block;}.side{position:sticky;top:0;z-index:4;\
 background:var(--bg);margin:-8px calc(-1*var(--content-pad)) 16px;\
 padding:8px var(--content-pad);border-bottom:1px solid var(--border);}\
-html{scroll-padding-top:90px;}\
+html{scroll-padding-top:var(--stick,90px);}\
 .filters{display:flex;flex-wrap:wrap;align-items:center;column-gap:10px;}\
 .side input[type=search]{flex:1 1 12rem;width:auto;}.chips-wrap,.count{flex-basis:100%;}\
 .count{margin:4px 0 0;}.chips-wrap.open{max-height:50dvh;overflow:auto;}}
@@ -428,7 +429,8 @@ def _sidebar(catalog: Catalog) -> str:
     order = sorted(counts, key=lambda t: (-counts[t], t))
     chips = "".join(
         f'<button type="button" class="chip{" extra" if i >= TAGS_SHOWN else ""}" '
-        f'data-tag="{t}" aria-pressed="false">{t}<span class="n">{counts[t]}</span></button>'
+        f'data-tag="{t}" aria-pressed="false">{t} <span class="n">{counts[t]}</span>'
+        f'<span class="sr"> dataset{"s" * (counts[t] != 1)}</span></button>'
         for i, t in enumerate(order)
     )
     more = (
@@ -520,7 +522,7 @@ def render_page(
         + f"<style>{css}</style></head><body>"
         f'<header><div class="hwrap"><h1><img class="buplate" src="{assets.plate}" '
         'alt="Boston University"><span class="orgname">Faculty of Computing &amp; Data '
-        'Sciences</span><span class="hsep" aria-hidden="true">|</span>Public Research Data</h1>'
+        'Sciences</span> <span class="hsep" aria-hidden="true">|</span> Public Research Data</h1>'
         "</div></header>"
         f'<div class="wrap">{_sidebar(catalog)}<main>{notice}<section class="intro">'
         "<p>Public datasets from research at the Boston University Faculty of Computing &amp; "

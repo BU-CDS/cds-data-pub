@@ -12,6 +12,11 @@
   const toc = new Map($$(".toc a").map((a) => [a.hash.slice(1), a.parentElement]));
   const tags = new Map(cards.map((c) => [c, c.dataset.tags.split(" ")]));
   const selected = new Set();
+  // Below 1100px the sidebar block is sticky and its height varies (Clear filters, open chips):
+  // anchor jumps leave room for it via --stick (scroll-padding-top).
+  const side = d.querySelector(".side");
+  const stick = () => d.documentElement.style.setProperty("--stick", `${side.offsetHeight + 8}px`);
+  new ResizeObserver(stick).observe(side);
   const say = (msg) => {
     live.textContent = "";
     setTimeout(() => { live.textContent = msg; }, 50);
@@ -37,7 +42,7 @@
       chip.setAttribute("aria-pressed", String(on));
       chip.disabled = !on && n === 0;
       chip.querySelector(".n").textContent = n;
-      chip.setAttribute("aria-label", `${chip.dataset.tag}, ${n} dataset${n === 1 ? "" : "s"}`);
+      chip.querySelector(".sr").textContent = n === 1 ? " dataset" : " datasets";
     }
     const active = selected.size > 0 || q.value.trim() !== "";
     d.querySelector(".count").textContent = `${shown} of ${cards.length} datasets`;
@@ -51,6 +56,7 @@
     selected.forEach((t) => p.append("tag", t));
     const s = p.toString();
     history.replaceState(null, "", location.pathname + (s ? `?${s}` : "") + location.hash);
+    stick();
   }
 
   // Sidebar list: fade its bottom edge while more entries are below. Its size changes with the
@@ -101,9 +107,9 @@
   $$(cards.length ? ".filters, .copy" : ".copy").forEach((el) => { el.hidden = false; });
   apply();
   const target = location.hash && d.getElementById(location.hash.slice(1));
-  if (target && target.hidden) {
-    clearAll();
-    target.scrollIntoView();
+  if (target) {
+    if (target.hidden) clearAll();
+    target.scrollIntoView(); // again, now that the sticky bar has its final height
   }
 
   q.addEventListener("input", apply);
@@ -120,7 +126,7 @@
       ev.preventDefault();
       selected.add(new URL(a.href).searchParams.get("tag"));
       apply();
-      d.querySelector(".side").scrollIntoView({ block: "nearest" });
+      d.querySelector("main").scrollIntoView(); // the top of the filtered results
     });
   }
   const moreTags = d.querySelector(".more-tags");
@@ -128,6 +134,7 @@
     moreTags.addEventListener("click", () => {
       d.querySelector(".chips").classList.add("all");
       moreTags.hidden = true;
+      d.querySelector(".chip.extra").focus(); // focus would otherwise drop to <body>
     });
   }
   const toggle = d.querySelector(".ftoggle");
@@ -162,8 +169,17 @@
       if (ev.relatedTarget && !pop.contains(ev.relatedTarget)) pop.open = false;
     });
   }
+  // An outside click closes popovers, unless the press began inside one (a drag-select
+  // that ends outside must not close the popover it selects in).
+  let pressedIn = null;
+  d.addEventListener("pointerdown", (ev) => {
+    pressedIn = pops.find((p) => p.contains(ev.target));
+  });
   d.addEventListener("click", (ev) => {
-    pops.forEach((p) => { if (p.open && !p.contains(ev.target)) p.open = false; });
+    pops.forEach((p) => {
+      if (p.open && !p.contains(ev.target) && p !== pressedIn) p.open = false;
+    });
+    pressedIn = null;
   });
   d.addEventListener("keydown", (ev) => {
     if (ev.key !== "Escape") return;

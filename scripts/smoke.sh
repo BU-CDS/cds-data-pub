@@ -80,6 +80,24 @@ pw goto "$URL" >/dev/null
 pw eval '() => { const m = document.querySelector(".more-tags"); if (m) m.click(); }' >/dev/null
 check "sidebar list fade matches real overflow after More tags" \
   "$(val '() => { const t = document.querySelector(".toc"); return (t.scrollTop + t.clientHeight < t.scrollHeight - 2) === t.classList.contains("more-below"); }')" "true"
+pw resize 390 844 >/dev/null
+bmid="$(val '() => { const b = [...document.querySelectorAll(".ds")].filter(c => c.dataset.tags.split(" ").includes("boston")); return b[Math.floor(b.length / 2)].id; }')"
+pw goto "$URL?tag=boston#$bmid" >/dev/null
+check "phone: anchor title clears the sticky search bar with a filter on" "$(val "() => document.getElementById(\"$bmid\").querySelector(\"h2\").getBoundingClientRect().top >= document.querySelector(\".side\").getBoundingClientRect().bottom")" "true"
+pw goto "$URL" >/dev/null
+pw eval '() => { const c = document.querySelectorAll(".ds")[14]; c.scrollIntoView(); c.querySelector("a.tag").click(); }' >/dev/null
+check "phone: tapping a tag badge shows the top of the results" "$(val '() => { const c = document.querySelector(".ds:not([hidden])"); const r = c.getBoundingClientRect(); return r.top >= 0 && r.top < innerHeight; }')" "true"
+pw resize 1440 900 >/dev/null
+pw goto "$URL" >/dev/null
+pw eval '() => { const s = document.querySelector(".acts details.pop:last-of-type > summary"); s.focus(); s.click(); s.parentElement.querySelectorAll("label")[1].click(); }' >/dev/null
+pw run-code "async page => { const b = await page.locator('.acts details.pop[open] .panel pre').filter({ visible: true }).first().boundingBox(); await page.mouse.move(b.x + 10, b.y + 8); await page.mouse.down(); await page.mouse.move(b.x - 60, b.y + 8, { steps: 4 }); await page.mouse.up(); }" >/dev/null 2>&1 || true
+check "drag-select ending outside keeps the popover open" "$(val '() => document.querySelector(".acts details.pop:last-of-type").open')" "true"
+pw resize 1280 700 >/dev/null
+pw goto "$URL" >/dev/null
+pw eval '() => document.querySelector(".toc").querySelectorAll("a")[0].focus()' >/dev/null
+for _ in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19; do pw press Tab >/dev/null; done
+check "keyboard-focused sidebar link stays clear of the fade" "$(val '() => { const t = document.querySelector(".toc"); const a = document.activeElement; if (!t.contains(a)) return "focus left the list"; const ar = a.getBoundingClientRect(), tr = t.getBoundingClientRect(); return ar.bottom <= tr.bottom - 0.2 * tr.height; }')" "true"
+check "More tags moves focus to the first revealed chip" "$(val '() => { const m = document.querySelector(".more-tags"); m.focus(); m.click(); return document.activeElement.matches(".chip.extra"); }')" "true"
 for theme in light dark; do
   pw run-code "async page => { await page.emulateMedia({ colorScheme: '$theme' }); }" >/dev/null
   for w in 1440 390; do

@@ -139,6 +139,19 @@ class Card(unittest.TestCase):
         self.assertIn('<h2 id="t-example">Penguins</h2>', html)
         self.assertIn('<summary aria-describedby="t-example">Details</summary>', html)
 
+    def test_chip_count_named_without_aria_label(self) -> None:
+        html = render_page(SAMPLE, ASSETS, DAY, None)
+        chip = html[
+            html.index('data-tag="boston"') : html.index(
+                "</button>", html.index('data-tag="boston"')
+            )
+        ]
+        self.assertNotIn("aria-label", chip)
+        self.assertIn('<span class="sr"> datasets</span>', chip)
+
+    def test_heading_name_keeps_word_break(self) -> None:
+        self.assertIn('Sciences</span> <span class="hsep" aria-hidden="true">|</span>', page())
+
     def test_escaping(self) -> None:
         html = render_dataset(one(title="<script>x</script> & co"))
         self.assertNotIn("<script>x", html)
