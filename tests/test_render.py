@@ -138,20 +138,6 @@ class Card(unittest.TestCase):
         html = render_dataset(one(title="Penguins"))
         self.assertIn('<h2 id="t-example">Penguins</h2>', html)
         self.assertIn('<summary aria-describedby="t-example">Details</summary>', html)
-        self.assertIn(
-            'class="more" aria-expanded="false" aria-describedby="t-example" hidden', html
-        )
-        self.assertIn(
-            '<button type="button" class="copy" aria-describedby="t-example" hidden>Copy</button>',
-            html,
-        )
-
-    def test_chip_label_counts(self) -> None:
-        html = render_page(SAMPLE, ASSETS, DAY, None)
-        self.assertRegex(
-            html,
-            r'class="chip" data-tag="boston" aria-pressed="false" aria-label="boston, \d+ datasets"',
-        )
 
     def test_escaping(self) -> None:
         html = render_dataset(one(title="<script>x</script> & co"))

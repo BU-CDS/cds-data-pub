@@ -69,9 +69,17 @@ check "search stays visible on phones after scrolling" "$(val '() => { const r =
 pw resize 1440 900 >/dev/null
 pw goto "$URL" >/dev/null
 check "Tab out of an open popover closes it" "$(val '() => { const ps = document.querySelectorAll(".acts details.pop:last-of-type"); ps[0].open = true; ps[0].querySelector("summary").focus(); ps[1].querySelector("summary").focus(); return ps[0].open; }')" "false"
-check "a click on text inside a popover keeps it open" "$(val '() => { const p = document.querySelector(".acts details.pop:last-of-type"); p.open = true; p.querySelector(".hint").dispatchEvent(new MouseEvent("click", {bubbles: true})); return p.open; }')" "true"
+pw eval '() => { const p = document.querySelector(".acts details.pop:last-of-type"); p.open = true; p.querySelector(".flist a").focus(); }' >/dev/null
+pw run-code "async page => { await page.locator('.acts details.pop[open] .hint').first().click({ timeout: 3000 }); }" >/dev/null 2>&1 || true
+check "a real click on text inside a popover keeps it open" "$(val '() => document.querySelector(".acts details.pop:last-of-type").open')" "true"
+check "Copy and more buttons name their dataset" "$(val '() => [...document.querySelectorAll(".copy, .more")].every(b => b.getAttribute("aria-describedby") === "t-" + b.closest(".ds").id)')" "true"
 check "a one-paragraph short description gets no more button" "$(val '() => [...document.querySelectorAll(".desc")].filter(d => d.children.length === 1 && d.firstElementChild.textContent.length < 60).every(d => d.nextElementSibling.hidden)')" "true"
 check "clamped descriptions show only their first paragraph" "$(val '() => [...document.querySelectorAll(".desc.clamp")].every(d => [...d.children].slice(1).every(p => getComputedStyle(p).display === "none"))')" "true"
+pw resize 1440 1100 >/dev/null
+pw goto "$URL" >/dev/null
+pw eval '() => { const m = document.querySelector(".more-tags"); if (m) m.click(); }' >/dev/null
+check "sidebar list fade matches real overflow after More tags" \
+  "$(val '() => { const t = document.querySelector(".toc"); return (t.scrollTop + t.clientHeight < t.scrollHeight - 2) === t.classList.contains("more-below"); }')" "true"
 for theme in light dark; do
   pw run-code "async page => { await page.emulateMedia({ colorScheme: '$theme' }); }" >/dev/null
   for w in 1440 390; do

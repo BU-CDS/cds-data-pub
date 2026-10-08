@@ -19,6 +19,8 @@
   the next card), and Escape only moves focus back when it was inside; descriptions clamp by line
   with an ellipsis (first paragraph only); chips, Copy, more and Details name their dataset; the
   header separator is silent to screen readers; the sidebar list fades when more is below.
+- The sidebar fade follows the list's real size (it went stale after "More tags"); Copy and
+  more get their dataset name from the script that shows them.
 
 ## 2026-10-07 (v2)
 

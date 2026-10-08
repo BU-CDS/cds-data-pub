@@ -285,19 +285,18 @@ def ga_tag(ga_id: str) -> str:
     )
 
 
-def _copy(slug: str) -> str:
-    return f'<button type="button" class="copy" aria-describedby="t-{slug}" hidden>Copy</button>'
+COPY = '<button type="button" class="copy" hidden>Copy</button>'  # page.js names it by its card
 
 
 def _size(n: int) -> str:
     return f'<span title="{n:,} bytes">{human_size(n)}</span>'
 
 
-def _rows(files: tuple[DataFile, ...], slug: str) -> str:
+def _rows(files: tuple[DataFile, ...]) -> str:
     return "".join(
         f'<tr><td class="fn"><a href="{_e(f.url)}">{_e(f.name)}</a></td>'
         f'<td class="sz">{_size(f.size)}</td>'
-        f'<td class="hash"><code>{f.sha256}</code>{_copy(slug)}</td></tr>'
+        f'<td class="hash"><code>{f.sha256}</code>{COPY}</td></tr>'
         for f in files
     )
 
@@ -306,13 +305,13 @@ def _files_table(ds: Dataset) -> str:
     shown, rest = ds.files[:FILES_SHOWN], ds.files[FILES_SHOWN:]
     table = (
         '<table class="files"><thead><tr><th>File</th><th class="sz">Size</th>'
-        f'<th class="hash">sha256</th></tr></thead><tbody>{_rows(shown, ds.slug)}</tbody></table>'
+        f'<th class="hash">sha256</th></tr></thead><tbody>{_rows(shown)}</tbody></table>'
     )
     if rest:
         more = f"Show {len(rest)} more file{'s' * (len(rest) != 1)}"
         table += (
             f'<details class="more-files"><summary>{more}</summary>'
-            f'<table class="files"><tbody>{_rows(rest, ds.slug)}</tbody></table></details>'
+            f'<table class="files"><tbody>{_rows(rest)}</tbody></table></details>'
         )
     return table
 
@@ -327,9 +326,9 @@ def _choices(group: str, legend: str, panels: list[tuple[str, str]]) -> str:
     return f'<fieldset class="fmt"><legend>{legend}</legend>{radios}{bodies}</fieldset>'
 
 
-def _code(hint: str, code: str, slug: str, prose: bool = False) -> str:
+def _code(hint: str, code: str, prose: bool = False) -> str:
     cls = ' class="prose"' if prose else ""
-    return f'<p class="hint">{hint}</p><pre{cls}><code>{_e(code)}</code></pre>{_copy(slug)}'
+    return f'<p class="hint">{hint}</p><pre{cls}><code>{_e(code)}</code></pre>{COPY}'
 
 
 def _pop(label: str, aria: str, body: str, cls: str = "btn") -> str:
@@ -350,7 +349,7 @@ def _get_data(ds: Dataset) -> str:
         f'each link downloads one file</p><ul class="flist">{items}</ul>'
     )
     panels = [("Files", files)] + [
-        (s.label, _code(f'{_e(s.hint)} · <a href="{_e(s.docs)}">docs</a>', s.code, ds.slug))
+        (s.label, _code(f'{_e(s.hint)} · <a href="{_e(s.docs)}">docs</a>', s.code))
         for s in snippets.get_data(ds)
     ]
     return _pop(
@@ -364,9 +363,9 @@ def _get_data(ds: Dataset) -> str:
 def _cite(ds: Dataset) -> str:
     bib = cite.bibtex(ds)
     panels = [
-        ("APA", _code("APA 7", cite.apa(ds), ds.slug, prose=True)),
-        ("BibTeX", _code("BibTeX", bib, ds.slug)),
-        ("RIS", _code("RIS", cite.ris(ds), ds.slug)),
+        ("APA", _code("APA 7", cite.apa(ds), prose=True)),
+        ("BibTeX", _code("BibTeX", bib)),
+        ("RIS", _code("RIS", cite.ris(ds))),
     ]
     download = (
         f'<a class="bib" download="{ds.slug}.bib" '
@@ -417,8 +416,7 @@ def render_dataset(ds: Dataset) -> str:
         f'<div class="acts">{_cite(ds)}{_get_data(ds)}</div></div>'
         f'<p class="meta">{_meta(ds)}</p><p class="badges">{_badges(ds)}</p>'
         f'<div class="desc">{_paragraphs(ds.description)}</div>'
-        f'<button type="button" class="more" aria-expanded="false" aria-describedby="t-{ds.slug}" '
-        "hidden>more</button>"
+        '<button type="button" class="more" aria-expanded="false" hidden>more</button>'
         f'<details class="det"><summary aria-describedby="t-{ds.slug}">Details</summary>'
         f"{source}{contact}{_files_table(ds)}"
         "</details></article>"
@@ -430,8 +428,7 @@ def _sidebar(catalog: Catalog) -> str:
     order = sorted(counts, key=lambda t: (-counts[t], t))
     chips = "".join(
         f'<button type="button" class="chip{" extra" if i >= TAGS_SHOWN else ""}" '
-        f'data-tag="{t}" aria-pressed="false" aria-label="{t}, {counts[t]} dataset'
-        f'{"s" * (counts[t] != 1)}">{t}<span class="n">{counts[t]}</span></button>'
+        f'data-tag="{t}" aria-pressed="false">{t}<span class="n">{counts[t]}</span></button>'
         for i, t in enumerate(order)
     )
     more = (

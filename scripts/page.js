@@ -51,17 +51,21 @@
     selected.forEach((t) => p.append("tag", t));
     const s = p.toString();
     history.replaceState(null, "", location.pathname + (s ? `?${s}` : "") + location.hash);
-    edge();
   }
 
+  // Sidebar list: fade its bottom edge while more entries are below. Its size changes with the
+  // window, filtering and "More tags", so watch it rather than each cause.
   const tocNav = d.querySelector(".toc");
-  const edge = () => {
-    if (!tocNav) return;
-    const below = tocNav.scrollTop + tocNav.clientHeight < tocNav.scrollHeight - 2;
-    tocNav.classList.toggle("more-below", below);
-  };
-  if (tocNav) tocNav.addEventListener("scroll", edge);
-  addEventListener("resize", edge);
+  if (tocNav) {
+    const edge = () => {
+      const below = tocNav.scrollTop + tocNav.clientHeight < tocNav.scrollHeight - 2;
+      tocNav.classList.toggle("more-below", below);
+    };
+    tocNav.addEventListener("scroll", edge);
+    const watch = new ResizeObserver(edge);
+    watch.observe(tocNav);
+    watch.observe(tocNav.firstElementChild);
+  }
 
   function clearAll() {
     selected.clear();
@@ -73,6 +77,7 @@
   // Measured before filtering, while every card is still visible.
   for (const desc of $$(".desc")) {
     const more = desc.nextElementSibling;
+    more.setAttribute("aria-describedby", `t-${desc.closest(".ds").id}`);
     const first = desc.firstElementChild;
     desc.classList.add("clamp");
     const overflow = desc.children.length > 1 || first.scrollHeight > first.clientHeight + 1;
@@ -132,6 +137,7 @@
   });
 
   for (const button of $$(".copy")) {
+    button.setAttribute("aria-describedby", `t-${button.closest(".ds").id}`);
     button.addEventListener("click", () => {
       const text = button.parentElement.querySelector("code").textContent;
       const done = (ok) => {
@@ -153,7 +159,7 @@
     pop.addEventListener("focusout", (ev) => {
       // Tab out closes it (WCAG 2.4.11); a click on plain text inside does not
       // (focus then goes nowhere, so relatedTarget is null).
-      if (pop.open && ev.relatedTarget && !pop.contains(ev.relatedTarget)) pop.open = false;
+      if (ev.relatedTarget && !pop.contains(ev.relatedTarget)) pop.open = false;
     });
   }
   d.addEventListener("click", (ev) => {
