@@ -17,6 +17,7 @@ MAX_FILES = 50
 MAX_TAGS = 5
 MAX_NOTICE = 24  # the notice is a tag in the page header, e.g. "Demo"
 RESERVED_SLUGS = frozenset(("q", "live", "chips", "chips-hd"))  # element ids the page uses
+RESERVED_PREFIXES = ("t-", "ct-", "gd-")  # ids the page derives from a slug: t-<slug>, ...
 SLUG_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 DOI_RE = re.compile(r"^10\.\d{4,9}/\S+$")
@@ -180,7 +181,7 @@ def parse_dataset(slug: str, entry: dict, vocab: tuple[str, ...], where: str) ->
             f"{where}: file name must be the slug: lowercase letters and digits joined by single"
             " hyphens"
         )
-    if slug in RESERVED_SLUGS:
+    if slug in RESERVED_SLUGS or slug.startswith(RESERVED_PREFIXES):
         raise ManifestError(
             f"{where}: file name '{slug}' is reserved by the page; pick another slug"
         )

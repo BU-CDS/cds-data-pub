@@ -28,7 +28,7 @@ mkrepo(){ # $1: dir; $2: page html
 wt_count(){ git -C "$1" worktree list | wc -l | tr -d ' '; }
 WORK="$(mktemp -d)"; trap 'rm -rf "$WORK"' EXIT
 
-# 1. happy path: page branch carries exactly index.html, .nojekyll, CNAME
+# 1. happy path: page branch carries exactly index.html, catalog.json, .nojekyll, CNAME
 D="$WORK/r1"; mkrepo "$D" "$CLEAN"
 out="$(DEPLOY_PUSH=0 "$D/deploy.sh" 2>&1)" || bad "happy path failed: $out"
 files="$(git -C "$D" ls-tree --name-only page | LC_ALL=C sort | tr '\n' ' ')"

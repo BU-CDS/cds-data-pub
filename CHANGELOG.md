@@ -7,22 +7,21 @@
   A citation's DOI always belongs to the work it cites (our own DOI never lands on the original's
   reference). In `catalog.json`, `doi` is likewise our own; the original's DOI is in its
   `citation` strings.
-- Layout: the header stays visible on wide screens (on phones the search row does); body text
-  1rem with two smaller steps; from 1300px cards are two columns (title, summary line, description
-  left; buttons and badges right); page width up to 1920px; on phones the terms note moves below
-  the list; printing drops the sidebar.
+- Layout: on phones the search row stays visible; body text 1rem with two smaller steps; from
+  1300px cards are two columns (title, summary line, description left; buttons and badges
+  right); page width up to 1920px; printing drops the sidebar.
 - Badges no longer touch the Cite / Get data buttons on wide cards; overridden and dead CSS removed.
-- Get data is the primary button (dark text on the lighter teal in dark mode) and opens on a Files
-  tab with one plain download link per file; the command-line tabs follow.
+- Get data is the primary button and opens on a Files tab with one plain download link per file;
+  the command-line tabs follow.
 - A test ties the tab CSS to the number of Get data tabs, so a new tab cannot silently never show.
 - Accessibility: a Cite / Get data popover closes when focus tabs out of it (it no longer covers
   the next card), and Escape only moves focus back when it was inside; descriptions clamp by line
   with an ellipsis (first paragraph only); chips, Copy, more and Details name their dataset; the
-  header separator is silent to screen readers; the sidebar list fades when more is below.
+  header separator is silent to screen readers.
 - Docs: the GA cookie behaviour (same as cluster.cds.bu.edu) is written down.
 - Review fixes: on phones an anchor jump clears the sticky search bar even with a filter on, and
   tapping a tag badge shows the top of the results; drag-selecting a command no longer closes its
-  popover; keyboard focus in the sidebar list stays clear of the fade; chips read "boston 9" with
+  popover; chips read "boston 9" with
   a hidden "datasets" (no aria-label, axe clean); "More tags" keeps focus on the first new chip;
   the page heading keeps its word break for screen readers.
 - The intro paragraph spans the full width of the dataset list; the "provided as is" terms
@@ -49,10 +48,11 @@
   wide screens (it was slimmed to 48px) and the footer links are 0.75rem.
 - Two-column cards: a hairline and more space separate the Cite / Get data buttons from the
   license and tag badges (chosen from five rendered options).
+- Slugs starting `t-`, `ct-` or `gd-` are refused: the page derives element ids from slugs with
+  those prefixes, so `t-foo` would clash with dataset `foo`.
 - Docs: the development guide describes the app-shell layout (the sticky-header note was stale)
   and why the custom domain is set with `CATALOG_DOMAIN`, not in the Pages settings.
-- The sidebar fade follows the list's real size (it went stale after "More tags"); Copy and
-  more get their dataset name from the script that shows them.
+- Copy and more get their dataset name from the script that shows them.
 
 ## 2026-10-07 (v2)
 

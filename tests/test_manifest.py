@@ -172,6 +172,13 @@ class Refused(unittest.TestCase):
             with self.subTest(slug=slug):
                 self.assertRefused("reserved", dataset_dict(), slug=slug)
 
+    def test_reserved_slug_prefixes(self) -> None:
+        # the page derives ids t-<slug>, ct-<slug>-N, gd-<slug>-N: "t-foo" would clash with "foo"
+        for slug in ("t-foo", "ct-foo-0", "gd-foo"):
+            with self.subTest(slug=slug):
+                self.assertRefused("reserved", dataset_dict(), slug=slug)
+        self.assertEqual(parse(dataset_dict(), slug="tgd-ct").slug, "tgd-ct")
+
     def test_duplicate_file_name(self) -> None:
         self.assertRefused("duplicate file", dataset_dict(file=[file_dict(), file_dict()]))
 

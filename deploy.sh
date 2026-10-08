@@ -72,7 +72,7 @@ fi
 git -C "$WT" -c commit.gpgsign=false commit -q --amend -m "Publish $(date '+%F %H:%M %Z')"
 if [ "${DEPLOY_PUSH:-1}" = 1 ]; then
   git -C "$WT" push -qf origin page
-  echo "deploy: pushed index.html to page"
+  echo "deploy: pushed index.html and catalog.json to page"
 else
   echo "deploy: staged page locally (DEPLOY_PUSH=0, not pushed)"
 fi
