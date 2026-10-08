@@ -40,10 +40,6 @@ class Valid(unittest.TestCase):
         self.assertEqual(ds.citation.authors, ("Horst, Allison M.",))
         self.assertIsNone(ds.citation.url)
 
-    def test_citation_doi(self) -> None:
-        ds = parse(dataset_dict(citation={**CITE, "doi": "10.7289/V5D21VHZ"}))
-        self.assertEqual(ds.citation.doi, "10.7289/V5D21VHZ")
-
     def test_contact_optional(self) -> None:
         entry = dataset_dict()
         del entry["contact"]

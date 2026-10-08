@@ -35,14 +35,14 @@ class Effective(unittest.TestCase):
         )
         self.assertEqual(cite.link(ds(citation={**FULL, "url": "https://u.org"})), "https://u.org")
         self.assertEqual(  # APA 7 prefers the DOI to a URL
-            cite.link(ds(doi="10.5281/zenodo.1", citation={**FULL, "url": "https://u.org"})),
+            cite.link(ds(citation={**FULL, "url": "https://u.org", "doi": "10.5281/zenodo.1"})),
             "https://doi.org/10.5281/zenodo.1",
         )
 
 
 class Apa(unittest.TestCase):
     def test_three_authors(self) -> None:
-        text = cite.apa(ds(citation=FULL, doi="10.5281/zenodo.3960218"))
+        text = cite.apa(ds(citation={**FULL, "doi": "10.5281/zenodo.3960218"}))
         self.assertEqual(
             text,
             "Horst, A. M., Hill, A. P., & Gorman, K. B. (2020). palmerpenguins: Palmer "
@@ -67,7 +67,7 @@ class Apa(unittest.TestCase):
 
 class Bibtex(unittest.TestCase):
     def test_full(self) -> None:
-        text = cite.bibtex(ds(citation=FULL, doi="10.5281/zenodo.3960218"))
+        text = cite.bibtex(ds(citation={**FULL, "doi": "10.5281/zenodo.3960218"}))
         self.assertTrue(text.startswith("@misc{example,\n"))  # slugs are unique keys
         self.assertIn(
             "  author = {Horst, Allison M. and Hill, Alison P. and Gorman, Kristen B.},", text
@@ -94,7 +94,7 @@ class Bibtex(unittest.TestCase):
 
 class Ris(unittest.TestCase):
     def test_lines(self) -> None:
-        lines = cite.ris(ds(citation=FULL, doi="10.5281/zenodo.3960218")).splitlines()
+        lines = cite.ris(ds(citation={**FULL, "doi": "10.5281/zenodo.3960218"})).splitlines()
         self.assertEqual(lines[0], "TY  - DATA")
         self.assertIn("AU  - Gorman, Kristen B.", lines)
         self.assertIn("PY  - 2020", lines)
@@ -103,6 +103,11 @@ class Ris(unittest.TestCase):
 
 
 class CitationDoi(unittest.TestCase):
+    def test_own_doi_not_mixed_into_the_originals_reference(self) -> None:
+        d = ds(citation={**FULL, "url": "https://orig.org"}, doi="10.5281/zenodo.1")
+        self.assertEqual(cite.link(d), "https://orig.org")
+        self.assertNotIn("zenodo.1", cite.bibtex(d) + cite.ris(d))
+
     def test_citation_doi_used_everywhere(self) -> None:
         d = ds(citation={**FULL, "doi": "10.7289/V5D21VHZ"})
         self.assertEqual(cite.link(d), "https://doi.org/10.7289/V5D21VHZ")

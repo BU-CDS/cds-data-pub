@@ -4,6 +4,9 @@
 
 - The DOI of re-hosted data (GHCN, penguins) moves into `[citation].doi`: it appears in Cite
   (link, BibTeX, RIS) but not on the card, which shows a DOI only for datasets we publish.
+  A citation's DOI always belongs to the work it cites (our own DOI never lands on the original's
+  reference). In `catalog.json`, `doi` is likewise our own; the original's DOI is in its
+  `citation` strings.
 
 ## 2026-10-07 (v2)
 
