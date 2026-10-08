@@ -266,6 +266,12 @@ class Page(unittest.TestCase):
         self.assertIn(f"@media{query}{{html,body{{height:100%;overflow:hidden;}}", page(one()))
         self.assertIn(f'matchMedia("{query}")', PAGE_JS)  # the list is a tab stop only there
 
+    def test_header_and_footer_links_match_cluster(self) -> None:
+        html = page(one())  # cluster.cds.bu.edu, measured 2026-10-08: 56px bar, 13.2px links
+        self.assertIn("padding:12px var(--content-pad);", html)
+        self.assertNotIn("header{padding-top:8px;", html)
+        self.assertIn(".ft-link{color:var(--muted);font-size:0.75rem;", html)
+
     def test_intro_full_width_and_no_terms_paragraph(self) -> None:
         html = page(one())
         self.assertIn(".intro p{margin:0 0 8px;}", html)

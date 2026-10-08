@@ -45,6 +45,8 @@
   chips' hidden screen-reader text stretched the page); filtering or searching from far down the
   list shows the first match; Shift+Tab out of the first card's popover closes it; the list is a
   named region and a tab stop only where it scrolls.
+- Matched to cluster.cds.bu.edu (measured side by side): the title bar keeps its 56px height on
+  wide screens (it was slimmed to 48px) and the footer links are 0.75rem.
 - The sidebar fade follows the list's real size (it went stale after "More tags"); Copy and
   more get their dataset name from the script that shows them.
 
