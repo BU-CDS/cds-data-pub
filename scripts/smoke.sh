@@ -75,16 +75,31 @@ check "search stays visible on phones after scrolling" "$(val '() => { const r =
 pw resize 1440 900 >/dev/null
 pw goto "$URL" >/dev/null
 check "Tab out of an open popover closes it" "$(val '() => { const ps = document.querySelectorAll(".acts details.pop:last-of-type"); ps[0].open = true; ps[0].querySelector("summary").focus(); ps[1].querySelector("summary").focus(); return ps[0].open; }')" "false"
+pw eval '() => { document.querySelector(".list").scrollTop = 3000; document.querySelector(".chip").click(); }' >/dev/null
+check "filtering from far down the list shows the first match" "$(val '() => { const l = document.querySelector(".list").getBoundingClientRect(), c = document.querySelector(".ds:not([hidden])").getBoundingClientRect(); return c.top >= l.top; }')" "true"
+pw resize 390 844 >/dev/null
+check "phone: the list is not a tab stop" "$(val '() => document.querySelector(".list").tabIndex')" "-1"
+pw resize 1440 900 >/dev/null
+check "wide: the list is a tab stop again" "$(val '() => document.querySelector(".list").tabIndex')" "0"
+pw goto "$URL" >/dev/null
+pw eval '() => { const s = document.querySelector(".acts details.pop > summary"); s.focus(); s.click(); }' >/dev/null
+pw press Shift+Tab >/dev/null
+check "Shift+Tab out of the first card's popover closes it" "$(val '() => document.querySelector(".acts details.pop").open')" "false"
+pw resize 1280 400 >/dev/null
+pw goto "$URL" >/dev/null
+check "short window (≥1100 wide): the page scrolls as normal, no clipped list" "$(val '() => { const l = document.querySelector(".list"); return document.scrollingElement.scrollHeight > innerHeight && l.scrollHeight <= l.clientHeight + 1; }')" "true"
+pw resize 1440 900 >/dev/null
+pw goto "$URL" >/dev/null
 pw eval '() => { const p = document.querySelector(".acts details.pop:last-of-type"); p.open = true; p.querySelector(".flist a").focus(); }' >/dev/null
 pw run-code "async page => { await page.locator('.acts details.pop[open] .hint').first().click({ timeout: 3000 }); }" >/dev/null 2>&1 || true
 check "a real click on text inside a popover keeps it open" "$(val '() => document.querySelector(".acts details.pop:last-of-type").open')" "true"
 check "Copy and more buttons name their dataset" "$(val '() => [...document.querySelectorAll(".copy, .more")].every(b => b.getAttribute("aria-describedby") === "t-" + b.closest(".ds").id)')" "true"
 check "a one-paragraph short description gets no more button" "$(val '() => [...document.querySelectorAll(".desc")].filter(d => d.children.length === 1 && d.firstElementChild.textContent.length < 60).every(d => d.nextElementSibling.hidden)')" "true"
 check "clamped descriptions show only their first paragraph" "$(val '() => [...document.querySelectorAll(".desc.clamp")].every(d => [...d.children].slice(1).every(p => getComputedStyle(p).display === "none"))')" "true"
-pw resize 1280 400 >/dev/null
+pw resize 1280 640 >/dev/null
 pw goto "$URL" >/dev/null
-pw eval '() => { const m = document.querySelector(".more-tags"); if (m) m.click(); }' >/dev/null
-check "all tags shown: the sidebar scrolls, the page does not" \
+pw eval '() => { const m = document.querySelector(".more-tags"); if (m) m.click(); const cs = document.querySelector(".chips"); for (let i = 0; i < 60; i++) cs.append(cs.firstElementChild.cloneNode(true)); }' >/dev/null
+check "a long tag list: the sidebar scrolls, the page does not" \
   "$(val '() => { const s = document.querySelector(".side-in"); s.scrollTop = s.scrollHeight; const c = document.querySelector(".count").getBoundingClientRect(), r = document.querySelector(".side").getBoundingClientRect(); return c.bottom <= r.bottom + 1 && document.scrollingElement.scrollHeight <= innerHeight; }')" "true"
 pw resize 390 844 >/dev/null
 bmid="$(val '() => { const b = [...document.querySelectorAll(".ds")].filter(c => c.dataset.tags.split(" ").includes("boston")); return b[Math.floor(b.length / 2)].id; }')"

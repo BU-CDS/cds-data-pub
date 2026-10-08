@@ -238,7 +238,8 @@ class Page(unittest.TestCase):
         html = page(one())
         for rule in (
             "--content-max:1920px",
-            "@media(min-width:1100px){html,body{height:100%;overflow:hidden;}",
+            # short windows and large text keep normal page scrolling (WCAG 1.4.4, 1.4.10)
+            "@media(min-width:1100px) and (min-height:38em){html,body{height:100%;overflow:hidden;}",
             ".list{flex:1 1 auto;min-height:0;overflow:auto;",
             "@media(max-width:1099px){.wrap{display:block;}.side{position:sticky;top:0;",
             "@media(min-width:1300px){.ds{display:grid;",
@@ -252,13 +253,18 @@ class Page(unittest.TestCase):
 
     def test_sidebar_is_one_framed_filter_box(self) -> None:
         html = page(one())
-        self.assertNotIn("toc", html)  # the cards are the only dataset list
+        self.assertNotIn('class="toc', html)  # the cards are the only dataset list
         self.assertIn(
             ".filters{border:1px solid var(--border);border-radius:10px;"
             "background:var(--surface2);",
             html,
         )
         self.assertIn(("accent", "surface2"), CONTRAST_TEXT)  # Clear filters, More tags
+
+    def test_script_uses_the_css_shell_query(self) -> None:
+        query = "(min-width:1100px) and (min-height:38em)"
+        self.assertIn(f"@media{query}{{html,body{{height:100%;overflow:hidden;}}", page(one()))
+        self.assertIn(f'matchMedia("{query}")', PAGE_JS)  # the list is a tab stop only there
 
     def test_intro_full_width_and_no_terms_paragraph(self) -> None:
         html = page(one())
@@ -274,7 +280,7 @@ class Page(unittest.TestCase):
 
     def test_cards_live_in_a_focusable_list(self) -> None:
         html = page(one())
-        self.assertIn('<div class="list" tabindex="0" aria-label="Datasets">', html)
+        self.assertIn('<div class="list" role="region" tabindex="0" aria-label="Datasets">', html)
         lst = html[html.index('<div class="list"') :]
         self.assertLess(lst.index('<article class="ds"'), lst.index("</main>"))
         self.assertGreater(html.index('<div class="list"'), html.index('<p class="summary">'))

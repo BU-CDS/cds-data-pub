@@ -107,22 +107,33 @@
   } else if (history.state && history.state.listTop) {
     list.scrollTop = history.state.listTop;
   }
+  // The list scrolls on its own only in the app shell; elsewhere it is no tab stop.
+  const shell = matchMedia("(min-width:1100px) and (min-height:38em)");
+  const tabStop = () => { list.tabIndex = shell.matches ? 0 : -1; };
+  shell.addEventListener("change", tabStop);
+  tabStop();
+  const refilter = () => {
+    apply();
+    list.scrollTop = 0; // the top of the filtered results (wide screens)
+  };
 
-  q.addEventListener("input", apply);
+  q.addEventListener("input", refilter);
   for (const chip of chips) {
     chip.addEventListener("click", () => {
       const t = chip.dataset.tag;
       if (!selected.delete(t)) selected.add(t);
-      apply();
+      refilter();
     });
   }
-  $$(".clear").forEach((b) => b.addEventListener("click", clearAll));
+  $$(".clear").forEach((b) => b.addEventListener("click", () => {
+    clearAll();
+    list.scrollTop = 0;
+  }));
   for (const a of $$("a.tag")) {
     a.addEventListener("click", (ev) => {
       ev.preventDefault();
       selected.add(new URL(a.href).searchParams.get("tag"));
-      apply();
-      list.scrollTop = 0; // the top of the filtered results (wide screens)
+      refilter();
       d.querySelector("main").scrollIntoView(); // (phones)
     });
   }
@@ -164,9 +175,9 @@
     });
     pop.addEventListener("focusout", (ev) => {
       // Tab out closes it (WCAG 2.4.11). A click on plain text inside does not: focus then goes
-      // nowhere (relatedTarget null) or to a focusable ancestor such as the scrolling list.
+      // nowhere or to a focusable ancestor such as the list, after a press inside (pressedIn).
       const to = ev.relatedTarget;
-      if (to && !pop.contains(to) && !to.contains(pop)) pop.open = false;
+      if (to && !pop.contains(to) && pressedIn !== pop) pop.open = false;
     });
   }
   // An outside click closes popovers, unless the press began inside one (a drag-select

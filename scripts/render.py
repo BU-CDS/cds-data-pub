@@ -93,7 +93,7 @@ padding:14px var(--content-pad) 60px;flex:1 0 auto;display:grid;\
 grid-template-columns:minmax(0,1fr);\
 gap:20px;}
 @media(min-width:1100px){.wrap{grid-template-columns:270px minmax(0,1fr);}\
-.side-in{max-height:100%;overflow:auto;}\
+.side-in{max-height:100%;overflow:auto;position:relative;}\
 .filters{border:1px solid var(--border);border-radius:10px;\
 background:var(--surface2);padding:10px 12px;}\
 .side .chip{background:var(--surface);}}
@@ -202,9 +202,9 @@ details.det>summary,.more-files summary,.files .fn a{min-height:40px;display:inl
 align-items:center;}}
 @media(pointer:coarse) and (max-width:1099px){.ftoggle{min-height:40px;display:inline-flex;\
 align-items:center;}}
-@media(min-width:1100px){html,body{height:100%;overflow:hidden;}\
+@media(min-width:1100px) and (min-height:38em){html,body{height:100%;overflow:hidden;}\
 header{padding-top:8px;padding-bottom:8px;}\
-.wrap{flex:1 1 auto;min-height:0;padding-bottom:10px;}.side{min-height:0;}\
+.wrap{flex:1 1 auto;min-height:0;padding-bottom:10px;grid-template-rows:minmax(0,1fr);}.side{min-height:0;}\
 main{display:flex;flex-direction:column;min-height:0;height:100%;}\
 .list{flex:1 1 auto;min-height:0;overflow:auto;border:1px solid var(--border);\
 border-radius:10px;background:var(--surface2);padding:14px 16px;scroll-padding-top:14px;}\
@@ -513,7 +513,7 @@ def render_page(
         "Open Storage Network</a>. Every file downloads directly, with no account.</p>"
         "</section>"
         f"{summary}"
-        '<div class="list" tabindex="0" aria-label="Datasets">'
+        '<div class="list" role="region" tabindex="0" aria-label="Datasets">'
         '<p class="empty" hidden>No datasets match. '
         '<button type="button" class="clear">Clear filters</button></p>'
         f"{body}"

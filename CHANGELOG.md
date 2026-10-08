@@ -39,6 +39,12 @@
 - Wide-screen sidebar: the tag filter (search, tags, count) sits in a framed box matching the
   dataset list's frame (tags white on it), and scrolls on its own in very short windows. The
   sidebar's "Datasets" jump list is removed: it only repeated the card titles.
+- Review fixes: the app shell needs a window at least 38em tall (scales with the reader's text
+  size), so short windows and large text fall back to normal page scrolling instead of clipping
+  the list; the sidebar scrolls on its own with a long tag list (it grew past the window, and the
+  chips' hidden screen-reader text stretched the page); filtering or searching from far down the
+  list shows the first match; Shift+Tab out of the first card's popover closes it; the list is a
+  named region and a tab stop only where it scrolls.
 - The sidebar fade follows the list's real size (it went stale after "More tags"); Copy and
   more get their dataset name from the script that shows them.
 
