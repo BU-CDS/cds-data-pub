@@ -58,13 +58,27 @@ def _apa_name(author: str) -> str:
     return f"{family}, " + " ".join(f"{part[0]}." for part in given.replace(".", " ").split())
 
 
+def retrieved(ds: Dataset) -> str | None:
+    """ISO retrieval date for a citation without a DOI, else None.
+
+    Without a DOI the cited URL is a living source that can change after the file here was copied;
+    the date it entered the catalog (``added``) pins which version was copied.
+    """
+    return None if effective(ds).doi else ds.added.isoformat()
+
+
 def apa(ds: Dataset) -> str:
-    """APA 7 reference for a data set."""
+    """APA 7 reference for a data set; living sources (no DOI) carry a retrieval date."""
     c = effective(ds)
     names = [_apa_name(a) for a in c.authors]
     who = names[0] if len(names) == 1 else ", ".join(names[:-1]) + ", & " + names[-1]
     who += "" if who.endswith(".") else "."  # APA ends the author element with a period
     publisher = "" if c.authors == (c.publisher,) else f" {c.publisher}."  # APA omits a repeat
+    if retrieved(ds):
+        when = f"{ds.added:%B} {ds.added.day}, {ds.added.year}"
+        return (
+            f"{who} ({c.year}). {c.title} [Data set].{publisher} Retrieved {when}, from {link(ds)}"
+        )
     return f"{who} ({c.year}). {c.title} [Data set].{publisher} {link(ds)}"
 
 
@@ -85,6 +99,8 @@ def bibtex(ds: Dataset) -> str:
     if c.doi:
         rows.append(("doi", c.doi))
     rows.append(("url", link(ds)))
+    if when := retrieved(ds):
+        rows.append(("urldate", when))  # biblatex's access date
     body = ",\n".join(f"  {k} = {{{v}}}" for k, v in rows)
     return f"@misc{{{ds.slug},\n{body}\n}}"  # slugs are unique keys
 
@@ -96,5 +112,8 @@ def ris(ds: Dataset) -> str:
     lines += [f"PY  - {c.year}", f"PB  - {c.publisher}"]
     if c.doi:
         lines.append(f"DO  - {c.doi}")
-    lines += [f"UR  - {link(ds)}", "ER  - "]
+    lines.append(f"UR  - {link(ds)}")
+    if when := retrieved(ds):
+        lines.append(f"Y2  - {when.replace('-', '/')}")  # RIS access date
+    lines.append("ER  - ")
     return "\n".join(lines)

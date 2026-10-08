@@ -45,7 +45,7 @@ class GetData(unittest.TestCase):
     def test_labels_and_docs(self) -> None:
         tabs = snippets.get_data(ds("a.csv"))
         self.assertEqual(
-            [s.label for s in tabs], ["Download all", "AWS CLI", "rclone", "Python", "R"]
+            [s.label for s in tabs], ["Shell (curl)", "AWS CLI", "rclone", "Python", "R"]
         )
 
     def test_bulk_commands_use_the_folder(self) -> None:
@@ -60,8 +60,9 @@ class GetData(unittest.TestCase):
             "rclone copy :s3:bu-cds-public-data/example ./example \\\n"
             "  --s3-provider Other --s3-endpoint https://mghp.osn.xsede.org",
         )
-        self.assertIn('curl -gfO "$base/$f"', tabs["Download all"].code)  # -g: [ ] { } are literal
-        self.assertIn("All 2 files", tabs["Download all"].hint)
+        self.assertIn('curl -gfO "$base/$f"', tabs["Shell (curl)"].code)  # -g: [ ] { } are literal
+        self.assertIn("All 2 files", tabs["Shell (curl)"].hint)
+        self.assertIn("macOS or Linux terminal", tabs["Shell (curl)"].hint)  # not a download button
 
     def test_python_and_r_by_format(self) -> None:
         csv = self.tabs(ds("a.csv"))
@@ -76,7 +77,7 @@ class GetData(unittest.TestCase):
 
     def test_shell_metacharacters_quoted(self) -> None:
         tabs = self.tabs(ds("a&b.csv", "$x.csv"))
-        loop = tabs["Download all"].code
+        loop = tabs["Shell (curl)"].code
         self.assertIn("'a&b.csv'", loop)
         self.assertIn("'$x.csv'", loop)
 

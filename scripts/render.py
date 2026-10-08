@@ -131,6 +131,27 @@ box-shadow:0 1px 2px var(--shadow);padding:14px 16px;margin:0 0 14px;}
 font-weight:600;\
 margin:0;overflow-wrap:anywhere;}
 .acts{display:flex;gap:6px;flex-shrink:0;}
+.perma{color:inherit;text-decoration:none;}.perma:hover{text-decoration:underline;}\
+.ds:target{outline:2px solid var(--accent);outline-offset:2px;}
+.meta .who{color:var(--text);}
+.hnav{margin-left:auto;display:flex;flex-wrap:wrap;gap:4px 16px;font-size:0.875rem;}\
+.hnav a,header .orglink{color:#ffffff;}.hnav a{text-decoration:underline;text-underline-offset:3px;}\
+header .orglink{text-decoration:none;}header .orglink:hover{text-decoration:underline;}
+.band{background:var(--surface2);border:1px solid var(--border);border-radius:10px;\
+padding:16px 18px;margin:0 0 14px;}
+.band .lede{font-family:"Whitney SSm A",var(--t-sans);font-size:1.3rem;font-weight:600;\
+line-height:1.25;margin:0 0 8px;}
+.band .facts{display:flex;flex-wrap:wrap;gap:6px 18px;margin:0 0 12px;color:var(--muted);\
+font-size:0.875rem;font-variant-numeric:tabular-nums;}.band .facts b{color:var(--text);}
+.band .ctas{display:flex;flex-wrap:wrap;gap:8px;margin:0;}
+.cta{display:inline-block;padding:6px 12px;border-radius:6px;border:1px solid var(--accent);\
+color:var(--accent);text-decoration:none;font-size:0.9rem;}.cta.primary{background:var(--accent);\
+color:var(--on-accent);}
+.about{border-top:1px solid var(--border);margin:8px 0 14px;padding-top:12px;\
+display:grid;gap:4px 28px;}
+@media(min-width:900px){.about{grid-template-columns:1fr 1fr;}}
+.about h2{font-family:"Whitney SSm A",var(--t-sans);font-size:1rem;margin:8px 0 4px;}
+.about ol,.about ul{margin:0 0 8px;padding-left:1.3em;}.about p{margin:0 0 8px;}
 .meta{color:var(--muted);font-size:0.875rem;margin:4px 0 6px;font-variant-numeric:tabular-nums;\
 overflow-wrap:anywhere;}
 .badges{display:flex;flex-wrap:wrap;gap:4px;margin:0 0 8px;}
@@ -369,9 +390,27 @@ def _cite(ds: Dataset) -> str:
     return _pop("Cite", f"Cite {ds.title}", body)
 
 
+def producer(ds: Dataset) -> str | None:
+    """Who made the data, from its citation: an organization by name, people by family name
+    ("A", "A & B", "A et al."). None when the dataset cites its own catalog entry."""
+    if not ds.citation:
+        return None
+    first = ds.citation.authors[0]
+    if ", " not in first:
+        return first
+    fam = [a.split(", ", 1)[0] for a in ds.citation.authors if ", " in a]
+    if len(ds.citation.authors) == 1:
+        return fam[0]
+    if len(ds.citation.authors) == 2 and len(fam) == 2:
+        return f"{fam[0]} & {fam[1]}"
+    return f"{fam[0]} et al."
+
+
 def _meta(ds: Dataset) -> str:
     n, fmts = len(ds.files), snippets.formats(ds)
-    parts = [
+    who = producer(ds)
+    parts = [f'from <span class="who">{_e(who)}</span>'] if who else []
+    parts += [
         f"{n} file{'s' * (n != 1)}" + (f" ({', '.join(fmts)})" if fmts else ""),
         f"{_size(ds.total_size)} download",
         f'added <span class="nw">{ds.added.isoformat()}</span>',
@@ -406,7 +445,8 @@ def render_dataset(ds: Dataset) -> str:
     )
     return (
         f'<article class="ds" id="{ds.slug}" data-tags="{" ".join(ds.tags)}" '
-        f'data-text="{_e(text)}"><div class="ds-hd"><h2 id="t-{ds.slug}">{_e(ds.title)}</h2>'
+        f'data-text="{_e(text)}"><div class="ds-hd"><h2 id="t-{ds.slug}">'
+        f'<a class="perma" href="#{ds.slug}">{_e(ds.title)}</a></h2>'
         f'<div class="acts">{_cite(ds)}{_get_data(ds)}</div></div>'
         f'<p class="meta">{_meta(ds)}</p><p class="badges">{_badges(ds)}</p>'
         f'<div class="desc">{_paragraphs(ds.description)}</div>'
@@ -446,6 +486,51 @@ def _sidebar(catalog: Catalog) -> str:
     )
 
 
+CDS_URL = "https://www.bu.edu/cds-faculty/"
+INTRO = (
+    "<p>Open datasets curated and hosted by the Boston University "
+    f'<a href="{CDS_URL}">Faculty of Computing &amp; Data Sciences</a> for research and teaching, '
+    'on the NSF-funded <a href="https://www.openstoragenetwork.org/">Open Storage Network</a>. '
+    "Each dataset names who produced it. Every file downloads directly, with no account.</p>"
+)
+INTRO_SHORT = (  # under the band, which already says who curates it and the no-account facts
+    '<p>Hosted on the NSF-funded <a href="https://www.openstoragenetwork.org/">Open Storage '
+    "Network</a>. Each dataset names who produced it.</p>"
+)
+ABOUT = (  # from the README; the steward's contact is not public yet, so none is invented here
+    '<section class="about" aria-label="About this catalog"><div id="about">'
+    "<h2>About this catalog</h2><ol>"
+    "<li>A CDS researcher asks the CDS data steward to publish a dataset approved for public "
+    "release.</li><li>The steward uploads it to the Open Storage Network (OSN), free through "
+    "NSF ACCESS.</li><li>It appears here with a direct download link for each file.</li></ol>"
+    "<p><b>Public data only</b>: no HIPAA, FERPA or export-controlled data. <b>Not an "
+    "archive</b>: OSN keeps no backups; for a citable DOI, also deposit the dataset in a "
+    'repository such as Zenodo. Scripts can read <a href="catalog.json">catalog.json</a>: every '
+    "dataset, file, checksum and citation.</p></div>"
+    '<div id="publish"><h2>Publish your data with CDS</h2>'
+    "<p>CDS researchers can share public datasets here at no cost: files are hosted on OSN, "
+    "listed with sizes and checksums, and citable from this page. Ask the CDS data steward to "
+    "start.</p></div></section>"
+)
+
+
+def _band(n: int, total: int, updated: date) -> str:
+    """Option B: an identity band above the list (facts are computed, never typed)."""
+    return (
+        '<section class="band" aria-label="About this catalog">'
+        # "curated and hosted by", not "from": the datasets are produced by others (review #1)
+        '<p class="lede">Open datasets, curated and hosted by BU Computing &amp; Data Sciences, '
+        "free for research and teaching.</p>"
+        f'<p class="facts"><span><b>{n}</b> dataset{"s" * (n != 1)}</span>'
+        f"<span><b>{human_size(total)}</b> to download</span>"
+        "<span><b>No account</b> needed</span><span><b>Checksums</b> on every file</span>"
+        f'<span>updated <span class="nw">{updated.isoformat()}</span></span></p>'
+        '<p class="ctas"><a class="cta primary" href="#publish">Publish your data with CDS</a>'
+        '<a class="cta" href="#about">How it works</a>'
+        '<a class="cta" href="catalog.json">Use from code: catalog.json</a></p></section>'
+    )
+
+
 def render_page(
     catalog: Catalog,
     assets: Assets,
@@ -453,6 +538,7 @@ def render_page(
     ga_id: str | None,
     preview: bool = False,
     manifest_sha: str = "",
+    identity: str = "links",
 ) -> str:
     """The whole page.
 
@@ -464,6 +550,8 @@ def render_page(
         preview: Mark the page as a local preview (``check_page`` refuses to publish it).
         manifest_sha: catalog digest stamped so ``deploy.sh`` can refuse a page built from any
             other catalog. Empty = no stamp.
+        identity: how the page presents CDS — "links" (header links to CDS, About and Publish)
+            or "band" (an identity band with facts and calls to action above the list).
 
     Returns:
         A complete HTML document.
@@ -497,26 +585,31 @@ def render_page(
         + (PREVIEW_MARK if preview else "")
         + (f'<meta name="cds-manifest" content="{manifest_sha}">' if manifest_sha else "")
         + "<title>CDS Public Research Data</title>"
-        '<meta name="description" content="Public research datasets from the Boston University '
-        'Faculty of Computing &amp; Data Sciences, free to download.">'
+        '<meta name="description" content="Open datasets curated and hosted by the Boston '
+        'University Faculty of Computing &amp; Data Sciences, free to download.">'
         f'<link rel="icon" href="{assets.favicon}">'
         + (ga_tag(ga_id) if ga_id else "")
         + f"<style>{css}</style></head><body>"
         f'<header><div class="hwrap"><h1><img class="buplate" src="{assets.plate}" '
-        'alt="Boston University"><span class="orgname">Faculty of Computing &amp; Data '
-        'Sciences</span> <span class="hsep" aria-hidden="true">|</span> Public Research Data'
+        f'alt="Boston University"><a class="orglink" href="{CDS_URL}"><span class="orgname">'
+        "Faculty of Computing &amp; Data Sciences</span></a> "
+        '<span class="hsep" aria-hidden="true">|</span> Public Research Data'
         f"{notice}</h1>"
-        "</div></header>"
-        f'<div class="wrap">{_sidebar(catalog)}<main><section class="intro">'
-        "<p>Public datasets from research at the Boston University Faculty of Computing &amp; "
-        'Data Sciences, hosted on the NSF-funded <a href="https://www.openstoragenetwork.org/">'
-        "Open Storage Network</a>. Every file downloads directly, with no account.</p>"
-        "</section>"
-        f"{summary}"
-        '<div class="list" role="region" tabindex="0" aria-label="Datasets">'
+        + (
+            '<nav class="hnav" aria-label="About this catalog"><a href="#about">About</a>'
+            '<a href="#publish">Publish your data</a><a href="catalog.json">catalog.json</a></nav>'
+            if identity == "links"
+            else ""
+        )
+        + "</div></header>"
+        f'<div class="wrap">{_sidebar(catalog)}<main>'
+        + (_band(n, total, updated) if identity == "band" and n else "")
+        + f'<section class="intro">{INTRO_SHORT if identity == "band" and n else INTRO}</section>'
+        + (summary if identity != "band" else "")  # the band already states these facts
+        + '<div class="list" role="region" tabindex="0" aria-label="Datasets">'
         '<p class="empty" hidden>No datasets match. '
         '<button type="button" class="clear">Clear filters</button></p>'
-        f"{body}"
+        f"{body}{ABOUT}"
         "</div></main></div>"
         f'<footer class="pagefoot"><div class="ft-l"><img class="ft-emblem" '
         f'src="{assets.signature}" alt="Boston University Faculty of Computing &amp; Data '

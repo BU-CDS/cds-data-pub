@@ -99,9 +99,9 @@ def get_data(ds: Dataset) -> list[Snippet]:
     verb = "Read" if f.name.endswith((".csv", ".parquet")) else "Download"
     n = len(ds.files)
     return [
-        Snippet(
-            "Download all",
-            f"All {n} file{'s' * (n != 1)}",
+        Snippet(  # a shell loop, not a download button: say so (Windows cmd/PowerShell 5.1 fail)
+            "Shell (curl)",
+            f"All {n} file{'s' * (n != 1)} · a macOS or Linux terminal",
             loop,
             DOCS["curl"],
         ),

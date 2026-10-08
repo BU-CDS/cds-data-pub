@@ -97,7 +97,7 @@ class Card(unittest.TestCase):
 
     def test_popovers(self) -> None:
         html = render_dataset(one())
-        for label in ("Download all", "AWS CLI", "rclone", "Python", "R", "APA", "BibTeX", "RIS"):
+        for label in ("Shell (curl)", "AWS CLI", "rclone", "Python", "R", "APA", "BibTeX", "RIS"):
             self.assertIn(f">{label}</label>", html)
         self.assertIn("<legend>Format</legend>", html)
         self.assertIn("<legend>Citation style</legend>", html)
@@ -126,7 +126,7 @@ class Card(unittest.TestCase):
         self.assertIn('<summary class="btn primary" aria-label="Get data for', html)
         self.assertIn('<summary class="btn" aria-label="Cite', html)
         gd = html[html.index("Get data for") :]
-        self.assertLess(gd.index(">Files</label>"), gd.index(">Download all</label>"))
+        self.assertLess(gd.index(">Files</label>"), gd.index(">Shell (curl)</label>"))
         self.assertIn('<ul class="flist"><li><a href="', gd)
 
     def test_panel_css_covers_every_get_data_tab(self) -> None:
@@ -135,8 +135,47 @@ class Card(unittest.TestCase):
 
     def test_names_carry_context(self) -> None:
         html = render_dataset(one(title="Penguins"))
-        self.assertIn('<h2 id="t-example">Penguins</h2>', html)
+        self.assertIn(  # the title is the dataset's permalink
+            '<h2 id="t-example"><a class="perma" href="#example">Penguins</a></h2>', html
+        )
         self.assertIn('<summary aria-describedby="t-example">Details</summary>', html)
+
+    def test_producer_named_on_card(self) -> None:
+        org = {
+            "authors": ["Natural Earth"],
+            "year": 2022,
+            "title": "T",
+            "publisher": "Natural Earth",
+        }
+        many = {**org, "authors": ["Menne, M. J.", "Durre, I.", "Vose, R. S."]}
+        two = {**org, "authors": ["Horst, A. M.", "Hill, A. P."]}
+        self.assertIn(
+            'from <span class="who">Natural Earth</span>', render_dataset(one(citation=org))
+        )
+        self.assertIn('<span class="who">Menne et al.</span>', render_dataset(one(citation=many)))
+        self.assertIn(
+            '<span class="who">Horst &amp; Hill</span>', render_dataset(one(citation=two))
+        )
+        self.assertNotIn('class="who"', render_dataset(one()))  # cites its own catalog entry
+
+    def test_intro_does_not_claim_cds_produced_the_data(self) -> None:
+        html = page()
+        self.assertNotIn("datasets from research at", html)
+        self.assertIn("Each dataset names who produced it.", html)
+
+    def test_identity_options(self) -> None:
+        links = render_page(SAMPLE, ASSETS, DAY, None, identity="links")
+        band = render_page(SAMPLE, ASSETS, DAY, None, identity="band")
+        self.assertIn('<nav class="hnav"', links)
+        self.assertNotIn('class="band"', links)
+        self.assertIn('class="band"', band)
+        self.assertNotIn('<nav class="hnav"', band)
+        self.assertNotIn('class="summary"', band)  # the band states the facts once
+        self.assertNotIn("Open data from", band)  # curated and hosted, not produced, by CDS
+        for html in (links, band):  # both link CDS and keep About / Publish reachable by anchor
+            self.assertIn('class="orglink" href="https://www.bu.edu/cds-faculty/"', html)
+            self.assertIn('id="about"', html)
+            self.assertIn('id="publish"', html)
 
     def test_chip_count_named_without_aria_label(self) -> None:
         html = render_page(SAMPLE, ASSETS, DAY, None)
@@ -149,7 +188,7 @@ class Card(unittest.TestCase):
         self.assertIn('<span class="sr"> datasets</span>', chip)
 
     def test_heading_name_keeps_word_break(self) -> None:
-        self.assertIn('Sciences</span> <span class="hsep" aria-hidden="true">|</span>', page())
+        self.assertIn('Sciences</span></a> <span class="hsep" aria-hidden="true">|</span>', page())
 
     def test_escaping(self) -> None:
         html = render_dataset(one(title="<script>x</script> & co"))

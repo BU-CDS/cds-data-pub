@@ -1,5 +1,23 @@
 # Changelog
 
+## Unreleased (branch design/2026-10-08-data-story)
+
+From the 2026-10-08 design review (all six findings confirmed by the steward):
+- The intro no longer says the datasets come "from research at" CDS: it says CDS curates and
+  hosts them, and each card names who produced the data ("from …", taken from its citation).
+- The "Download all" tab is "Shell (curl)", hinted "a macOS or Linux terminal": it is a shell
+  loop, not a download.
+- Switching a Get data / Cite tab keeps the popover in view (it could fall below the list's edge).
+- Citations without a DOI carry a retrieval date (the date the dataset was added): APA
+  "Retrieved …, from …", BibTeX `urldate`, RIS `Y2`.
+- Each dataset title links to its `#slug`; the targeted card is outlined.
+- The header's CDS name links to the CDS site; an "About this catalog" and a "Publish your data
+  with CDS" section close the list (text from the README).
+- Under comparison, not final: how the page presents CDS — header links (`--identity links`) or
+  an identity band with facts and calls to action (`--identity band`). The hidden flag goes once
+  one is chosen. Not yet done: columns, rows and coverage per dataset (review #5) and the data
+  steward's contact.
+
 ## 2026-10-07 (v2.1)
 
 - The DOI of re-hosted data (GHCN, penguins) moves into `[citation].doi`: it appears in Cite

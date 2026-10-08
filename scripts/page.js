@@ -173,6 +173,10 @@
       pops.forEach((o) => { if (o !== pop) o.open = false; });
       pop.querySelector(".pop-body").scrollIntoView({ block: "nearest" }); // not cut off by the list
     });
+    // A taller tab (Shell, AWS CLI…) can push the body past the list's edge after it opened.
+    pop.addEventListener("change", () => {
+      pop.querySelector(".pop-body").scrollIntoView({ block: "nearest" });
+    });
     pop.addEventListener("focusout", (ev) => {
       // Tab out closes it (WCAG 2.4.11). A click on plain text inside does not: focus then goes
       // nowhere or to a focusable ancestor such as the list, after a press inside (pressedIn).

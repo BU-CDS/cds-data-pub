@@ -62,7 +62,9 @@ class Apa(unittest.TestCase):
 
     def test_publisher_omitted_when_it_is_the_author(self) -> None:
         same = {**FULL, "authors": ["Natural Earth"], "publisher": "Natural Earth"}
-        self.assertIn("[Data set]. https://", cite.apa(ds(citation=same, source="https://n.org")))
+        self.assertIn(  # no "Natural Earth." repeat between the title and the retrieval note
+            "[Data set]. Retrieved", cite.apa(ds(citation=same, source="https://n.org"))
+        )
 
 
 class Bibtex(unittest.TestCase):
@@ -100,6 +102,25 @@ class Ris(unittest.TestCase):
         self.assertIn("PY  - 2020", lines)
         self.assertIn("DO  - 10.5281/zenodo.3960218", lines)
         self.assertEqual(lines[-1], "ER  - ")
+
+
+class Retrieved(unittest.TestCase):
+    """A citation without a DOI points at a living source: pin the copy by its catalog date."""
+
+    def test_no_doi_carries_retrieval_date_everywhere(self) -> None:
+        d = ds(citation={**FULL, "url": "https://u.org"})
+        self.assertEqual(cite.retrieved(d), d.added.isoformat())
+        when = f"{d.added:%B} {d.added.day}, {d.added.year}"
+        self.assertTrue(cite.apa(d).endswith(f"Zenodo. Retrieved {when}, from https://u.org"))
+        self.assertIn(f"  urldate = {{{d.added.isoformat()}}}", cite.bibtex(d))
+        self.assertIn(f"Y2  - {d.added.isoformat().replace('-', '/')}", cite.ris(d).splitlines())
+
+    def test_doi_needs_no_retrieval_date(self) -> None:
+        d = ds(citation={**FULL, "doi": "10.5281/zenodo.3960218"})
+        self.assertIsNone(cite.retrieved(d))
+        self.assertNotIn("Retrieved", cite.apa(d))
+        self.assertNotIn("urldate", cite.bibtex(d))
+        self.assertFalse(any(x.startswith("Y2") for x in cite.ris(d).splitlines()))
 
 
 class CitationDoi(unittest.TestCase):
