@@ -101,8 +101,7 @@ max-height:calc(100vh - var(--hdr) - 24px);display:flex;flex-direction:column;}}
 main{min-width:0;}
 .notice{background:var(--notice-bg);border:1px solid var(--notice-border);color:var(--notice-fg);\
 border-radius:6px;padding:8px 12px;margin:0 0 12px;max-width:80ch;}
-.intro p{margin:0 0 8px;max-width:80ch;}
-.terms{color:var(--muted);font-size:0.875rem;max-width:80ch;margin:0 0 8px;}
+.intro p{margin:0 0 8px;}
 .summary{color:var(--muted);font-size:0.875rem;margin:0 0 12px;font-variant-numeric:tabular-nums;}
 .side input[type=search]{width:100%;padding:7px 9px;border:1px solid var(--muted);\
 border-radius:6px;background:var(--surface);color:var(--text);font:inherit;}
@@ -229,7 +228,6 @@ minmax(240px,1fr);grid-template-rows:auto auto auto 1fr auto;column-gap:28px;}\
 .meta{grid-area:2/1;}.badges{grid-area:2/2/5/3;align-self:start;margin-top:6px;}\
 .desc{grid-area:3/1;margin-top:6px;}.more{grid-area:4/1;justify-self:start;}\
 .det{grid-area:5/1/6/3;}}
-@media(max-width:700px){main{display:flex;flex-direction:column;}.terms{order:9;}}
 @media print{header{position:static;}.side{display:none;}}
 .btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent);\
 font-weight:600;}
@@ -529,9 +527,6 @@ def render_page(
         'Data Sciences, hosted on the NSF-funded <a href="https://www.openstoragenetwork.org/">'
         "Open Storage Network</a>. Every file downloads directly, with no account.</p>"
         "</section>"
-        '<p class="terms">Data is provided as is, and availability is not guaranteed: keep your '
-        "own copy of anything you rely on. Cite a dataset by its DOI where one is listed. "
-        "Questions go to the contact or source listed on each dataset.</p>"
         f"{summary}"
         '<p class="empty" hidden>No datasets match. '
         '<button type="button" class="clear">Clear filters</button></p>'

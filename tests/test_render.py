@@ -247,17 +247,21 @@ class Page(unittest.TestCase):
             ".meta{grid-area:2/1;}",
             ".badges{grid-area:2/2/5/3;",
             "@media print{",
-            "@media(max-width:700px){main{display:flex;flex-direction:column;}.terms{order:9;}}",
         ):
             with self.subTest(rule=rule):
                 self.assertIn(rule, html)
         self.assertIn("background:var(--bg);font-size:1rem;", html)
 
-    def test_terms_outside_intro_and_separator_hidden(self) -> None:
+    def test_intro_full_width_and_no_terms_paragraph(self) -> None:
+        html = page(one())
+        self.assertIn(".intro p{margin:0 0 8px;}", html)
+        self.assertNotIn("Data is provided as is", html)
+        self.assertNotIn(".terms", html)
+
+    def test_separator_hidden(self) -> None:
         html = page(one())
         intro = html[html.index('<section class="intro">') : html.index("</section>")]
         self.assertNotIn("terms", intro)
-        self.assertIn('<p class="terms">', html)
         self.assertIn('<span class="hsep" aria-hidden="true">|</span>', html)
 
     def test_dark_tokens_and_rules(self) -> None:
