@@ -14,6 +14,7 @@
 - Badges no longer touch the Cite / Get data buttons on wide cards; overridden and dead CSS removed.
 - Get data is the primary button (dark text on the lighter teal in dark mode) and opens on a Files
   tab with one plain download link per file; the command-line tabs follow.
+- A test ties the tab CSS to the number of Get data tabs, so a new tab cannot silently never show.
 
 ## 2026-10-07 (v2)
 

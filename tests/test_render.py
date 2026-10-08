@@ -7,11 +7,13 @@ import unittest
 from datetime import date
 from pathlib import Path
 
+from scripts import snippets
 from scripts.manifest import Catalog, load_catalog
 from scripts.render import (
     CONTRAST_TEXT,
     CONTRAST_UI,
     PAGE_JS,
+    PANEL_CSS,
     PREVIEW_MARK,
     TOKENS,
     Assets,
@@ -96,17 +98,7 @@ class Card(unittest.TestCase):
 
     def test_popovers(self) -> None:
         html = render_dataset(one())
-        for label in (
-            "Files",
-            "Download all",
-            "AWS CLI",
-            "rclone",
-            "Python",
-            "R",
-            "APA",
-            "BibTeX",
-            "RIS",
-        ):
+        for label in ("Download all", "AWS CLI", "rclone", "Python", "R", "APA", "BibTeX", "RIS"):
             self.assertIn(f">{label}</label>", html)
         self.assertIn("<legend>Format</legend>", html)
         self.assertIn("<legend>Citation style</legend>", html)
@@ -137,6 +129,10 @@ class Card(unittest.TestCase):
         gd = html[html.index("Get data for") :]
         self.assertLess(gd.index(">Files</label>"), gd.index(">Download all</label>"))
         self.assertIn('<ul class="flist"><li><a href="', gd)
+
+    def test_panel_css_covers_every_get_data_tab(self) -> None:
+        tabs = 1 + len(snippets.get_data(one()))  # Files + the snippet tabs
+        self.assertIn(f"nth-of-type({tabs}):checked~.panel:nth-of-type({tabs})", PANEL_CSS)
 
     def test_escaping(self) -> None:
         html = render_dataset(one(title="<script>x</script> & co"))
