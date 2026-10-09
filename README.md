@@ -3,7 +3,7 @@
 Free, public download links for research datasets from Boston University's Faculty of Computing &
 Data Sciences (CDS). Anyone can download, with no account and no login.
 
-Catalog: [data.cds.bu.edu](data.cds.bu.edu)
+Catalog: [data.cds.bu.edu](https://data.cds.bu.edu/)
 
 ## How it works
 
