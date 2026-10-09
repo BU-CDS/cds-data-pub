@@ -28,7 +28,8 @@ Needs: rclone remote `osn` with the bucket's read-write keys (never in this repo
    `[[file]]`, `rows` and `columns` from step 3 — read from the file, never estimated. The card
    names the producer from `[citation]` ("from …"), so keep its authors accurate.
 5. Preview: `.venv/bin/python -m scripts.build_page --out previews/index.html --preview` and look.
-6. Commit on `main`, then `./publish.sh`. It refuses if any link is not public or the size is off.
+6. Commit on `main`, then `./publish.sh`. It refuses uncommitted or untracked files, and any link
+   that is not public or whose size is off.
 7. Once, for the new files: check that an anonymous download matches the listed hash,
    `curl -fsS <file url> | shasum -a 256`. HEAD checks size, not content.
 
@@ -57,4 +58,4 @@ paragraph on `about.html` goes with it) from
 `catalog.toml` and the demo files in `datasets/`, publish, then
 `rclone purge osn:bu-cds-public-data/demo`.
 
-Last verified: 2026-10-08
+Last verified: 2026-10-09

@@ -2,16 +2,22 @@
 # deploy.sh — publish the built index.html (catalog page) to the page branch, which GitHub
 # Pages serves at data.cds.bu.edu. page is kept as one amended commit and force-pushed, so the
 # public page accumulates no history. Adapted from pub-cds-scc/deploy.sh.
-# DEPLOY_PUSH=0 stages the commit locally without pushing. CATALOG_DOMAIN= (empty) omits CNAME
-# so the page serves on the default github.io address. Uses git worktree: run outside a
-# restrictive sandbox.
+# DEPLOY_PUSH=0 stages the commit locally without pushing. A push happens only when publish.sh
+# calls this (CDS_PUBLISH_GATED=1), so its clean-tree, GA and link gates always ran first.
+# CATALOG_DOMAIN switches the custom domain; it cannot be empty: dropping CNAME while DNS still
+# points at GitHub Pages leaves data.cds.bu.edu open to takeover. Uses git worktree: run outside
+# a restrictive sandbox.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")" && pwd)"
 REPO="$(git -C "$ROOT" rev-parse --show-toplevel)"
 PAGE="$ROOT/index.html"
 PY="${PYTHON:-$ROOT/.venv/bin/python}"
-DOMAIN="${CATALOG_DOMAIN-data.cds.bu.edu}"   # CATALOG_DOMAIN= (empty): default github.io domain, no CNAME
+DOMAIN="${CATALOG_DOMAIN-data.cds.bu.edu}"
+[[ "$DOMAIN" =~ ^[a-z0-9]([a-z0-9.-]*[a-z0-9])?$ ]] || {
+  echo "deploy: REFUSED -- CATALOG_DOMAIN must be a host name; an empty one would unbind the domain" >&2
+  exit 1
+}
 CAT="$ROOT/catalog.json"
 [ -f "$PAGE" ] || { echo "deploy: no index.html to publish" >&2; exit 1; }
 [ -f "$CAT" ] || { echo "deploy: no catalog.json to publish (run build_page)" >&2; exit 1; }
@@ -38,6 +44,10 @@ sys.exit(json.load(open(sys.argv[1])).get("catalog_digest") != catalog_digest(Pa
   exit 1
 fi
 if [ "${DEPLOY_PUSH:-1}" = 1 ]; then
+  [ "${CDS_PUBLISH_GATED:-}" = 1 ] || {
+    echo "deploy: REFUSED -- push through ./publish.sh, which runs the clean-tree, GA and link gates" >&2
+    exit 1
+  }
   branch="$(git -C "$REPO" rev-parse --abbrev-ref HEAD)"
   [ "$branch" = main ] || {
     echo "deploy: REFUSED -- on '$branch'; a push publishes only from main (DEPLOY_PUSH=0 stages)" >&2
@@ -63,22 +73,31 @@ if ! git -C "$REPO" show-ref --verify -q refs/heads/page; then
   trap - EXIT
 fi
 
-# publish: amend the single page commit with the current page
+# page must stay one root commit; amending a commit with parents would publish their history
+if git -C "$REPO" rev-parse -q --verify 'page^' >/dev/null; then
+  echo "deploy: REFUSED -- local page has history; inspect it, then 'git branch -D page' and rerun" >&2
+  exit 1
+fi
+
+# publish: amend the single page commit; its tree is exactly the files below, nothing older
 WT="$(mktemp -d)"
 trap 'git -C "$REPO" worktree remove --force "$WT" 2>/dev/null || rm -rf "$WT"; git -C "$REPO" worktree prune' EXIT
 git -C "$REPO" worktree add -q "$WT" page
+git -C "$WT" rm -rqf -- .
 cp "$PAGE" "$WT/index.html"; cp "$CAT" "$WT/catalog.json"; : > "$WT/.nojekyll"
 for d in "${DOCS[@]}"; do cp "$ROOT/$d" "$WT/$d"; done
-git -C "$WT" add -f index.html .nojekyll catalog.json "${DOCS[@]}"
-if [ -n "$DOMAIN" ]; then
-  printf '%s\n' "$DOMAIN" > "$WT/CNAME"   # Pages needs CNAME in the published branch
-  git -C "$WT" add -f CNAME
-else
-  git -C "$WT" rm -q --cached --ignore-unmatch CNAME; rm -f "$WT/CNAME"
-fi
+printf '%s\n' "$DOMAIN" > "$WT/CNAME"   # Pages needs CNAME in the published branch
+git -C "$WT" add -f index.html .nojekyll catalog.json CNAME "${DOCS[@]}"
 git -C "$WT" -c commit.gpgsign=false commit -q --amend -m "Publish $(date '+%F %H:%M %Z')"
 if [ "${DEPLOY_PUSH:-1}" = 1 ]; then
-  git -C "$WT" push -qf origin page
+  # overwrite only the page we last fetched or pushed: an edit made on GitHub since then (a web
+  # commit to page) refuses the push instead of vanishing
+  seen="$(git -C "$REPO" rev-parse -q --verify refs/remotes/origin/page || true)"
+  git -C "$WT" push -q --force-with-lease="page:$seen" origin page || {
+    echo "deploy: REFUSED -- page on GitHub changed since the last fetch or publish." >&2
+    echo "  Look first: git fetch origin page && git show --stat origin/page; then rerun." >&2
+    exit 1
+  }
   echo "deploy: pushed index.html, about.html, publish.html and catalog.json to page"
 else
   echo "deploy: staged page locally (DEPLOY_PUSH=0, not pushed)"

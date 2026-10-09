@@ -32,6 +32,10 @@ pw goto "$URL?tag=boston" >/dev/null
 check "?tag=boston shows only boston cards" "$(val "$visible")" "$want"
 pw goto "$URL?q=zzqqxx-no-such-thing" >/dev/null
 check "nonsense query shows the empty state" "$(val '() => !document.querySelector(".empty").hidden')" "true"
+check "a ?q= link fills the search box" "$(val '() => document.getElementById("q").value')" "zzqqxx-no-such-thing"
+check "search text is dropped from the URL (analytics never sees it)" "$(val '() => location.search.includes("q=")')" "false"
+pw goto "$URL?tag=boston" >/dev/null
+check "typed search text stays out of the URL" "$(val '() => { const q = document.getElementById("q"); q.value = "boston trees"; q.dispatchEvent(new Event("input", {bubbles: true})); return location.search; }')" "?tag=boston"
 pw goto "$URL?tag=no-such-tag" >/dev/null
 check "unknown tag ignored" "$(val "$visible")" "$total"
 last="$(val '() => [...document.querySelectorAll(".ds")].find(c => !c.dataset.tags.split(" ").includes("boston")).id')"

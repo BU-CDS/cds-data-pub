@@ -1,5 +1,20 @@
 # Changelog
 
+## Unreleased
+
+Pre-public security audit (Claude, ponytail, Codex), resiliency fixes:
+- Search text no longer goes into the URL, so Google Analytics page views cannot carry it (a
+  `?q=` link still fills the search box). Tag filters stay in the URL.
+- `CATALOG_DOMAIN` can no longer be empty: publishing without a `CNAME` would unbind
+  data.cds.bu.edu while its DNS points at GitHub Pages (subdomain takeover).
+- `publish.sh` refuses untracked files as well as changed ones: an uncommitted `datasets/*.toml`
+  was published.
+- `deploy.sh` pushes only when `publish.sh` calls it; rebuilds `page` with exactly the published
+  files (a stray file no longer survives); refuses a local `page` with history; and pushes with a
+  lease, so an edit made on GitHub since the last fetch refuses the push instead of vanishing.
+- `check_page` admits the GA bootstrap only byte-for-byte.
+- Docs: GA's visitor ID is pseudonymous, and Google receives IP and browser details.
+
 ## 2026-10-09 (v3)
 
 From the 2026-10-08 design review (all six findings confirmed by the steward):

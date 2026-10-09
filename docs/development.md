@@ -24,7 +24,7 @@ with `PUB_CPU_CLONE`. They are never copied into this repo.
 | Lint | `ruff check scripts tests && ruff format --check scripts tests` |
 | Stage the real page without pushing | `DEPLOY_PUSH=0 ./publish.sh` |
 | Publish | `./publish.sh` (from `main` only) |
-| Publish to the default domain (testing; no `CNAME`) | `CATALOG_DOMAIN= ./publish.sh` → `https://bu-cds.github.io/cds-data-pub/` |
+| Switch the custom domain | `CATALOG_DOMAIN=<host> ./publish.sh` (an empty value is refused) |
 
 `deploy.sh`, `publish.sh`, `test_deploy.sh` (git worktree), `shoot.sh` and `smoke.sh` (playwright-cli) need to
 run outside a restrictive sandbox. `check_page` is a regression check, not a security boundary: the
@@ -37,12 +37,23 @@ and keep the search block at the top. Cards turn two-column at ≥1300px; the pa
 
 Custom domain: `./publish.sh` writes the `CNAME` (`data.cds.bu.edu`) and force-pushes `page`, so
 a `CNAME` added in the GitHub Pages settings is replaced on the next publish. Switch domains with
-`CATALOG_DOMAIN`, not in the settings page.
+`CATALOG_DOMAIN`, not in the settings page. Publishing without a `CNAME` is refused: while DNS
+points `data.cds.bu.edu` at GitHub Pages, an unbound domain could be claimed by any GitHub
+repository (subdomain takeover). Verifying the domain for the BU-CDS organisation closes that
+for good.
+
+Publish guards: `./publish.sh` refuses changed or untracked files (every `datasets/*.toml` is
+built, committed or not). `deploy.sh` pushes only when `publish.sh` calls it, rebuilds `page` as
+one commit holding exactly the published files, and refuses a local `page` with history. The push
+overwrites only the `page` last fetched or pushed: after an edit on GitHub (a web commit to
+`page`) it refuses; look with `git fetch origin page && git show --stat origin/page`, then rerun.
 
 Analytics: GA4 `G-MTV6EXSR2V`. Outbound clicks are **download-link clicks**, not downloads: they
 miss `curl` and include failed attempts and source/DOI links. Like cluster.cds.bu.edu (checked
 2026-10-07), GA sets two first-party cookies, `_ga` and `_ga_<id>`, on `.bu.edu`: a random visitor
-ID kept about 13 months, no personal data. The page's own script uses no storage or cookies.
+ID kept about 13 months. That ID is pseudonymous, not anonymous, and Google also receives each
+visitor's IP address and browser details with every hit. Search text never enters the URL, so page
+views do not carry it (the tag filters do). The page's own script uses no storage or cookies.
 
 ## Catalog rules
 

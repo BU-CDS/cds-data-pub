@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # publish.sh — build, gate, link-check and deploy the catalog page; all or nothing (set -e).
 # DEPLOY_PUSH=0 runs every step and stages the page commit locally without pushing.
-# A push needs a clean tree (tracked files) and the GA tag; deploy.sh refuses any branch but main.
+# A push needs a clean tree (no changed or untracked files: every datasets/*.toml is built) and
+# the GA tag; deploy.sh pushes only when called from here, and only from main.
 # Uses git worktree (deploy.sh): run outside a restrictive sandbox.
 set -euo pipefail
 
@@ -11,8 +12,9 @@ export PYTHONPATH="$ROOT"
 
 GATE=()
 if [ "${DEPLOY_PUSH:-1}" = 1 ]; then
-  git -C "$ROOT" diff --quiet HEAD -- || {
-    echo "publish: REFUSED -- uncommitted changes to tracked files; commit first (DEPLOY_PUSH=0 stages)" >&2
+  [ -z "$(git -C "$ROOT" status --porcelain)" ] || {
+    echo "publish: REFUSED -- uncommitted or untracked files; commit or remove them first (DEPLOY_PUSH=0 stages)" >&2
+    git -C "$ROOT" status --short >&2
     exit 1
   }
   GATE=(--require-ga "$("$PY" -P -c 'from scripts.build_page import GA_ID; print(GA_ID)')")
@@ -27,4 +29,4 @@ sys.exit(not load_catalog(Path(sys.argv[1])).steward)' "$ROOT"; then
   echo "publish: WARNING -- no steward contact in catalog.toml: Publish says a contact is coming" >&2
 fi
 "$PY" -P -m scripts.check_links --catalog "$ROOT"
-"$ROOT/deploy.sh"
+CDS_PUBLISH_GATED=1 "$ROOT/deploy.sh"

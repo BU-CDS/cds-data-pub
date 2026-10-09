@@ -48,10 +48,10 @@
     d.querySelector(".filters .clear").hidden = !active;
     d.querySelector(".empty").hidden = shown > 0 || cards.length === 0;
     d.querySelector(".fcount").textContent = selected.size ? ` (${selected.size})` : "";
+    // Tags go in the URL; search text never does, so analytics page views cannot carry it
     const p = new URLSearchParams(location.search); // keep utm_*, gclid and the like
     p.delete("q");
     p.delete("tag");
-    if (q.value.trim()) p.set("q", q.value.trim());
     selected.forEach((t) => p.append("tag", t));
     const s = p.toString();
     history.replaceState(history.state, "", location.pathname + (s ? `?${s}` : "") + location.hash);

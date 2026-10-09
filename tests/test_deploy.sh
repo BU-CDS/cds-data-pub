@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# test_deploy.sh — deploy.sh in throwaway repos: worktree lifecycle, page gate, page branch shape.
+# test_deploy.sh — deploy.sh in throwaway repos: worktree lifecycle, page gate, page branch shape,
+# push guards (publish.sh only, remote edits, domain); publish.sh's clean-tree gate.
 # Uses git worktree: run outside a restrictive sandbox.
 set -uo pipefail
 
@@ -43,13 +44,26 @@ DEPLOY_PUSH=0 "$D/deploy.sh" >/dev/null 2>&1 || bad "second deploy failed"
 [ "$(git -C "$D" rev-list --count page)" = 1 ] && ok "page stays a single commit" || bad "page grew history"
 git -C "$D" show page:index.html | grep -q 2026-10-07 && ok "second deploy carries new page" || bad "stale page"
 
-# 2b. CATALOG_DOMAIN= (empty) publishes for the default github.io domain: no CNAME on page;
-#     a later default deploy puts it back
-CATALOG_DOMAIN= DEPLOY_PUSH=0 "$D/deploy.sh" >/dev/null 2>&1 || bad "empty-domain deploy failed"
-files="$(git -C "$D" ls-tree --name-only page | LC_ALL=C sort | tr '\n' ' ')"
-[ "$files" = ".nojekyll about.html catalog.json index.html publish.html " ] && ok "empty CATALOG_DOMAIN drops CNAME" || bad "page has: $files"
-DEPLOY_PUSH=0 "$D/deploy.sh" >/dev/null 2>&1 || bad "default deploy after empty-domain failed"
-[ "$(git -C "$D" show page:CNAME 2>/dev/null)" = "data.cds.bu.edu" ] && ok "default deploy restores CNAME" || bad "CNAME not restored"
+# 2b. an empty CATALOG_DOMAIN is refused (dropping CNAME would unbind the domain); page untouched
+before="$(git -C "$D" rev-parse page)"
+out="$(CATALOG_DOMAIN= DEPLOY_PUSH=0 "$D/deploy.sh" 2>&1)" && bad "empty CATALOG_DOMAIN deployed"
+grep -q "unbind" <<<"$out" && ok "empty CATALOG_DOMAIN refused" || bad "wrong refusal: $out"
+[ "$(git -C "$D" rev-parse page)" = "$before" ] && ok "refused domain left page alone" || bad "page changed"
+
+# 2b2. a file that reached page by other means is not carried into the next publish
+git -C "$D" worktree add -q "$WORK/extra" page
+printf 'x\n' > "$WORK/extra/private-notes.txt"; git -C "$WORK/extra" add private-notes.txt
+git -C "$WORK/extra" -c commit.gpgsign=false commit -q --amend -m extra
+git -C "$D" worktree remove --force "$WORK/extra"
+DEPLOY_PUSH=0 "$D/deploy.sh" >/dev/null 2>&1 || bad "deploy over an extra file failed"
+git -C "$D" ls-tree --name-only page | grep -q private-notes && bad "stray file kept on page" || ok "stray file dropped from page"
+
+# 2b3. a page branch with history is refused (amending would publish that history)
+git -C "$D" worktree add -q "$WORK/hist" page
+git -C "$WORK/hist" -c commit.gpgsign=false commit -q --allow-empty -m child
+git -C "$D" worktree remove --force "$WORK/hist"
+out="$(DEPLOY_PUSH=0 "$D/deploy.sh" 2>&1)" && bad "page with history deployed"
+grep -q "has history" <<<"$out" && ok "page with history refused" || bad "wrong refusal: $out"
 
 # 2c. a missing catalog.json is refused
 D="$WORK/r1b"; mkrepo "$D" "$CLEAN"; rm "$D/catalog.json"
@@ -93,11 +107,18 @@ else ok "page from another catalog refused"; fi
 
 # 3c. pushing from a branch other than main is refused before any commit
 D="$WORK/g-branch"; mkrepo "$D" "$CLEAN"; git -C "$D" checkout -qb feature
-out="$("$D/deploy.sh" 2>&1)" && bad "off-main push allowed"
+out="$(CDS_PUBLISH_GATED=1 "$D/deploy.sh" 2>&1)" && bad "off-main push allowed"
 grep -q "only from main" <<<"$out" && ok "off-main push refused" || bad "wrong refusal: $out"
 git -C "$D" show-ref -q --verify refs/heads/page && bad "off-main run created page" || ok "no page branch created"
 
+# 3d. a push without publish.sh's gates is refused before any commit
+D="$WORK/g-direct"; mkrepo "$D" "$CLEAN"
+out="$("$D/deploy.sh" 2>&1)" && bad "direct push allowed"
+grep -q "through ./publish.sh" <<<"$out" && ok "direct push refused" || bad "wrong refusal: $out"
+git -C "$D" show-ref -q --verify refs/heads/page && bad "direct push created page" || ok "no page branch created"
+
 # 4. a failed push must not strand a worktree; the next run is not wedged
+export CDS_PUBLISH_GATED=1
 D="$WORK/r4"; mkrepo "$D" "$CLEAN"
 git -C "$D" remote add origin "$WORK/no-such-remote.git"
 "$D/deploy.sh" >/dev/null 2>&1 && bad "push to a missing remote should fail"
@@ -110,5 +131,31 @@ D="$WORK/r5"; mkrepo "$D" "$CLEAN"
 DEPLOY_PUSH=0 "$D/deploy.sh" >/dev/null 2>&1 || bad "baseline failed"
 git -C "$D" worktree add -q "$WORK/ghost" page && rm -rf "$WORK/ghost"
 DEPLOY_PUSH=0 "$D/deploy.sh" >/dev/null 2>&1 && ok "stale registration self-heals" || bad "wedged by stale registration"
+
+# 6. pushes to a real remote: first and repeat publish succeed; an edit made on the remote since
+#    (a web commit to page) refuses the push and survives; after a fetch the publish goes through
+D="$WORK/r6"; mkrepo "$D" "$CLEAN"; git init -q --bare "$WORK/r6.git"
+git -C "$D" remote add origin "$WORK/r6.git"
+"$D/deploy.sh" >/dev/null 2>&1 && ok "first push to an empty remote" || bad "first push failed"
+"$D/deploy.sh" >/dev/null 2>&1 && ok "repeat push" || bad "repeat push failed"
+git clone -q -b page "$WORK/r6.git" "$WORK/r6-web"
+printf 'x\n' > "$WORK/r6-web/web.txt"; git -C "$WORK/r6-web" add web.txt
+git -C "$WORK/r6-web" -c user.email=w@w -c user.name=w -c commit.gpgsign=false commit -qm web
+git -C "$WORK/r6-web" push -q origin page
+web="$(git -C "$WORK/r6.git" rev-parse page)"
+out="$("$D/deploy.sh" 2>&1)" && bad "pushed over a remote edit"
+grep -q "changed since" <<<"$out" && ok "remote edit refuses the push" || bad "wrong refusal: $out"
+[ "$(git -C "$WORK/r6.git" rev-parse page)" = "$web" ] && ok "remote edit survives" || bad "remote edit lost"
+git -C "$D" fetch -q origin page
+"$D/deploy.sh" >/dev/null 2>&1 && ok "push after fetch" || bad "push after fetch failed"
+[ "$(git -C "$WORK/r6.git" rev-list --count page)" = 1 ] && ok "remote page is one commit" || bad "remote page grew history"
+
+# 7. publish.sh refuses untracked files (an uncommitted datasets/*.toml would be published)
+D="$WORK/r7"; mkrepo "$D" "$CLEAN"; cp "$R/publish.sh" "$D/publish.sh"
+git -C "$D" add publish.sh && git -C "$D" -c commit.gpgsign=false commit -qm publish
+mkdir -p "$D/datasets"; printf 'title = "draft"\n' > "$D/datasets/draft.toml"
+out="$("$D/publish.sh" 2>&1)" && bad "published with an untracked dataset"
+grep -q "untracked" <<<"$out" && ok "untracked dataset refused" || bad "wrong refusal: $out"
+unset CDS_PUBLISH_GATED
 
 echo "failures: $FAILS"; [ "$FAILS" -eq 0 ]

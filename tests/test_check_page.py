@@ -67,6 +67,8 @@ class Refuses(unittest.TestCase):
     def test_stray_inline_script(self) -> None:
         self.assertProblem(check_html(inject(CLEAN, "<script>1</script>")), "inline script")
         self.assertProblem(check_html(inject(WITH_GA, "<script>1</script>")), "inline script")
+        extra = WITH_GA.replace('gtag("js",new Date());', 'gtag("js",new Date());alert(1);')
+        self.assertProblem(check_html(extra), "inline script")  # code riding in the GA bootstrap
 
     def test_forbidden_apis(self) -> None:
         for needle in (

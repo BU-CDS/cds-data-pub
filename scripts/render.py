@@ -318,13 +318,20 @@ def _paragraphs(text: str) -> str:
     return "".join(f"<p>{_e(p)}</p>" for p in parts)
 
 
+def ga_bootstrap(ga_id: str) -> str:
+    """The inline half of the GA tag; check_page admits only this exact text."""
+    return (
+        "window.dataLayer=window.dataLayer||[];"
+        "function gtag(){window.dataLayer.push(arguments);}"
+        f'gtag("js",new Date());gtag("config","{ga_id}");'
+    )
+
+
 def ga_tag(ga_id: str) -> str:
     """Google's gtag snippet, using ``window.dataLayer`` (the form pub-cds-scc's validator passes)."""
     return (
         f'<script async src="https://www.googletagmanager.com/gtag/js?id={ga_id}"></script>'
-        "<script>window.dataLayer=window.dataLayer||[];"
-        "function gtag(){window.dataLayer.push(arguments);}"
-        f'gtag("js",new Date());gtag("config","{ga_id}");</script>'
+        f"<script>{ga_bootstrap(ga_id)}</script>"
     )
 
 

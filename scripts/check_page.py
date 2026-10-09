@@ -4,7 +4,7 @@ Usage: .venv/bin/python -m scripts.check_page PAGE [--preview | --require-ga G-X
        [--catalog DIR]
 
 Refuses: any sourced script but the GA loader, any inline script but the GA bootstrap and
-scripts/page.js (byte-for-byte), JSON-LD, network, storage and eval APIs, http:// links, a
+scripts/page.js (each byte-for-byte), JSON-LD, network, storage and eval APIs, http:// links, a
 missing "Updated" stamp, a preview build presented for publish, and (with --catalog) a page built
 from another catalog.
 """
@@ -17,7 +17,7 @@ import sys
 from pathlib import Path
 
 from scripts.manifest import catalog_digest
-from scripts.render import PAGE_JS, PREVIEW_MARK
+from scripts.render import PAGE_JS, PREVIEW_MARK, ga_bootstrap
 
 SCRIPT_TAG_RE = re.compile(r"<script\b([^>]*)>", re.IGNORECASE)
 SCRIPT_RE = re.compile(r"<script\b([^>]*)>(.*?)</script\s*>", re.IGNORECASE | re.DOTALL)
@@ -73,7 +73,7 @@ def check_html(
         else:
             inline.append(body)
     configs = CONFIG_RE.findall(html)
-    ga_inline = [b for b in inline if CONFIG_RE.search(b)]
+    ga_inline = [b for b in inline if (m := CONFIG_RE.search(b)) and b == ga_bootstrap(m[1])]
     if len(inline) > len(ga_inline):
         problems.append("inline script not allowed: only the GA bootstrap and scripts/page.js")
     if len(ga_inline) > (1 if loaders else 0):
