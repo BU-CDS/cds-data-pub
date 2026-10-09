@@ -141,11 +141,14 @@ margin:0;overflow-wrap:anywhere;}
 .meta .who{color:var(--text);}
 .dx{margin:2px 0 6px;padding:12px 16px 14px;background:var(--surface2);border-radius:8px;\
 font-size:0.875rem;}
-.dx-facts{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:4px 16px;margin:0;}\
+.dx-facts{display:grid;grid-template-columns:max-content minmax(0,1fr);column-gap:16px;margin:0;}\
 .files .hash code{display:block;margin-bottom:4px;}
 .dx-facts dt{font-weight:600;color:var(--muted);}.dx-facts dd{margin:0;overflow-wrap:anywhere;}
-.dx-h{font-size:0.875rem;font-weight:600;margin:14px 0 6px;}\
-.dx-h span{font-weight:400;color:var(--muted);}.dx>.dx-h:first-child{margin-top:0;}
+.dx-facts>*{padding:8px 0;border-top:1px solid var(--border);}\
+.dx-facts>:nth-child(-n+2){padding-top:0;border-top:0;}.dx-facts>:nth-last-child(-n+2){padding-bottom:0;}
+.dx-h{font-size:0.875rem;font-weight:600;margin:12px 0 6px;padding-top:12px;\
+border-top:1px solid var(--border);}.dx-h span{font-weight:400;color:var(--muted);}\
+.dx>.dx-h:first-child{margin-top:0;padding-top:0;border-top:0;}
 .dx-cols{list-style:none;margin:0;padding:0;display:grid;\
 grid-template-columns:repeat(auto-fill,minmax(10rem,1fr));gap:1px 20px;}\
 .dx-cols li{overflow-wrap:anywhere;}\
@@ -198,8 +201,8 @@ word-break:break-all;}
 .files,.files tbody,.files tr,.files td{display:block;width:100%;}\
 .files tr{border-bottom:1px solid var(--border);padding:6px 0;}.files td{border:0;padding:1px 0;}\
 .files .hash::before{content:"sha256 ";color:var(--muted);}\
-.dx{padding:10px 12px 12px;}.dx-facts{grid-template-columns:1fr;gap:0;}\
-.dx-facts dd{margin-bottom:6px;}}
+.dx{padding:10px 12px 12px;}.dx-facts{grid-template-columns:1fr;}\
+.dx-facts dd{padding-top:0;border-top:0;}}
 .more-files summary{cursor:pointer;color:var(--accent);font-size:0.875rem;padding:6px 0;}
 .btn{list-style:none;display:inline-flex;align-items:center;gap:4px;border:1px solid var(--border);\
 background:var(--surface);color:var(--text);border-radius:6px;padding:4px 10px;font-size:0.875rem;\
