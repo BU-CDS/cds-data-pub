@@ -3,9 +3,47 @@ description = "Synthetic stress-case entry: boston tide-gauge hourly sea level, 
 license = "Public domain"
 added = 2026-09-11
 tags = ["climate", "boston", "timeseries"]
+coverage = "Hourly, 1921–2026 · one tide gauge, Boston Harbor (synthetic)"
 
 [[file]]
 name = "boston-tide-gauge.csv"
 url = "https://mghp.osn.xsede.org/bu-cds-public-data/sample/boston-tide-gauge/boston-tide-gauge.csv"
 size = 32505856
 sha256 = "6823e605b56f14d61e58eabf059b7a391411b3879db9456d75159388d8596215"
+rows = 921600
+columns = [
+  "station_id",
+  "timestamp_utc",
+  "water_level_m",
+  "water_level_flag",
+  "predicted_m",
+  "residual_m",
+  "datum",
+  "harmonic_M2",
+  "harmonic_S2",
+  "harmonic_N2",
+  "harmonic_K1",
+  "harmonic_O1",
+  "harmonic_P1",
+  "harmonic_K2",
+  "harmonic_Q1",
+  "harmonic_M4",
+  "harmonic_MS4",
+  "harmonic_MN4",
+  "harmonic_S4",
+  "harmonic_M6",
+  "harmonic_2N2",
+  "harmonic_NU2",
+  "harmonic_MU2",
+  "harmonic_L2",
+  "harmonic_T2",
+  "harmonic_J1",
+  "harmonic_OO1",
+  "harmonic_S1",
+  "harmonic_M3",
+  "harmonic_MK3",
+  "air_temp_c",
+  "wind_ms",
+  "pressure_hpa",
+  "qc_version",
+]

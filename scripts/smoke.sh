@@ -121,6 +121,16 @@ pw goto "$URL" >/dev/null
 pw eval '() => { const l = document.querySelector(".list"), lr = l.getBoundingClientRect(); const c = [...l.querySelectorAll(".ds")].find(c => c.getBoundingClientRect().top > lr.top + 0.55 * lr.height); c.querySelector(".acts details.pop:last-of-type > summary").click(); }' >/dev/null
 pw run-code "async page => { await page.waitForTimeout(300); }" >/dev/null
 check "a popover opened low in the list is scrolled fully into view" "$(val '() => { const l = document.querySelector(".list").getBoundingClientRect(), b = document.querySelector(".pop[open] .pop-body").getBoundingClientRect(); return b.bottom <= l.bottom + 1; }')" "true"
+pw goto "$URL#boston-tide-gauge" >/dev/null
+pw eval '() => { document.querySelector("#boston-tide-gauge details.det").open = true; }' >/dev/null
+COLS='const sec = document.querySelector("#boston-tide-gauge .dx-cols"), shown = () => [...sec.children].filter(li => li.offsetParent).length'
+check "long column list: first 20 names, filter and Show all visible" "$(val "() => { $COLS; const b = document.querySelector('#boston-tide-gauge .colmore'); return shown() + ' ' + !!b.offsetParent + ' ' + !!document.querySelector('#boston-tide-gauge .colq').offsetParent; }")" "20 true true"
+check "Show all reveals every column name" "$(val "() => { $COLS; const b = document.querySelector('#boston-tide-gauge .colmore'); b.click(); return shown() + ' ' + b.getAttribute('aria-expanded') + ' ' + b.textContent; }")" "34 true Show fewer"
+pw eval '() => { const b = document.querySelector("#boston-tide-gauge .colmore"); b.click(); }' >/dev/null
+pw eval '() => { const q = document.querySelector("#boston-tide-gauge .colq"); q.value = "harmonic_m"; q.dispatchEvent(new Event("input")); }' >/dev/null
+check "the filter searches every name, including ones Show all hides" "$(val "() => { $COLS; return shown() + ' | ' + document.querySelector('#boston-tide-gauge .colcount').textContent; }")" "8 | 8 of 34 match"
+pw eval '() => { const q = document.querySelector("#boston-tide-gauge .colq"); q.value = "zzz"; q.dispatchEvent(new Event("input")); }' >/dev/null
+check "a filter with no match says so" "$(val "() => document.querySelector('#boston-tide-gauge .colcount').textContent")" "No column names match"
 for w in 1440 390; do
   pw resize "$w" 900 >/dev/null
   pw eval '() => scrollTo(0, 0)' >/dev/null

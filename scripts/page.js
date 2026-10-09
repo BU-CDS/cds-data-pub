@@ -96,6 +96,34 @@
     remeasure = setTimeout(() => descs.forEach(measure), 150);
   });
 
+  // Long column lists: show the first names, "Show all", and a filter over every name.
+  for (const box of $$(".colq")) {
+    const list = box.nextElementSibling.nextElementSibling;
+    const count = box.nextElementSibling;
+    const all = list.nextElementSibling;
+    const names = $$("li", list);
+    const label = all.textContent;
+    list.classList.add("clip");
+    box.hidden = all.hidden = false;
+    all.addEventListener("click", () => {
+      const open = !list.classList.toggle("clip");
+      all.textContent = open ? "Show fewer" : label;
+      all.setAttribute("aria-expanded", String(open));
+    });
+    box.addEventListener("input", () => {
+      const text = box.value.trim().toLowerCase();
+      list.classList.toggle("filtering", text !== "");
+      let shown = 0;
+      for (const li of names) {
+        li.hidden = text !== "" && !li.textContent.toLowerCase().includes(text);
+        shown += li.hidden ? 0 : 1;
+      }
+      count.hidden = text === "";
+      count.textContent = shown ? `${shown} of ${names.length} match` : "No column names match";
+      all.hidden = text !== "";
+    });
+  }
+
   const params = new URLSearchParams(location.search);
   q.value = params.get("q") || "";
   for (const t of params.getAll("tag")) {

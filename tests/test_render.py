@@ -10,8 +10,10 @@ from pathlib import Path
 from scripts import snippets
 from scripts.manifest import Catalog, load_catalog
 from scripts.render import (
+    COLS_SHOWN,
     CONTRAST_TEXT,
     CONTRAST_UI,
+    CSS,
     PAGE_JS,
     PANEL_CSS,
     PREVIEW_MARK,
@@ -24,6 +26,7 @@ from scripts.render import (
 )
 from tests.helpers import dataset_dict, file_dict, parse, url_for
 
+CSS_DX = "".join(line for line in CSS.splitlines() if ".dx" in line)
 ASSETS = Assets(
     plate="data:image/png;base64,UExBVEU=",
     signature="data:image/png;base64,U0lH",
@@ -89,11 +92,23 @@ class Card(unittest.TestCase):
             '<span class="lic">Public domain</span>', render_dataset(one(license="Public domain"))
         )
 
-    def test_details_hold_files_source_contact(self) -> None:
-        html = render_dataset(one(source="https://s.org/x"))
+    def test_details_one_panel_with_labelled_sections(self) -> None:
+        # chosen 2026-10-09 (docs/design-decisions.md): one panel, sentence-case sections
+        html = render_dataset(one(source="https://s.org/x/", coverage="Boston, 2026"))
         det = html[html.index('<details class="det">') :]
-        for part in ("Source:", "Contact:", '<table class="files">'):
-            self.assertIn(part, det)
+        self.assertIn(
+            '<div class="dx"><dl class="dx-facts"><dt>Coverage</dt><dd>Boston, 2026</dd>'
+            '<dt>Source</dt><dd><a href="https://s.org/x/">s.org/x</a></dd>'
+            '<dt>Contact</dt><dd><a href="mailto:someone@example.org">someone@example.org</a></dd>'
+            "</dl>",
+            det,
+        )
+        self.assertIn('<h3 class="dx-h">Files <span>· 1, with sha256 checksums</span></h3>', det)
+        self.assertLess(det.index("dx-facts"), det.index('<table class="files">'))
+        self.assertNotIn("uppercase", CSS_DX)  # sentence case, not small capitals
+        bare = dataset_dict()
+        del bare["contact"]
+        self.assertNotIn('class="dx-facts"', render_dataset(parse(bare)))
 
     def test_popovers(self) -> None:
         html = render_dataset(one())
@@ -200,13 +215,34 @@ class Card(unittest.TestCase):
         table = file_dict(rows=33145, columns=["STATION", "DATE", "PRCP"])
         html = render_dataset(one(coverage="1936–2026, one station", file=[table]))
         self.assertIn("33,145 rows × 3 columns", html)  # on the card, before Details
-        self.assertIn('<p class="cov">Coverage: 1936–2026, one station</p>', html)
-        self.assertIn("Columns in data.csv (3)", html)
-        self.assertIn("<code>STATION</code>, <code>DATE</code>, <code>PRCP</code>", html)
+        self.assertIn("<dt>Coverage</dt><dd>1936–2026, one station</dd>", html)
+        self.assertIn('<h3 class="dx-h">Column names <span>· 3 in data.csv</span></h3>', html)
+        self.assertIn(
+            '<ul class="dx-cols"><li><code>STATION</code></li><li><code>DATE</code></li>'
+            "<li><code>PRCP</code></li></ul>",
+            html,
+        )
+        self.assertNotIn('class="colq"', html)  # short lists: no filter, no "Show all"
         plain = render_dataset(one())
         self.assertNotIn(" rows", plain)
-        self.assertNotIn('class="cov"', plain)
-        self.assertNotIn('class="cols"', plain)
+        self.assertNotIn("<dt>Coverage</dt>", plain)
+        self.assertNotIn('class="dx-cols"', plain)
+
+    def test_long_column_list_shows_20_then_filter_and_show_all(self) -> None:
+        names = [f"C{i:02d}" for i in range(25)]
+        html = render_dataset(one(file=[file_dict(columns=names)]))
+        self.assertEqual(html.count('<li class="x">'), 25 - COLS_SHOWN)  # hidden only by script
+        self.assertIn(
+            '<input type="search" class="colq" placeholder="Filter column names" '
+            'aria-label="Filter column names in data.csv" hidden>',
+            html,
+        )
+        self.assertIn(
+            '<button type="button" class="colmore" aria-expanded="false" hidden>'
+            "Show all 25 column names</button>",
+            html,
+        )
+        self.assertNotIn("<li hidden", html)  # without the script every name shows
 
     def test_chip_count_named_without_aria_label(self) -> None:
         html = render_page(SAMPLE, ASSETS, DAY, None)

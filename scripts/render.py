@@ -20,6 +20,7 @@ from scripts.manifest import Catalog, DataFile, Dataset, license_url
 UNITS = ("KiB", "MiB", "GiB", "TiB", "PiB")
 FILES_SHOWN = 5  # longer file lists collapse into a native <details> toggle
 TAGS_SHOWN = 12  # more tags sit behind "More tags"
+COLS_SHOWN = 20  # longer column lists show this many, then a filter and "Show all"
 PREVIEW_MARK = '<meta name="cds-build" content="preview">'
 PAGE_JS = Path(__file__).with_name("page.js").read_text(encoding="utf-8")
 
@@ -138,10 +139,22 @@ margin:0;overflow-wrap:anywhere;}
 .perma{color:inherit;text-decoration:none;}.perma:hover{text-decoration:underline;}\
 .ds:target{outline:2px solid var(--accent);outline-offset:2px;}
 .meta .who{color:var(--text);}
-.cov{margin:8px 0 4px;}.cols{margin:4px 0 8px;}.cols summary{cursor:pointer;}\
-.colnames{margin:6px 0 0;line-height:1.9;overflow-wrap:anywhere;}\
-.colnames code{font-family:var(--t-mono);font-size:0.8rem;background:var(--surface2);\
-padding:1px 5px;border-radius:4px;}
+.dx{margin:2px 0 6px;padding:12px 16px 14px;background:var(--surface2);border-radius:8px;\
+font-size:0.875rem;}
+.dx-facts{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:4px 16px;margin:0;}\
+.files .hash code{display:block;margin-bottom:4px;}
+.dx-facts dt{font-weight:600;color:var(--muted);}.dx-facts dd{margin:0;overflow-wrap:anywhere;}
+.dx-h{font-size:0.875rem;font-weight:600;margin:14px 0 6px;}\
+.dx-h span{font-weight:400;color:var(--muted);}.dx>.dx-h:first-child{margin-top:0;}
+.dx-cols{list-style:none;margin:0;padding:0;columns:10rem;column-gap:20px;}\
+.dx-cols li{break-inside:avoid;overflow-wrap:anywhere;}\
+.dx-cols code{font-family:var(--t-mono);font-size:0.8rem;}
+.dx-cols.clip:not(.filtering) li.x{display:none;}
+.colq{width:min(100%,18rem);padding:5px 8px;margin:0 0 8px;border:1px solid var(--muted);\
+border-radius:6px;background:var(--surface);color:var(--text);font:inherit;}
+.colcount{color:var(--muted);margin:0 0 6px;}
+.colmore{background:none;border:0;padding:4px 0;margin-top:4px;color:var(--accent);\
+cursor:pointer;font:inherit;text-decoration:underline;}
 header .orglink{color:#ffffff;}\
 header .orglink{text-decoration:none;}header .orglink:hover{text-decoration:underline;}
 .band{background:var(--surface2);border:1px solid var(--border);border-radius:10px;\
@@ -169,7 +182,6 @@ border-radius:999px;padding:1px 8px;font-size:0.875rem;text-decoration:none;}.li
 .desc.clamp p:first-child{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;\
 line-clamp:2;overflow:hidden;}
 details.det>summary{cursor:pointer;color:var(--accent);font-size:0.875rem;padding:6px 0;}
-.src,.contact{font-size:0.875rem;margin:4px 0;overflow-wrap:anywhere;}
 .files{width:100%;border-collapse:collapse;font-size:0.875rem;margin-top:6px;}
 .files th{text-align:left;font-weight:600;color:var(--muted);border-bottom:1px solid var(--border);\
 padding:4px 8px 4px 0;}
@@ -181,7 +193,9 @@ word-break:break-all;}
 @media(max-width:600px){.files thead{display:none;}\
 .files,.files tbody,.files tr,.files td{display:block;width:100%;}\
 .files tr{border-bottom:1px solid var(--border);padding:6px 0;}.files td{border:0;padding:1px 0;}\
-.files .hash::before{content:"sha256 ";color:var(--muted);}}
+.files .hash::before{content:"sha256 ";color:var(--muted);}\
+.dx{padding:10px 12px 12px;}.dx-facts{grid-template-columns:1fr;gap:0;}\
+.dx-facts dd{margin-bottom:6px;}}
 .more-files summary{cursor:pointer;color:var(--accent);font-size:0.875rem;padding:6px 0;}
 .btn{list-style:none;display:inline-flex;align-items:center;gap:4px;border:1px solid var(--border);\
 background:var(--surface);color:var(--text);border-radius:6px;padding:4px 10px;font-size:0.875rem;\
@@ -464,24 +478,6 @@ def render_dataset(ds: Dataset) -> str:
         *(c for f in ds.files for c in f.columns),
     )
     text = " ".join(" ".join(found).lower().split())
-    source = (
-        f'<p class="src">Source: <a href="{_e(ds.source)}">{_e(ds.source)}</a></p>'
-        if ds.source
-        else ""
-    )
-    contact = (
-        f'<p class="contact">Contact: <a href="mailto:{_e(ds.contact)}">{_e(ds.contact)}</a></p>'
-        if ds.contact
-        else ""
-    )
-    coverage = f'<p class="cov">Coverage: {_e(ds.coverage)}</p>' if ds.coverage else ""
-    columns = "".join(
-        f'<details class="cols"><summary>Columns in {_e(f.name)} ({len(f.columns)})</summary>'
-        f'<p class="colnames">{", ".join(f"<code>{_e(c)}</code>" for c in f.columns)}</p>'
-        "</details>"
-        for f in ds.files
-        if f.columns
-    )
     return (
         f'<article class="ds" id="{ds.slug}" data-tags="{" ".join(ds.tags)}" '
         f'data-text="{_e(text)}"><div class="ds-hd"><h2 id="t-{ds.slug}">'
@@ -491,8 +487,50 @@ def render_dataset(ds: Dataset) -> str:
         f'<div class="desc">{_paragraphs(ds.description)}</div>'
         '<button type="button" class="more" aria-expanded="false" hidden>more</button>'
         f'<details class="det"><summary aria-describedby="t-{ds.slug}">Details</summary>'
-        f"{coverage}{source}{contact}{columns}{_files_table(ds)}"
-        "</details></article>"
+        f'<div class="dx">{_details(ds)}</div></details></article>'
+    )
+
+
+def _columns(f: DataFile) -> str:
+    """One table file's column names, in file order. Past COLS_SHOWN the page script hides the
+    rest behind "Show all" and offers a filter; without the script every name shows."""
+    n = len(f.columns)
+    long = n > COLS_SHOWN
+    names = "".join(
+        f"<li{' class="x"' if i >= COLS_SHOWN else ''}><code>{_e(c)}</code></li>"
+        for i, c in enumerate(f.columns)
+    )
+    head = f'<h3 class="dx-h">Column names <span>· {n} in {_e(f.name)}</span></h3>'
+    if not long:
+        return f'{head}<ul class="dx-cols">{names}</ul>'
+    return (
+        f'{head}<input type="search" class="colq" placeholder="Filter column names" '
+        f'aria-label="Filter column names in {_e(f.name)}" hidden>'
+        '<p class="colcount" aria-live="polite" hidden></p>'
+        f'<ul class="dx-cols">{names}</ul>'
+        '<button type="button" class="colmore" aria-expanded="false" hidden>'
+        f"Show all {n} column names</button>"
+    )
+
+
+def _details(ds: Dataset) -> str:
+    """The Details panel: facts, column names per table file, files. One panel with labelled
+    sections, chosen 2026-10-09 (docs/design-decisions.md)."""
+    facts = []
+    if ds.coverage:
+        facts.append(f"<dt>Coverage</dt><dd>{_e(ds.coverage)}</dd>")
+    if ds.source:
+        shown = ds.source.removeprefix("https://").rstrip("/")
+        facts.append(f'<dt>Source</dt><dd><a href="{_e(ds.source)}">{_e(shown)}</a></dd>')
+    if ds.contact:
+        mail = _e(ds.contact)
+        facts.append(f'<dt>Contact</dt><dd><a href="mailto:{mail}">{mail}</a></dd>')
+    n = len(ds.files)
+    return (
+        (f'<dl class="dx-facts">{"".join(facts)}</dl>' if facts else "")
+        + "".join(_columns(f) for f in ds.files if f.columns)
+        + f'<h3 class="dx-h">Files <span>· {n}, with sha256 checksums</span></h3>'
+        + _files_table(ds)
     )
 
 

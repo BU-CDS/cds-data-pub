@@ -29,6 +29,13 @@ From the 2026-10-08 design review (all six findings confirmed by the steward):
   coming, so the page has no dead end; white focus ring on the header (14.4:1, now in the
   contrast checks); "more" re-measured on width changes; the band is the "Catalog summary"
   region; GHCN's description ends 29 September 2026, like its data.
+- Details opens one panel with labelled sections (chosen 2026-10-09 from rendered options):
+  Coverage, Source and Contact as label/value pairs, then "Column names · N in file", then
+  "Files · N, with sha256 checksums". One text size, sentence-case headings, one level of inset.
+  Column names flow down the columns in file order; past 20 names the page shows the first 20,
+  "Show all N column names" and a "Filter column names" box that searches every name (without
+  the script every name shows). A checksum's Copy button sits on its own line. The sample's
+  tide-gauge entry carries 34 synthetic columns to exercise the long list.
 
 ## 2026-10-07 (v2.1)
 

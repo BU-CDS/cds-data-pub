@@ -3,6 +3,43 @@
 Settled choices for this project's data pages. Newest first. A decision is reopened only when the
 user asks, or new data or a reader test contradicts it — then add a new entry that supersedes it.
 
+## 2026-10-09 — Simulated readers (models, not people)
+
+- **What ran:** `docs/reader-test.md` played by Codex (via `/audit`) as three personas: a first-year
+  MS student on a phone, an outside environmental scientist, a foundation program officer. Each
+  saw the first-screen text at their width and the page without styles or scripts. Gemini could
+  not play a persona through `/audit` (research mode is blocked by a headless permission; review
+  mode audited the brief instead of answering it).
+- **All three:** "Publish your data with CDS" ends without a contact and does not say who may
+  publish ("CDS researchers" only?). Two of three: no explanation of checksums, PDDL-1.0, DOI,
+  MiB or catalog.json; "Demo" leaves it unclear whether the data is usable; looked for a Share
+  button before the title link. The researcher: the page does not say the copy is unmodified,
+  what "updated", "added" and the source version each mean, or how long the copy will last.
+- **Artifact, not a finding:** all three missed the Copy buttons, which the page script reveals.
+- **Use:** input for the About and Publish pages and a Copy-link button. Not evidence about real
+  readers (data.md §5): comprehension stays *not tested* until the reader test runs.
+
+## 2026-10-09 — Details opens one panel with labelled sections
+
+- **Page / view:** catalog page, a card's Details expander (tested on GHCN-Daily, 110 columns).
+- **Options compared:** reference (stacked lines, comma-separated column paragraph) · A · one
+  panel, labelled sections (coverage and source as label/value pairs, columns as a capped grid,
+  files table) · B · the same panel with tabs (Overview · Columns · Files) · C · coverage and
+  source on the card, Columns and Files as two toggles. Rendered side by side from the branch's
+  real card (scratch `compare.html`, phone/tablet/desktop).
+- **Chosen:** A — **by:** the data steward (developer), "agree that A is the best".
+- **Why:** answers coverage, source, columns and files in one place in the order a reader decides
+  fit; the column list stops swamping the card.
+- **Evidence:** model readings only, not a reader test: the author's prediction, a blind Claude
+  first impression from screenshots alone, and Codex via `/audit` all ranked A first; Codex ranked
+  B last (tabs hide facts readers compare, citing GOV.UK's tabs guidance). Gemini failed in
+  research mode (headless permission) and was rerun in review mode. The blind Claude flagged
+  checksums wrapping badly on phones and a cramped box-in-box; Codex suggested sentence-case
+  headings, body-size text, one level of inset, the first 20 names with "Show all" and a column
+  filter above 20, and a coverage line on the card.
+- **Reopen if:** the reader test shows people miss coverage before opening Details, or cannot find
+  a named column in long lists.
+
 ## 2026-10-08 — Fixes from the blind review of the redesign
 
 - **Page / view:** catalog page after the band and the first review fixes; second review report in
