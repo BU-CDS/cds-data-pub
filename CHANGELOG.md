@@ -37,7 +37,8 @@ From the 2026-10-08 design review (all six findings confirmed by the steward):
   the script every name shows). A checksum's Copy button sits on its own line. The sample's
   tide-gauge entry carries 34 synthetic columns to exercise the long list.
 - Hairlines separate the Details sections: between Coverage, Source and Contact, and above
-  Column names and Files (owner).
+  Column names and Files, darker than the lines between file rows so they read as the main
+  dividers (owner).
 - Headline: "Open datasets, curated and hosted by BU Computing & Data Sciences. Free to download
   and reuse." (owner, with Codex and Gemini agreeing blind: CDS made none of today's datasets, and
   their licenses allow any reuse).
