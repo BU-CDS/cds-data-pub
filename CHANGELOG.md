@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased (branch design/2026-10-08-data-story)
+## Unreleased
 
 From the 2026-10-08 design review (all six findings confirmed by the steward):
 - The intro no longer says the datasets come "from research at" CDS: it says CDS curates and
@@ -39,6 +39,8 @@ From the 2026-10-08 design review (all six findings confirmed by the steward):
 - Hairlines separate the Details sections: between Coverage, Source and Contact, and above
   Column names and Files, darker than the lines between file rows so they read as the main
   dividers (owner).
+- On phones Details keeps each label beside its value (Coverage, Source, Contact), as on
+  wider screens.
 - Headline: "Open datasets, curated and hosted by BU Computing & Data Sciences. Free to download
   and reuse." (owner, with Codex and Gemini agreeing blind: CDS made none of today's datasets, and
   their licenses allow any reuse).

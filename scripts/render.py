@@ -201,8 +201,7 @@ word-break:break-all;}
 .files,.files tbody,.files tr,.files td{display:block;width:100%;}\
 .files tr{border-bottom:1px solid var(--border);padding:6px 0;}.files td{border:0;padding:1px 0;}\
 .files .hash::before{content:"sha256 ";color:var(--muted);}\
-.dx{padding:10px 12px 12px;}.dx-facts{grid-template-columns:1fr;}\
-.dx-facts dd{padding-top:0;border-top:0;}}
+.dx{padding:10px 12px 12px;}.dx-facts{column-gap:12px;}}
 .more-files summary{cursor:pointer;color:var(--accent);font-size:0.875rem;padding:6px 0;}
 .btn{list-style:none;display:inline-flex;align-items:center;gap:4px;border:1px solid var(--border);\
 background:var(--surface);color:var(--text);border-radius:6px;padding:4px 10px;font-size:0.875rem;\

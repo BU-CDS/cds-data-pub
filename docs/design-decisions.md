@@ -3,6 +3,18 @@
 Settled choices for this project's data pages. Newest first. A decision is reopened only when the
 user asks, or new data or a reader test contradicts it — then add a new entry that supersedes it.
 
+## 2026-10-09 — Details dividers; owner's calls on the blind review
+
+- **Details:** a rule between Coverage, Source and Contact and above Column names and Files,
+  darker than the lines between file rows so the sections read as the main dividers; labels sit
+  beside their values on phones too (stacked, the label read as a line break). **By:** the owner.
+- **Review #1 (list height under the band):** keep the band fixed (owner). The 2026-10-08 band
+  entry stands.
+- **Review #3 (Publish has no contact):** leave the steward empty and flagged until one is named
+  (owner).
+- **Band button:** keep "Publish your data with CDS" (owner); Gemini's persona had suggested
+  "CDS researchers: publish your data". The Publish page says CDS-only first.
+
 ## 2026-10-09 — Blind design review of the redesign (design-reviewer, read-only)
 
 - **Pages:** catalog (demo and 24-dataset sample), about.html, publish.html at 320–1440 and short
