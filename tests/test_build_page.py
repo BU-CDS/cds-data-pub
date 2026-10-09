@@ -103,6 +103,16 @@ class Main(Fixture):
         data = json.loads((page.parent / "catalog.json").read_text("utf-8"))
         self.assertEqual(len(data["datasets"]), 24)
 
+    def test_writes_about_and_publish_beside_page(self) -> None:
+        page = self.tmp / "out" / "index.html"
+        self.run_main("--catalog", "examples/sample", "--out", str(page), "--preview")
+        digest = catalog_digest(Path("examples/sample"))
+        for name in ("about.html", "publish.html"):
+            with self.subTest(name=name):
+                doc = (page.parent / name).read_text("utf-8")
+                self.assertIn(PREVIEW_MARK, doc)
+                self.assertIn(f'<meta name="cds-manifest" content="{digest}">', doc)
+
     def test_preview_never_carries_ga(self) -> None:
         page = self.tmp / "index.html"
         with mock.patch.object(build_page, "GA_ID", "G-TEST123"):

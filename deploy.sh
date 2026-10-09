@@ -15,15 +15,21 @@ DOMAIN="${CATALOG_DOMAIN-data.cds.bu.edu}"   # CATALOG_DOMAIN= (empty): default 
 CAT="$ROOT/catalog.json"
 [ -f "$PAGE" ] || { echo "deploy: no index.html to publish" >&2; exit 1; }
 [ -f "$CAT" ] || { echo "deploy: no catalog.json to publish (run build_page)" >&2; exit 1; }
+DOCS=(about.html publish.html)   # written by build_page beside index.html
+for d in "${DOCS[@]}"; do
+  [ -f "$ROOT/$d" ] || { echo "deploy: no $d to publish (run build_page)" >&2; exit 1; }
+done
 
 # unconditional gate: the page must pass check_page, and both index.html and catalog.json must
 # have been built from this checkout's catalog (catalog.toml + datasets/), so a sample or
 # preview build can never reach the page branch.
 # publish.sh additionally runs check_links and, when pushing, requires GA.
-if ! PYTHONPATH="$ROOT" "$PY" -P -m scripts.check_page "$PAGE" --catalog "$ROOT"; then
-  echo "deploy: REFUSED -- index.html fails check_page" >&2
-  exit 1
-fi
+for f in "$PAGE" "${DOCS[@]/#/$ROOT/}"; do
+  if ! PYTHONPATH="$ROOT" "$PY" -P -m scripts.check_page "$f" --catalog "$ROOT"; then
+    echo "deploy: REFUSED -- $(basename "$f") fails check_page" >&2
+    exit 1
+  fi
+done
 if ! PYTHONPATH="$ROOT" "$PY" -P -c 'import json, sys
 from pathlib import Path
 from scripts.manifest import catalog_digest
@@ -62,7 +68,8 @@ WT="$(mktemp -d)"
 trap 'git -C "$REPO" worktree remove --force "$WT" 2>/dev/null || rm -rf "$WT"; git -C "$REPO" worktree prune' EXIT
 git -C "$REPO" worktree add -q "$WT" page
 cp "$PAGE" "$WT/index.html"; cp "$CAT" "$WT/catalog.json"; : > "$WT/.nojekyll"
-git -C "$WT" add -f index.html .nojekyll catalog.json
+for d in "${DOCS[@]}"; do cp "$ROOT/$d" "$WT/$d"; done
+git -C "$WT" add -f index.html .nojekyll catalog.json "${DOCS[@]}"
 if [ -n "$DOMAIN" ]; then
   printf '%s\n' "$DOMAIN" > "$WT/CNAME"   # Pages needs CNAME in the published branch
   git -C "$WT" add -f CNAME
@@ -72,7 +79,7 @@ fi
 git -C "$WT" -c commit.gpgsign=false commit -q --amend -m "Publish $(date '+%F %H:%M %Z')"
 if [ "${DEPLOY_PUSH:-1}" = 1 ]; then
   git -C "$WT" push -qf origin page
-  echo "deploy: pushed index.html and catalog.json to page"
+  echo "deploy: pushed index.html, about.html, publish.html and catalog.json to page"
 else
   echo "deploy: staged page locally (DEPLOY_PUSH=0, not pushed)"
 fi

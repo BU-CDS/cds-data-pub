@@ -47,12 +47,13 @@ removed only from the page is still discoverable.
 ## Go live: the steward contact
 
 Add `steward = "<public email>"` to `catalog.toml`. "Publish your data with CDS" then becomes the
-band's filled button and its section gets an email link; without it the section says a contact is
-coming.
+band's filled button and `publish.html` gets an email link; without it that page says a contact is
+coming, and `./publish.sh` warns (it does not refuse).
 
 ## Remove the demo
 
-Delete `notice` (the short "Demo" tag shown in the header, at most 24 characters) from
+Delete `notice` (the short "Demo" tag shown in the header, at most 24 characters; the demo
+paragraph on `about.html` goes with it) from
 `catalog.toml` and the demo files in `datasets/`, publish, then
 `rclone purge osn:bu-cds-public-data/demo`.
 

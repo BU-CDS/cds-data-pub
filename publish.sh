@@ -19,6 +19,12 @@ if [ "${DEPLOY_PUSH:-1}" = 1 ]; then
 fi
 
 "$PY" -P -m scripts.build_page --out "$ROOT/index.html"
-"$PY" -P -m scripts.check_page "$ROOT/index.html" ${GATE[@]+"${GATE[@]}"}
+for f in index.html about.html publish.html; do
+  "$PY" -P -m scripts.check_page "$ROOT/$f" ${GATE[@]+"${GATE[@]}"}
+done
+if ! "$PY" -P -c 'import sys; from pathlib import Path; from scripts.manifest import load_catalog
+sys.exit(not load_catalog(Path(sys.argv[1])).steward)' "$ROOT"; then
+  echo "publish: WARNING -- no steward contact in catalog.toml: Publish says a contact is coming" >&2
+fi
 "$PY" -P -m scripts.check_links --catalog "$ROOT"
 "$ROOT/deploy.sh"

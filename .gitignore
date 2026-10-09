@@ -9,6 +9,8 @@ rclone.conf
 # build products, local previews, demo data downloads
 /index.html
 /catalog.json
+/about.html
+/publish.html
 previews/
 demo-data/
 .venv/

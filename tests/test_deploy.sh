@@ -21,18 +21,18 @@ mkrepo(){ # $1: dir; $2: page html
   printf 'tags = ["x"]\n' > "$1/catalog.toml"
   sha="$(digest "$1")"
   printf '{"catalog_digest": "%s"}\n' "$sha" > "$1/catalog.json"
-  printf '%s\n' "${2//@@SHA@@/$sha}" > "$1/index.html"
+  for f in index.html about.html publish.html; do printf '%s\n' "${2//@@SHA@@/$sha}" > "$1/$f"; done
   git -C "$1" add -A
   git -C "$1" -c commit.gpgsign=false commit -qm init
 }
 wt_count(){ git -C "$1" worktree list | wc -l | tr -d ' '; }
 WORK="$(mktemp -d)"; trap 'rm -rf "$WORK"' EXIT
 
-# 1. happy path: page branch carries exactly index.html, catalog.json, .nojekyll, CNAME
+# 1. happy path: page branch carries exactly the three pages, catalog.json, .nojekyll, CNAME
 D="$WORK/r1"; mkrepo "$D" "$CLEAN"
 out="$(DEPLOY_PUSH=0 "$D/deploy.sh" 2>&1)" || bad "happy path failed: $out"
 files="$(git -C "$D" ls-tree --name-only page | LC_ALL=C sort | tr '\n' ' ')"
-[ "$files" = ".nojekyll CNAME catalog.json index.html " ] && ok "page branch shape" || bad "page has: $files"
+[ "$files" = ".nojekyll CNAME about.html catalog.json index.html publish.html " ] && ok "page branch shape" || bad "page has: $files"
 [ "$(git -C "$D" show page:CNAME)" = "data.cds.bu.edu" ] && ok "CNAME is data.cds.bu.edu" || bad "CNAME wrong"
 [ "$(wt_count "$D")" = 1 ] && ok "no leftover worktree" || bad "worktree left behind"
 
@@ -47,7 +47,7 @@ git -C "$D" show page:index.html | grep -q 2026-10-07 && ok "second deploy carri
 #     a later default deploy puts it back
 CATALOG_DOMAIN= DEPLOY_PUSH=0 "$D/deploy.sh" >/dev/null 2>&1 || bad "empty-domain deploy failed"
 files="$(git -C "$D" ls-tree --name-only page | LC_ALL=C sort | tr '\n' ' ')"
-[ "$files" = ".nojekyll catalog.json index.html " ] && ok "empty CATALOG_DOMAIN drops CNAME" || bad "page has: $files"
+[ "$files" = ".nojekyll about.html catalog.json index.html publish.html " ] && ok "empty CATALOG_DOMAIN drops CNAME" || bad "page has: $files"
 DEPLOY_PUSH=0 "$D/deploy.sh" >/dev/null 2>&1 || bad "default deploy after empty-domain failed"
 [ "$(git -C "$D" show page:CNAME 2>/dev/null)" = "data.cds.bu.edu" ] && ok "default deploy restores CNAME" || bad "CNAME not restored"
 
@@ -56,6 +56,16 @@ D="$WORK/r1b"; mkrepo "$D" "$CLEAN"; rm "$D/catalog.json"
 if DEPLOY_PUSH=0 "$D/deploy.sh" >/dev/null 2>&1; then bad "deployed without catalog.json"
 elif git -C "$D" show-ref -q --verify refs/heads/page; then bad "missing catalog.json still created page"
 else ok "missing catalog.json refused before any page commit"; fi
+
+# 2c2. a missing doc page, or one that fails the gate, is refused before any page commit
+D="$WORK/r1c"; mkrepo "$D" "$CLEAN"; rm "$D/about.html"
+if DEPLOY_PUSH=0 "$D/deploy.sh" >/dev/null 2>&1; then bad "deployed without about.html"
+elif git -C "$D" show-ref -q --verify refs/heads/page; then bad "missing about.html still created page"
+else ok "missing about.html refused before any page commit"; fi
+D="$WORK/r1d"; mkrepo "$D" "$CLEAN"
+printf '<script src="https://evil.example/x.js"></script>\n' >> "$D/publish.html"
+if DEPLOY_PUSH=0 "$D/deploy.sh" >/dev/null 2>&1; then bad "deployed a publish.html that fails check_page"
+else ok "publish.html failing check_page refused"; fi
 
 # 2d. a catalog.json built from another catalog (e.g. a sample preview at the root) is refused
 D="$WORK/r2d"; mkrepo "$D" "$CLEAN"; printf '{"catalog_digest": "%064d"}\n' 0 > "$D/catalog.json"

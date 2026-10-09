@@ -131,6 +131,15 @@ pw eval '() => { const q = document.querySelector("#boston-tide-gauge .colq"); q
 check "the filter searches every name, including ones Show all hides" "$(val "() => { $COLS; return shown() + ' | ' + document.querySelector('#boston-tide-gauge .colcount').textContent; }")" "8 | 8 of 34 match"
 pw eval '() => { const q = document.querySelector("#boston-tide-gauge .colq"); q.value = "zzz"; q.dispatchEvent(new Event("input")); }' >/dev/null
 check "a filter with no match says so" "$(val "() => document.querySelector('#boston-tide-gauge .colcount').textContent")" "No column names match"
+pw resize 1440 900 >/dev/null
+pw goto "$URL" >/dev/null
+check "Copy link copies the dataset's address (or puts it in the address bar)" "$(val '() => new Promise(r => { const b = document.querySelector(".ds .btn.link"); b.click(); setTimeout(() => r(/^Link (copied|in address bar)$/.test(b.textContent) && (b.textContent === "Link copied" || location.hash === b.dataset.link)), 300); })')" "true"
+for doc in about publish; do
+  pw goto "${URL%/*}/$doc.html" >/dev/null
+  check "$doc.html: scrolls like a document, links back to the catalog" "$(val '() => getComputedStyle(document.documentElement).overflowY !== "hidden" && !!document.querySelector("a.back[href=\"index.html\"]") && document.querySelector(".prose h2") !== null')" "true"
+done
+pw goto "$URL" >/dev/null
+check "the band's buttons go to the About and Publish pages" "$(val '() => [...document.querySelectorAll(".band .cta")].map(a => a.getAttribute("href")).join(" ")')" "publish.html about.html catalog.json"
 for w in 1440 390; do
   pw resize "$w" 900 >/dev/null
   pw eval '() => scrollTo(0, 0)' >/dev/null

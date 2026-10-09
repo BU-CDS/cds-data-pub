@@ -19,7 +19,7 @@ from zoneinfo import ZoneInfo
 
 from scripts.catalog_json import to_json
 from scripts.manifest import ManifestError, catalog_digest, load_catalog
-from scripts.render import Assets, render_page
+from scripts.render import Assets, render_about, render_page, render_publish
 
 REPO = Path(__file__).resolve().parent.parent
 OWN_ASSETS = REPO / "assets"
@@ -90,6 +90,9 @@ def main(argv: list[str] | None = None) -> int:
     )
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(html, encoding="utf-8")
+    for name, render in (("about.html", render_about), ("publish.html", render_publish)):
+        doc = render(catalog, assets, stamp, ga_id, preview=args.preview, manifest_sha=manifest_sha)
+        (args.out.parent / name).write_text(doc, encoding="utf-8")
     (args.out.parent / "catalog.json").write_text(
         to_json(catalog, stamp, manifest_sha), encoding="utf-8"
     )

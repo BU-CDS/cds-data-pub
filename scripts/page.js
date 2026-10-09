@@ -192,6 +192,27 @@
     toggle.setAttribute("aria-expanded", String(open));
   });
 
+  // Copy link: the dataset's own address (#slug), for sharing one dataset.
+  for (const button of $$(".btn.link")) {
+    button.hidden = false;
+    button.addEventListener("click", () => {
+      const url = new URL(button.dataset.link, location.href).href;
+      const done = (msg) => {
+        button.textContent = msg;
+        say(msg);
+        setTimeout(() => { button.textContent = "Copy link"; }, 1500);
+      };
+      if (!navigator.clipboard) {
+        history.replaceState(history.state, "", url); // the address bar now holds the link
+        return done("Link in address bar");
+      }
+      navigator.clipboard.writeText(url).then(() => done("Link copied"), () => {
+        history.replaceState(history.state, "", url);
+        done("Link in address bar");
+      });
+    });
+  }
+
   for (const button of $$(".copy")) {
     button.setAttribute("aria-describedby", `t-${button.closest(".ds").id}`);
     button.addEventListener("click", () => {

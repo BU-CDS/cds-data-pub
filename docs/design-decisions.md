@@ -3,6 +3,24 @@
 Settled choices for this project's data pages. Newest first. A decision is reopened only when the
 user asks, or new data or a reader test contradicts it — then add a new entry that supersedes it.
 
+## 2026-10-09 — Headline, About and Publish pages, Copy link
+
+- **Headline:** "Open datasets, curated and hosted by BU Computing & Data Sciences. Free to
+  download and reuse." Options: the owner's "curated, created, hosted … free for research and
+  teaching", the branch's current line, and this one. **By:** the owner, after Codex and Gemini
+  each picked it blind: "created" is not true of any dataset today, and "for research and
+  teaching" is narrower than the licenses (CC0, PDDL, public domain allow any reuse). **Reopen
+  when** the first CDS-made dataset is listed ("created or curated").
+- **About and Publish as pages** (owner): instead of sections under the list, so they can grow.
+  Publish: only CDS researchers can publish (owner). Content answers the simulated readers'
+  questions (below). The steward contact stays empty, flagged by the Publish page and a
+  `publish.sh` warning.
+- **Copy link** (owner): two of three simulated readers looked for a Share button first.
+- **Gemini** ran through `agy --dangerously-skip-permissions` (the `agy-all` alias's flag) in an
+  empty folder; that worked where `/audit`'s Gemini runs did not. Its researcher persona added:
+  "why re-host NOAA and the penguins?" (About now says it is a demo of the service) and that the
+  "Publish your data with CDS" button reads as open to all (Publish now says CDS-only first).
+
 ## 2026-10-09 — Simulated readers (models, not people)
 
 - **What ran:** `docs/reader-test.md` played by Codex (via `/audit`) as three personas: a first-year

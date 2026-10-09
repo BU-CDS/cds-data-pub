@@ -21,8 +21,10 @@ from scripts.render import (
     Assets,
     ga_tag,
     human_size,
+    render_about,
     render_dataset,
     render_page,
+    render_publish,
 )
 from tests.helpers import dataset_dict, file_dict, parse, url_for
 
@@ -185,23 +187,80 @@ class Card(unittest.TestCase):
         self.assertNotIn('class="summary"', html)  # the band states the facts once
         self.assertNotIn("Open data from", html)  # curated and hosted, not produced, by CDS
         self.assertIn('class="orglink" href="https://www.bu.edu/cds-faculty/"', html)
-        for anchor in ('href="#publish"', 'href="#about"', 'id="about"', 'id="publish"'):
+        # consensus 2026-10-09 (owner, Codex, Gemini): CDS curates; the licenses allow any reuse
+        self.assertIn(
+            '<p class="lede">Open datasets, curated and hosted by BU Computing &amp; Data '
+            "Sciences. Free to download and reuse.</p>",
+            html,
+        )
+        for anchor in ('href="publish.html"', 'href="about.html"'):
             self.assertIn(anchor, html)
+        self.assertNotIn('id="publish"', html)  # About and Publish are their own pages
 
     def test_publish_never_dead_ends(self) -> None:
         live = Catalog(None, (), [one()], steward="data@example.edu")
-        with_contact = render_page(live, ASSETS, DAY, None)
-        self.assertIn('class="cta primary" href="#publish"', with_contact)
-        self.assertIn('href="mailto:data@example.edu"', with_contact)
-        without = page(one())
-        self.assertNotIn('class="cta primary" href="#publish"', without)  # not the filled button
+        self.assertIn(
+            'class="cta primary" href="publish.html"', render_page(live, ASSETS, DAY, None)
+        )
+        self.assertIn('href="mailto:data@example.edu"', render_publish(live, ASSETS, DAY, None))
+        bare = Catalog(None, (), [one()])
+        self.assertNotIn('class="cta primary"', page(one()))  # not the filled button
+        without = render_publish(bare, ASSETS, DAY, None)
         self.assertIn("contact will be listed here when the catalog goes live", without)
-        self.assertNotIn("mailto:", without[without.index('id="publish"') :])
+        self.assertNotIn("mailto:", without)
 
     def test_regions_named_once(self) -> None:
         html = page(one())
-        self.assertEqual(html.count('aria-label="About this catalog"'), 1)
         self.assertIn('class="band" aria-label="Catalog summary"', html)
+
+    def test_doc_pages_share_the_frame_not_the_shell(self) -> None:
+        cat = Catalog(None, (), [one()])
+        self.assertIn('<html lang="en" class="shell">', page(one()))  # only the catalog is a shell
+        for doc in (
+            render_about(cat, ASSETS, DAY, None, manifest_sha="abc"),
+            render_publish(cat, ASSETS, DAY, None, manifest_sha="abc"),
+        ):
+            with self.subTest(title=doc[doc.index("<title>") : doc.index("</title>")]):
+                self.assertIn('<html lang="en">', doc)
+                self.assertIn('<span class="orgname">', doc)
+                self.assertIn('<a class="back" href="index.html">All datasets</a>', doc)
+                self.assertIn("Updated 2026-10-06", doc)
+                self.assertIn('<meta name="cds-manifest" content="abc">', doc)
+                self.assertNotIn("<script", doc)  # no page script, and no GA without an id
+
+    def test_about_page_answers_readers_questions(self) -> None:
+        # simulated readers 2026-10-09: provenance, permanence, demo status, unexplained terms
+        about = render_about(Catalog("Demo", (), [one()]), ASSETS, DAY, None)
+        for text in (
+            "unmodified copies",
+            "not an archive",
+            "demo",
+            "<dt>Checksum (sha256)</dt>",
+            "<dt>License</dt>",
+            "<dt>DOI</dt>",
+            "<dt>MiB, GiB</dt>",
+            "<dt>catalog.json</dt>",
+        ):
+            with self.subTest(text=text):
+                self.assertIn(text, about)
+        live = render_about(Catalog(None, (), [one()]), ASSETS, DAY, None)
+        self.assertNotIn("demo", live)  # the demo paragraph goes with the Demo tag
+
+    def test_publish_page_says_who_can_publish_first(self) -> None:
+        pub = render_publish(Catalog(None, (), [one()]), ASSETS, DAY, None)
+        body = pub[pub.index("<main") :]
+        first = body[body.index("<p>") : body.index("</p>")]
+        self.assertIn("Only CDS researchers can publish here", first)  # owner, 2026-10-09
+        self.assertIn("HIPAA, FERPA or export-controlled", pub)
+
+    def test_copy_link_button(self) -> None:
+        html = render_dataset(one())
+        acts = html[html.index('<div class="acts">') : html.index('<p class="meta">')]
+        self.assertIn(
+            '<button type="button" class="btn link" data-link="#example" '
+            'aria-describedby="t-example" hidden>Copy link</button>',
+            acts,
+        )
 
     def test_header_focus_ring_is_light(self) -> None:
         self.assertIn("header :focus-visible{outline-color:var(--on-accent);}", page())
@@ -349,7 +408,7 @@ class Page(unittest.TestCase):
         for rule in (
             "--content-max:1920px",
             # short windows and large text keep normal page scrolling (WCAG 1.4.4, 1.4.10)
-            "@media(min-width:1100px) and (min-height:38em){html,body{height:100%;overflow:hidden;}",
+            "@media(min-width:1100px) and (min-height:38em){.shell,.shell body{height:100%;",
             ".list{flex:1 1 auto;min-height:0;overflow:auto;",
             "@media(max-width:1099px){.wrap{display:block;}.side{position:sticky;top:0;",
             "@media(min-width:1300px){.ds{display:grid;",
@@ -375,7 +434,9 @@ class Page(unittest.TestCase):
 
     def test_script_uses_the_css_shell_query(self) -> None:
         query = "(min-width:1100px) and (min-height:38em)"
-        self.assertIn(f"@media{query}{{html,body{{height:100%;overflow:hidden;}}", page(one()))
+        self.assertIn(
+            f"@media{query}{{.shell,.shell body{{height:100%;overflow:hidden;}}", page(one())
+        )
         self.assertIn(f'matchMedia("{query}")', PAGE_JS)  # the list is a tab stop only there
 
     def test_header_and_footer_links_match_cluster(self) -> None:

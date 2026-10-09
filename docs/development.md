@@ -30,7 +30,7 @@ with `PUB_CPU_CLONE`. They are never copied into this repo.
 run outside a restrictive sandbox. `check_page` is a regression check, not a security boundary: the
 renderer's escaping is what keeps manifest text inert.
 
-Layout: in a window ≥1100px wide and ≥38em tall the page is an app shell: it does not scroll,
+Layout: in a window ≥1100px wide and ≥38em tall the catalog page (`<html class="shell">`) is an app shell: it does not scroll,
 only the framed dataset list does, beside one framed filter box. Smaller windows scroll the page
 and keep the search block at the top. Cards turn two-column at ≥1300px; the page caps at 1920px
 (`--content-max`). Light theme only, like cluster.cds.bu.edu.
@@ -62,8 +62,9 @@ optional url) — without one the dataset cites its catalog entry. The full rule
 | `scripts/manifest.py` | Catalog rules; `BUCKET_BASE`; `catalog_digest` (the build stamp) |
 | `scripts/render.py`, `scripts/build_page.py` | HTML/CSS and the build CLI |
 | `scripts/check_page.py`, `scripts/check_links.py` | Page gate and anonymous link check |
-| `publish.sh`, `deploy.sh` | Build → gate → link check → `page` branch |
+| `publish.sh`, `deploy.sh` | Build → gate every page → link check → `page` branch (`index.html`, `about.html`, `publish.html`, `catalog.json`) |
 | `scripts/catalog_json.py` | `catalog.json`: every dataset, file, checksum and citation, built beside `index.html` and published with it |
+| `about.html`, `publish.html` | Built beside `index.html` from `render.py` (`render_about`, `render_publish`): how the catalog works, and who may publish (CDS researchers only). Plain documents in the same frame; only the catalog is the app shell |
 | `examples/sample/` | 24-dataset stress catalog (same layout) for layout work; never deployed |
 
-Last verified: 2026-10-08
+Last verified: 2026-10-09

@@ -36,6 +36,19 @@ From the 2026-10-08 design review (all six findings confirmed by the steward):
   "Show all N column names" and a "Filter column names" box that searches every name (without
   the script every name shows). A checksum's Copy button sits on its own line. The sample's
   tide-gauge entry carries 34 synthetic columns to exercise the long list.
+- Headline: "Open datasets, curated and hosted by BU Computing & Data Sciences. Free to download
+  and reuse." (owner, with Codex and Gemini agreeing blind: CDS made none of today's datasets, and
+  their licenses allow any reuse).
+- About and Publish are their own pages, `about.html` and `publish.html`, built and published
+  with the catalog; the band's buttons link to them. About explains sources (unmodified copies on
+  a snapshot date), permanence (not an archive), demo status, dates, and the terms the cards use
+  (checksum, license, DOI, MiB, catalog.json). Publish opens with "Only CDS researchers can publish
+  here", then what qualifies, what you get and what the steward asks for. `deploy.sh` refuses a
+  missing or failing page; `publish.sh` warns while no steward contact is set.
+- Each card has a Copy link button: it copies the dataset's own address, or puts it in the
+  address bar when the clipboard is unavailable.
+- GHCN's description says each element has measurement, quality and source flags (it said
+  "quality flags"; checked against NOAA's documentation and the file).
 
 ## 2026-10-07 (v2.1)
 

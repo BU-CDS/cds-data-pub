@@ -167,11 +167,14 @@ font-size:0.875rem;font-variant-numeric:tabular-nums;}.band .facts b{color:var(-
 .cta{display:inline-block;padding:6px 12px;border-radius:6px;border:1px solid var(--accent);\
 color:var(--accent);text-decoration:none;font-size:0.9rem;}.cta.primary{background:var(--accent);\
 color:var(--on-accent);}
-.about{border-top:1px solid var(--border);margin:8px 0 14px;padding-top:12px;\
-display:grid;gap:4px 28px;}
-@media(min-width:900px){.about{grid-template-columns:1fr 1fr;}}
-.about h2{font-family:"Whitney SSm A",var(--t-sans);font-size:1rem;margin:8px 0 4px;}
-.about ol,.about ul{margin:0 0 8px;padding-left:1.3em;}.about p{margin:0 0 8px;}
+.wrap.doc{display:block;max-width:min(48rem,98vw);}
+.back{display:inline-block;margin:0 0 10px;font-size:0.875rem;}.back::before{content:"\\2190\\00a0";}
+.prose h2{font-family:"Whitney SSm A",var(--t-sans);font-size:1.5rem;margin:4px 0 12px;}
+.prose h3{font-size:1.05rem;margin:22px 0 6px;}.prose p{margin:0 0 10px;}
+.prose ul{margin:0 0 10px;padding-left:1.3em;}.prose li{margin-bottom:4px;}
+.gloss{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:6px 18px;margin:0;}\
+.gloss dt{font-weight:600;}.gloss dd{margin:0;}
+@media(max-width:600px){.gloss{grid-template-columns:1fr;gap:0;}.gloss dd{margin-bottom:8px;}}
 .meta{color:var(--muted);font-size:0.875rem;margin:4px 0 6px;font-variant-numeric:tabular-nums;\
 overflow-wrap:anywhere;}
 .badges{display:flex;flex-wrap:wrap;gap:4px;margin:0 0 8px;}
@@ -244,12 +247,12 @@ details.det>summary,.more-files summary,.files .fn a{min-height:40px;display:inl
 align-items:center;}}
 @media(pointer:coarse) and (max-width:1099px){.ftoggle{min-height:40px;display:inline-flex;\
 align-items:center;}}
-@media(min-width:1100px) and (min-height:38em){html,body{height:100%;overflow:hidden;}\
-.wrap{flex:1 1 auto;min-height:0;padding-bottom:10px;grid-template-rows:minmax(0,1fr);}.side{min-height:0;}\
-main{display:flex;flex-direction:column;min-height:0;height:100%;}\
-.list{flex:1 1 auto;min-height:0;overflow:auto;border:1px solid var(--border);\
+@media(min-width:1100px) and (min-height:38em){.shell,.shell body{height:100%;overflow:hidden;}\
+.shell .wrap{flex:1 1 auto;min-height:0;padding-bottom:10px;grid-template-rows:minmax(0,1fr);}.shell .side{min-height:0;}\
+.shell main{display:flex;flex-direction:column;min-height:0;height:100%;}\
+.shell .list{flex:1 1 auto;min-height:0;overflow:auto;border:1px solid var(--border);\
 border-radius:10px;background:var(--surface2);padding:14px 16px;scroll-padding-top:14px;}\
-.list .ds:last-child{margin-bottom:0;}.pagefoot{margin-top:0;padding-top:10px;\
+.shell .list .ds:last-child{margin-bottom:0;}.shell .pagefoot{margin-top:0;padding-top:10px;\
 padding-bottom:12px;}}
 @media(max-width:1099px){.wrap{display:block;}.side{position:sticky;top:0;z-index:4;\
 background:var(--bg);margin:-8px calc(-1*var(--content-pad)) 16px;\
@@ -482,7 +485,9 @@ def render_dataset(ds: Dataset) -> str:
         f'<article class="ds" id="{ds.slug}" data-tags="{" ".join(ds.tags)}" '
         f'data-text="{_e(text)}"><div class="ds-hd"><h2 id="t-{ds.slug}">'
         f'<a class="perma" href="#{ds.slug}">{_e(ds.title)}</a></h2>'
-        f'<div class="acts">{_cite(ds)}{_get_data(ds)}</div></div>'
+        f'<div class="acts"><button type="button" class="btn link" data-link="#{ds.slug}" '
+        f'aria-describedby="t-{ds.slug}" hidden>Copy link</button>'
+        f"{_cite(ds)}{_get_data(ds)}</div></div>"
         f'<p class="meta">{_meta(ds)}</p><p class="badges">{_badges(ds)}</p>'
         f'<div class="desc">{_paragraphs(ds.description)}</div>'
         '<button type="button" class="more" aria-expanded="false" hidden>more</button>'
@@ -576,32 +581,78 @@ INTRO_SHORT = (  # under the band, which already says who curates it and the no-
 )
 
 
-def _about(steward: str | None) -> str:
-    """About and Publish sections, from the README. Without a public steward contact the
-    Publish section says one is coming instead of inventing an address."""
+def _about_body(catalog: Catalog) -> str:
+    """How the catalog works. Answers the simulated readers' questions of 2026-10-09:
+    provenance, permanence, demo status and the terms the cards use (docs/design-decisions.md)."""
+    demo = (
+        "<p>The datasets listed now are a demo: real public data from other producers, "
+        "re-hosted to show how the service works until CDS datasets are added. They are "
+        "complete and usable.</p>"
+        if catalog.notice
+        else ""
+    )
+    return (
+        "<h2>How this catalog works</h2>"
+        "<p>Open datasets, curated and hosted by BU Computing &amp; Data Sciences (CDS), free to "
+        "download and reuse with no account. Each dataset names who produced it.</p>"
+        "<h3>Where the data comes from</h3>"
+        "<p>CDS selects datasets approved for public release and hosts copies on the NSF-funded "
+        '<a href="https://www.openstoragenetwork.org/">Open Storage Network</a> (OSN). '
+        "Re-hosted datasets are unmodified copies of the producer's files, taken on the "
+        "snapshot date given in each dataset's README, which also names the source and its "
+        f"version.</p>{demo}"
+        "<h3>How long files stay</h3>"
+        "<p>This catalog is not an archive: OSN keeps no backups, and a dataset can be taken "
+        "down. Producers keep the master copy; for a permanent, citable record (a DOI) a dataset "
+        "is also deposited in a repository such as Zenodo. When the original has a DOI, the "
+        "citation under Cite points to it.</p>"
+        "<h3>Dates</h3>"
+        "<p>“Added” is when a dataset was listed here; “updated” is when this catalog was last "
+        "rebuilt. A dataset's README gives its snapshot date and source version.</p>"
+        '<h3>Terms on this page</h3><dl class="gloss">'
+        "<dt>Checksum (sha256)</dt><dd>A fingerprint of a file. If the sha256 of your download "
+        "matches the one listed, you have exactly the file published here.</dd>"
+        "<dt>License</dt><dd>The terms for reuse, as an SPDX identifier such as CC0-1.0 or "
+        "CC-BY-4.0, each linked to its full text. “Public domain” means no restrictions.</dd>"
+        "<dt>DOI</dt><dd>A permanent identifier for a published dataset or paper "
+        "(https://doi.org/…).</dd>"
+        "<dt>MiB, GiB</dt><dd>File sizes in binary units: 1 MiB is 1,048,576 bytes, "
+        "1 GiB is 1,024 MiB.</dd>"
+        '<dt>catalog.json</dt><dd>The whole catalog as one machine-readable <a href="catalog.json">'
+        "file</a>: every dataset, file, checksum and citation, for scripts.</dd></dl>"
+    )
+
+
+def _publish_body(steward: str | None) -> str:
+    """Who may publish (owner, 2026-10-09: CDS researchers only), what qualifies, what it gives.
+    Without a public steward contact it says one is coming instead of inventing an address."""
     reach = (
         f'<p><a class="cta primary" href="mailto:{_e(steward)}">Email the CDS data steward</a></p>'
         if steward
         else "<p>The data steward's contact will be listed here when the catalog goes live.</p>"
     )
-    return ABOUT + reach + "</div></section>"
-
-
-ABOUT = (  # from the README
-    '<section class="about" aria-label="About this catalog"><div id="about">'
-    "<h2>About this catalog</h2><ol>"
-    "<li>A CDS researcher asks the CDS data steward to publish a dataset approved for public "
-    "release.</li><li>The steward uploads it to the Open Storage Network (OSN), free through "
-    "NSF ACCESS.</li><li>It appears here with a direct download link for each file.</li></ol>"
-    "<p><b>Public data only</b>: no HIPAA, FERPA or export-controlled data. <b>Not an "
-    "archive</b>: OSN keeps no backups; for a citable DOI, also deposit the dataset in a "
-    'repository such as Zenodo. Scripts can read <a href="catalog.json">catalog.json</a>: every '
-    "dataset, file, checksum and citation.</p></div>"
-    '<div id="publish"><h2>Publish your data with CDS</h2>'
-    "<p>CDS researchers can share public datasets here at no cost: files are hosted on OSN, "
-    "listed with sizes and checksums, and citable from this page. Ask the CDS data steward to "
-    "start.</p>"
-)
+    return (
+        "<h2>Publish your data with CDS</h2>"
+        "<p>Only CDS researchers can publish here, and only data approved for public "
+        "release.</p>"
+        "<h3>What qualifies</h3><ul>"
+        "<li>Public data only: no HIPAA, FERPA or export-controlled data.</li>"
+        "<li>A license for reuse, as an SPDX identifier such as CC0-1.0 or CC-BY-4.0.</li>"
+        "<li>Up to 50 files per dataset; archive more into fewer files.</li></ul>"
+        "<h3>What you get</h3><ul>"
+        "<li>Hosting on the Open Storage Network at no cost to you.</li>"
+        "<li>A listing here with direct download links, sizes and checksums, ready-made "
+        "commands for the shell, AWS CLI, rclone, Python and R, and citations in APA, BibTeX "
+        "and RIS.</li><li>An entry in catalog.json, for scripts.</li></ul>"
+        "<h3>Before you start</h3><ul>"
+        "<li>Keep your master copy: this catalog is not an archive and OSN keeps no backups.</li>"
+        "<li>For a DOI, also deposit the dataset in a repository such as Zenodo; the listing "
+        "here can cite it.</li></ul>"
+        "<h3>What the steward will ask for</h3>"
+        "<p>The files; a README (what it is, source, license, contact, date); a title and a "
+        "short description; subject tags; and how it should be cited.</p>"
+        f"<h3>Contact</h3>{reach}"
+    )
 
 
 def _band(n: int, total: int, updated: date, steward: str | None) -> str:
@@ -611,17 +662,75 @@ def _band(n: int, total: int, updated: date, steward: str | None) -> str:
     return (
         '<section class="band" aria-label="Catalog summary">'
         # "curated and hosted by", not "from": the datasets are produced by others (review #1)
-        '<p class="lede">Open datasets, curated and hosted by BU Computing &amp; Data Sciences, '
-        "free for research and teaching.</p>"
+        '<p class="lede">Open datasets, curated and hosted by BU Computing &amp; Data Sciences. '
+        "Free to download and reuse.</p>"
         f'<p class="facts"><span><b>{n}</b> dataset{"s" * (n != 1)}</span>'
         f"<span><b>{human_size(total)}</b> to download</span>"
         "<span><b>No account</b> needed</span><span><b>Checksums</b> on every file</span>"
         f'<span>updated <span class="nw">{updated.isoformat()}</span></span></p>'
         # the filled button goes to Publish only once it reaches a real contact (no dead end)
-        f'<p class="ctas"><a class="cta{" primary" if steward else ""}" href="#publish">'
+        f'<p class="ctas"><a class="cta{" primary" if steward else ""}" href="publish.html">'
         "Publish your data with CDS</a>"
-        '<a class="cta" href="#about">How it works</a>'
+        '<a class="cta" href="about.html">How it works</a>'
         '<a class="cta" href="catalog.json">Use from code: catalog.json</a></p></section>'
+    )
+
+
+def _document(
+    catalog: Catalog,
+    assets: Assets,
+    updated: date,
+    ga_id: str | None,
+    *,
+    title: str,
+    description: str,
+    main: str,
+    shell: bool = False,
+    preview: bool = False,
+    manifest_sha: str = "",
+) -> str:
+    """One page in the site frame: head, header, main, footer. Only the catalog page is the app
+    shell and carries the page script; About and Publish are plain documents."""
+    css = (
+        ":root{color-scheme:light;"
+        + _vars()
+        + "}"
+        + CSS.replace("@@FONT_SEMIBOLD@@", assets.font_semibold).replace(
+            "@@FONT_BOOK@@", assets.font_book
+        )
+        + PANEL_CSS
+    )
+    notice = f' <span class="hdr-tag">{_e(catalog.notice)}</span>' if catalog.notice else ""
+    return (
+        f'<!doctype html><html lang="en"{' class="shell"' if shell else ""}><head>'
+        '<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
+        + (PREVIEW_MARK if preview else "")
+        + (f'<meta name="cds-manifest" content="{manifest_sha}">' if manifest_sha else "")
+        + f"<title>{title}</title>"
+        f'<meta name="description" content="{description}">'
+        f'<link rel="icon" href="{assets.favicon}">'
+        + (ga_tag(ga_id) if ga_id else "")
+        + f"<style>{css}</style></head><body>"
+        f'<header><div class="hwrap"><h1><img class="buplate" src="{assets.plate}" '
+        f'alt="Boston University"><a class="orglink" href="{CDS_URL}"><span class="orgname">'
+        "Faculty of Computing &amp; Data Sciences</span></a> "
+        '<span class="hsep" aria-hidden="true">|</span> Public Research Data'
+        f"{notice}</h1>"
+        "</div></header>"
+        f"{main}"
+        f'<footer class="pagefoot"><div class="ft-l"><img class="ft-emblem" '
+        f'src="{assets.signature}" alt="Boston University Faculty of Computing &amp; Data '
+        f'Sciences"></div>'
+        f'<div class="ft-c"><span class="stamp">Updated {updated.isoformat()}</span></div>'
+        '<div class="ft-r"><a class="ft-link" href="catalog.json">catalog.json</a>'
+        '<a class="ft-link" href="https://www.bu.edu/policies/digital-privacy-statement/" '
+        'target="_blank" rel="noopener">Privacy Statement</a></div></footer>'
+        + (
+            f'<p class="sr" id="live" aria-live="polite"></p><script>{PAGE_JS}</script>'
+            if shell
+            else ""
+        )
+        + "</body></html>\n"
     )
 
 
@@ -633,12 +742,12 @@ def render_page(
     preview: bool = False,
     manifest_sha: str = "",
 ) -> str:
-    """The whole page.
+    """The catalog page.
 
     Args:
         catalog: Notice, tags and datasets (datasets already in display order).
         assets: Branding data URIs.
-        updated: Date for the footer stamp and the summary line.
+        updated: Date for the footer stamp and the band.
         ga_id: GA4 measurement id, or None for no analytics tag.
         preview: Mark the page as a local preview (``check_page`` refuses to publish it).
         manifest_sha: catalog digest stamped so ``deploy.sh`` can refuse a page built from any
@@ -647,55 +756,83 @@ def render_page(
     Returns:
         A complete HTML document.
     """
-    css = (
-        ":root{color-scheme:light;"
-        + _vars()
-        + "}"
-        + CSS.replace("@@FONT_SEMIBOLD@@", assets.font_semibold).replace(
-            "@@FONT_BOOK@@", assets.font_book
-        )
-        + PANEL_CSS
-    )
     n = len(catalog.datasets)
     total = sum(ds.total_size for ds in catalog.datasets)
-    notice = f' <span class="hdr-tag">{_e(catalog.notice)}</span>' if catalog.notice else ""
     body = (
         "".join(render_dataset(ds) for ds in catalog.datasets)
         if n
         else '<p class="empty-catalog">No datasets published yet.</p>'
     )
-    return (
-        '<!doctype html><html lang="en"><head><meta charset="utf-8">'
-        '<meta name="viewport" content="width=device-width,initial-scale=1">'
-        + (PREVIEW_MARK if preview else "")
-        + (f'<meta name="cds-manifest" content="{manifest_sha}">' if manifest_sha else "")
-        + "<title>CDS Public Research Data</title>"
-        '<meta name="description" content="Open datasets curated and hosted by the Boston '
-        'University Faculty of Computing &amp; Data Sciences, free to download.">'
-        f'<link rel="icon" href="{assets.favicon}">'
-        + (ga_tag(ga_id) if ga_id else "")
-        + f"<style>{css}</style></head><body>"
-        f'<header><div class="hwrap"><h1><img class="buplate" src="{assets.plate}" '
-        f'alt="Boston University"><a class="orglink" href="{CDS_URL}"><span class="orgname">'
-        "Faculty of Computing &amp; Data Sciences</span></a> "
-        '<span class="hsep" aria-hidden="true">|</span> Public Research Data'
-        f"{notice}</h1>"
-        "</div></header>"
+    main = (
         f'<div class="wrap">{_sidebar(catalog)}<main>'
         + (_band(n, total, updated, catalog.steward) if n else "")
         + f'<section class="intro">{INTRO_SHORT if n else INTRO}</section>'
         '<div class="list" role="region" tabindex="0" aria-label="Datasets">'
         '<p class="empty" hidden>No datasets match. '
         '<button type="button" class="clear">Clear filters</button></p>'
-        f"{body}{_about(catalog.steward)}"
-        "</div></main></div>"
-        f'<footer class="pagefoot"><div class="ft-l"><img class="ft-emblem" '
-        f'src="{assets.signature}" alt="Boston University Faculty of Computing &amp; Data '
-        f'Sciences"></div>'
-        f'<div class="ft-c"><span class="stamp">Updated {updated.isoformat()}</span></div>'
-        '<div class="ft-r"><a class="ft-link" href="catalog.json">catalog.json</a>'
-        '<a class="ft-link" href="https://www.bu.edu/policies/digital-privacy-statement/" '
-        'target="_blank" rel="noopener">Privacy Statement</a></div></footer>'
-        '<p class="sr" id="live" aria-live="polite"></p>'
-        f"<script>{PAGE_JS}</script></body></html>\n"
+        f"{body}</div></main></div>"
+    )
+    return _document(
+        catalog,
+        assets,
+        updated,
+        ga_id,
+        title="CDS Public Research Data",
+        description="Open datasets curated and hosted by the Boston University Faculty of "
+        "Computing &amp; Data Sciences, free to download.",
+        main=main,
+        shell=True,
+        preview=preview,
+        manifest_sha=manifest_sha,
+    )
+
+
+def _doc(body: str) -> str:
+    return (
+        '<div class="wrap doc"><main><a class="back" href="index.html">All datasets</a>'
+        f'<article class="prose">{body}</article></main></div>'
+    )
+
+
+def render_about(
+    catalog: Catalog,
+    assets: Assets,
+    updated: date,
+    ga_id: str | None,
+    preview: bool = False,
+    manifest_sha: str = "",
+) -> str:
+    """about.html: how the catalog works. Same arguments as ``render_page``."""
+    return _document(
+        catalog,
+        assets,
+        updated,
+        ga_id,
+        title="How it works · CDS Public Research Data",
+        description="How the BU CDS open-data catalog works: sources, copies, permanence, terms.",
+        main=_doc(_about_body(catalog)),
+        preview=preview,
+        manifest_sha=manifest_sha,
+    )
+
+
+def render_publish(
+    catalog: Catalog,
+    assets: Assets,
+    updated: date,
+    ga_id: str | None,
+    preview: bool = False,
+    manifest_sha: str = "",
+) -> str:
+    """publish.html: who may publish and how. Same arguments as ``render_page``."""
+    return _document(
+        catalog,
+        assets,
+        updated,
+        ga_id,
+        title="Publish your data · CDS Public Research Data",
+        description="How CDS researchers publish public datasets in the BU CDS open-data catalog.",
+        main=_doc(_publish_body(catalog.steward)),
+        preview=preview,
+        manifest_sha=manifest_sha,
     )
