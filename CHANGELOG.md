@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 2026-10-09 (v3)
 
 From the 2026-10-08 design review (all six findings confirmed by the steward):
 - The intro no longer says the datasets come "from research at" CDS: it says CDS curates and
