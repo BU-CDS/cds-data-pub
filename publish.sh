@@ -12,9 +12,13 @@ export PYTHONPATH="$ROOT"
 
 GATE=()
 if [ "${DEPLOY_PUSH:-1}" = 1 ]; then
-  [ -z "$(git -C "$ROOT" status --porcelain)" ] || {
+  # --untracked-files=all overrides a status.showUntrackedFiles=no config; ls-files --others also
+  # lists ignored files, so a datasets/*.toml matching an ignore rule cannot slip through
+  dirty="$(git -C "$ROOT" status --porcelain --untracked-files=all
+           git -C "$ROOT" ls-files --others -- catalog.toml datasets)"
+  [ -z "$dirty" ] || {
     echo "publish: REFUSED -- uncommitted or untracked files; commit or remove them first (DEPLOY_PUSH=0 stages)" >&2
-    git -C "$ROOT" status --short >&2
+    printf '%s\n' "$dirty" >&2
     exit 1
   }
   GATE=(--require-ga "$("$PY" -P -c 'from scripts.build_page import GA_ID; print(GA_ID)')")

@@ -124,8 +124,7 @@
     });
   }
 
-  const params = new URLSearchParams(location.search);
-  q.value = params.get("q") || "";
+  const params = new URLSearchParams(location.search); // no ?q=: search text stays out of URLs
   for (const t of params.getAll("tag")) {
     if (chips.some((c) => c.dataset.tag === t)) selected.add(t);
   }

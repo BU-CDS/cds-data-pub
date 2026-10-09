@@ -146,9 +146,15 @@ web="$(git -C "$WORK/r6.git" rev-parse page)"
 out="$("$D/deploy.sh" 2>&1)" && bad "pushed over a remote edit"
 grep -q "changed since" <<<"$out" && ok "remote edit refuses the push" || bad "wrong refusal: $out"
 [ "$(git -C "$WORK/r6.git" rev-parse page)" = "$web" ] && ok "remote edit survives" || bad "remote edit lost"
-git -C "$D" fetch -q origin page
+git -C "$D" fetch -q origin +refs/heads/page:refs/remotes/origin/page
 "$D/deploy.sh" >/dev/null 2>&1 && ok "push after fetch" || bad "push after fetch failed"
 [ "$(git -C "$WORK/r6.git" rev-list --count page)" = 1 ] && ok "remote page is one commit" || bad "remote page grew history"
+# 6b. no remote-tracking page (a single-branch clone): refused; the advised fetch recovers
+git -C "$D" update-ref -d refs/remotes/origin/page
+git -C "$D" config remote.origin.fetch '+refs/heads/main:refs/remotes/origin/main'
+"$D/deploy.sh" >/dev/null 2>&1 && bad "pushed over an unseen remote page" || ok "unseen remote page refuses the push"
+git -C "$D" fetch -q origin +refs/heads/page:refs/remotes/origin/page
+"$D/deploy.sh" >/dev/null 2>&1 && ok "advised fetch recovers a single-branch clone" || bad "still refused after the advised fetch"
 
 # 7. publish.sh refuses untracked files (an uncommitted datasets/*.toml would be published)
 D="$WORK/r7"; mkrepo "$D" "$CLEAN"; cp "$R/publish.sh" "$D/publish.sh"
@@ -156,6 +162,14 @@ git -C "$D" add publish.sh && git -C "$D" -c commit.gpgsign=false commit -qm pub
 mkdir -p "$D/datasets"; printf 'title = "draft"\n' > "$D/datasets/draft.toml"
 out="$("$D/publish.sh" 2>&1)" && bad "published with an untracked dataset"
 grep -q "untracked" <<<"$out" && ok "untracked dataset refused" || bad "wrong refusal: $out"
+git -C "$D" config status.showUntrackedFiles no
+out="$("$D/publish.sh" 2>&1)" && bad "showUntrackedFiles=no hid an untracked dataset"
+grep -q "draft.toml" <<<"$out" && ok "untracked dataset refused despite showUntrackedFiles=no" || bad "wrong refusal: $out"
+mv "$D/datasets/draft.toml" "$D/datasets/credentials-draft.toml"   # matches an ignore rule
+printf '*credentials*\n' > "$D/.gitignore"; git -C "$D" add .gitignore
+git -C "$D" -c commit.gpgsign=false commit -qm ignore
+out="$("$D/publish.sh" 2>&1)" && bad "published an ignored dataset"
+grep -q "credentials-draft.toml" <<<"$out" && ok "ignored dataset refused" || bad "wrong refusal: $out"
 unset CDS_PUBLISH_GATED
 
 echo "failures: $FAILS"; [ "$FAILS" -eq 0 ]

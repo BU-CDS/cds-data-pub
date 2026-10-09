@@ -30,10 +30,11 @@ check "page has dataset cards (else every count check is vacuous)" "$([ "${total
 want="$(val "$expect_boston")"
 pw goto "$URL?tag=boston" >/dev/null
 check "?tag=boston shows only boston cards" "$(val "$visible")" "$want"
-pw goto "$URL?q=zzqqxx-no-such-thing" >/dev/null
+pw goto "$URL" >/dev/null
+pw eval '() => { const q = document.getElementById("q"); q.value = "zzqqxx-no-such-thing"; q.dispatchEvent(new Event("input", {bubbles: true})); }' >/dev/null
 check "nonsense query shows the empty state" "$(val '() => !document.querySelector(".empty").hidden')" "true"
-check "a ?q= link fills the search box" "$(val '() => document.getElementById("q").value')" "zzqqxx-no-such-thing"
-check "search text is dropped from the URL (analytics never sees it)" "$(val '() => location.search.includes("q=")')" "false"
+pw goto "$URL?q=zzqqxx-no-such-thing" >/dev/null
+check "a ?q= link is ignored and dropped from the URL" "$(val '() => document.getElementById("q").value + location.search')" ""
 pw goto "$URL?tag=boston" >/dev/null
 check "typed search text stays out of the URL" "$(val '() => { const q = document.getElementById("q"); q.value = "boston trees"; q.dispatchEvent(new Event("input", {bubbles: true})); return location.search; }')" "?tag=boston"
 pw goto "$URL?tag=no-such-tag" >/dev/null
@@ -144,7 +145,8 @@ for doc in about publish; do
 done
 pw goto "$URL" >/dev/null
 check "the band's buttons go to the About and Publish pages" "$(val '() => [...document.querySelectorAll(".band .cta")].map(a => a.getAttribute("href")).join(" ")')" "publish.html about.html catalog.json"
-pw goto "$URL?q=zzqqxx-no-such-thing" >/dev/null
+pw goto "$URL" >/dev/null
+pw eval '() => { const q = document.getElementById("q"); q.value = "zzqqxx-no-such-thing"; q.dispatchEvent(new Event("input", {bubbles: true})); }' >/dev/null
 check "Clear filters in the empty state moves focus to the search box" "$(val '() => { document.querySelector(".empty .clear").click(); return document.activeElement.id; }')" "q"
 pw resize 844 390 >/dev/null
 pw goto "$URL" >/dev/null

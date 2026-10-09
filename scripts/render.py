@@ -319,8 +319,12 @@ def _paragraphs(text: str) -> str:
 
 
 def ga_bootstrap(ga_id: str) -> str:
-    """The inline half of the GA tag; check_page admits only this exact text."""
+    """The inline half of the GA tag; check_page admits only this exact text. It first removes
+    ``q`` from the address: GA's site search reads search text from the real URL (as
+    ``search_term``), so it must be gone before GA's script can run."""
     return (
+        'const gaUrl=new URL(location.href);if(gaUrl.searchParams.has("q")){'
+        'gaUrl.searchParams.delete("q");history.replaceState(history.state,"",gaUrl.href);}'
         "window.dataLayer=window.dataLayer||[];"
         "function gtag(){window.dataLayer.push(arguments);}"
         f'gtag("js",new Date());gtag("config","{ga_id}");'
@@ -328,10 +332,11 @@ def ga_bootstrap(ga_id: str) -> str:
 
 
 def ga_tag(ga_id: str) -> str:
-    """Google's gtag snippet, using ``window.dataLayer`` (the form pub-cds-scc's validator passes)."""
+    """Google's gtag snippet, using ``window.dataLayer`` (the form pub-cds-scc's validator passes).
+    The bootstrap comes before the loader so it runs before GA's script, however fast that loads."""
     return (
-        f'<script async src="https://www.googletagmanager.com/gtag/js?id={ga_id}"></script>'
         f"<script>{ga_bootstrap(ga_id)}</script>"
+        f'<script async src="https://www.googletagmanager.com/gtag/js?id={ga_id}"></script>'
     )
 
 

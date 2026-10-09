@@ -46,14 +46,17 @@ Publish guards: `./publish.sh` refuses changed or untracked files (every `datase
 built, committed or not). `deploy.sh` pushes only when `publish.sh` calls it, rebuilds `page` as
 one commit holding exactly the published files, and refuses a local `page` with history. The push
 overwrites only the `page` last fetched or pushed: after an edit on GitHub (a web commit to
-`page`) it refuses; look with `git fetch origin page && git show --stat origin/page`, then rerun.
+`page`) it refuses; look with
+`git fetch origin +refs/heads/page:refs/remotes/origin/page && git show --stat origin/page`, then
+rerun. The push guard catches mistakes; it is not a lock against someone bypassing it on purpose.
 
 Analytics: GA4 `G-MTV6EXSR2V`. Outbound clicks are **download-link clicks**, not downloads: they
 miss `curl` and include failed attempts and source/DOI links. Like cluster.cds.bu.edu (checked
 2026-10-07), GA sets two first-party cookies, `_ga` and `_ga_<id>`, on `.bu.edu`: a random visitor
 ID kept about 13 months. That ID is pseudonymous, not anonymous, and Google also receives each
-visitor's IP address and browser details with every hit. Search text never enters the URL, so page
-views do not carry it (the tag filters do). The page's own script uses no storage or cookies.
+visitor's IP address and browser details with every hit. Search text never enters the URL, and the GA
+bootstrap removes a `?q=` before GA loads (GA's site search would report it as `search_term`), so
+GA never receives search text; the tag filters do reach it. The page's own script uses no storage or cookies.
 
 ## Catalog rules
 

@@ -100,7 +100,7 @@ class Refuses(unittest.TestCase):
         self.assertProblem(check_html(WITH_GA, require_ga="G-OTHER99"), "G-OTHER99")
 
     def test_loader_config_mismatch(self) -> None:
-        html = WITH_GA.replace('gtag("config","G-TEST123")', 'gtag("config","G-OTHER99")')
+        html = WITH_GA.replace('gtag("config","G-TEST123"', 'gtag("config","G-OTHER99"')
         self.assertProblem(check_html(html), "does not match")
 
 

@@ -3,8 +3,12 @@
 ## Unreleased
 
 Pre-public security audit (Claude, ponytail, Codex), resiliency fixes:
-- Search text no longer goes into the URL, so Google Analytics page views cannot carry it (a
-  `?q=` link still fills the search box). Tag filters stay in the URL.
+- Search text never reaches Google Analytics: it no longer goes into the URL, and the GA
+  bootstrap (now ahead of GA's loader) removes a `?q=` from the address before GA can read it;
+  GA's site search had been sending it as `search_term`. `?q=` links no longer fill the search
+  box. Tag filters stay in the URL.
+- `publish.sh` also catches untracked files hidden by `status.showUntrackedFiles=no` and dataset
+  files matching an ignore rule; the push refusal's recovery command works in a single-branch clone.
 - `CATALOG_DOMAIN` can no longer be empty: publishing without a `CNAME` would unbind
   data.cds.bu.edu while its DNS points at GitHub Pages (subdomain takeover).
 - `publish.sh` refuses untracked files as well as changed ones: an uncommitted `datasets/*.toml`

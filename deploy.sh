@@ -3,7 +3,8 @@
 # Pages serves at data.cds.bu.edu. page is kept as one amended commit and force-pushed, so the
 # public page accumulates no history. Adapted from pub-cds-scc/deploy.sh.
 # DEPLOY_PUSH=0 stages the commit locally without pushing. A push happens only when publish.sh
-# calls this (CDS_PUBLISH_GATED=1), so its clean-tree, GA and link gates always ran first.
+# calls this (CDS_PUBLISH_GATED=1), so a direct run cannot skip its clean-tree, GA and link gates
+# by accident (the flag guards against mistakes, not against someone setting it on purpose).
 # CATALOG_DOMAIN switches the custom domain; it cannot be empty: dropping CNAME while DNS still
 # points at GitHub Pages leaves data.cds.bu.edu open to takeover. Uses git worktree: run outside
 # a restrictive sandbox.
@@ -95,7 +96,8 @@ if [ "${DEPLOY_PUSH:-1}" = 1 ]; then
   seen="$(git -C "$REPO" rev-parse -q --verify refs/remotes/origin/page || true)"
   git -C "$WT" push -q --force-with-lease="page:$seen" origin page || {
     echo "deploy: REFUSED -- page on GitHub changed since the last fetch or publish." >&2
-    echo "  Look first: git fetch origin page && git show --stat origin/page; then rerun." >&2
+    echo "  Look first: git fetch origin +refs/heads/page:refs/remotes/origin/page" >&2
+    echo "  then git show --stat origin/page, and rerun to publish over it." >&2
     exit 1
   }
   echo "deploy: pushed index.html, about.html, publish.html and catalog.json to page"
