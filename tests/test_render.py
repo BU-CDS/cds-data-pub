@@ -173,7 +173,10 @@ class Card(unittest.TestCase):
         self.assertIn(
             '<span class="who">Horst &amp; Hill</span>', render_dataset(one(citation=two))
         )
-        self.assertNotIn('class="who"', render_dataset(one()))  # cites its own catalog entry
+        # no [citation]: it is cited as CDS's own, so the card says so (review 2026-10-09 #6)
+        self.assertIn(
+            'from <span class="who">BU Computing &amp; Data Sciences</span>', render_dataset(one())
+        )
 
     def test_intro_does_not_claim_cds_produced_the_data(self) -> None:
         html = page()
@@ -240,6 +243,7 @@ class Card(unittest.TestCase):
             "<dt>DOI</dt>",
             "<dt>MiB, GiB</dt>",
             "<dt>catalog.json</dt>",
+            "<h3>Terms used in the catalog</h3>",  # review 2026-10-09 #8
         ):
             with self.subTest(text=text):
                 self.assertIn(text, about)
@@ -252,6 +256,21 @@ class Card(unittest.TestCase):
         first = body[body.index("<p>") : body.index("</p>")]
         self.assertIn("Only CDS researchers can publish here", first)  # owner, 2026-10-09
         self.assertIn("HIPAA, FERPA or export-controlled", pub)
+
+    def test_review_fixes_2026_10_09(self) -> None:
+        html = page(one(file=[file_dict(columns=[f"C{i:02d}" for i in range(25)])]))
+        # #7 column names fill row by row, so "Show all" keeps the first 20 where they were
+        self.assertIn(".dx-cols{list-style:none;margin:0;padding:0;display:grid;", html)
+        self.assertNotIn("columns:10rem", html)
+        # #2 short phone windows (landscape) do not pin the filter panel
+        self.assertIn(
+            "@media(max-width:1099px) and (max-height:500px){.side{position:static;}}", html
+        )
+        # the heading's accessible name keeps a space after the logo's alt text
+        self.assertIn('alt="Boston University"> <a class="orglink"', html)
+        self.assertIn(
+            "q.focus(); // the empty state's Clear filters would leave focus nowhere", PAGE_JS
+        )
 
     def test_copy_link_button(self) -> None:
         html = render_dataset(one())

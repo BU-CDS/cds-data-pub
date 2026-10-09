@@ -169,6 +169,7 @@
   $$(".clear").forEach((b) => b.addEventListener("click", () => {
     clearAll();
     list.scrollTop = 0;
+    q.focus(); // the empty state's Clear filters would leave focus nowhere (it hides itself)
   }));
   for (const a of $$("a.tag")) {
     a.addEventListener("click", (ev) => {

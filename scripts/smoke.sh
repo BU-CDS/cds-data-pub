@@ -140,6 +140,12 @@ for doc in about publish; do
 done
 pw goto "$URL" >/dev/null
 check "the band's buttons go to the About and Publish pages" "$(val '() => [...document.querySelectorAll(".band .cta")].map(a => a.getAttribute("href")).join(" ")')" "publish.html about.html catalog.json"
+pw goto "$URL?q=zzqqxx-no-such-thing" >/dev/null
+check "Clear filters in the empty state moves focus to the search box" "$(val '() => { document.querySelector(".empty .clear").click(); return document.activeElement.id; }')" "q"
+pw resize 844 390 >/dev/null
+pw goto "$URL" >/dev/null
+check "landscape phone: the filter panel scrolls away with the page" "$(val '() => { scrollTo(0, 1500); return Math.round(document.querySelector(".side").getBoundingClientRect().bottom) <= 0; }')" "true"
+pw resize 1440 900 >/dev/null
 for w in 1440 390; do
   pw resize "$w" 900 >/dev/null
   pw eval '() => scrollTo(0, 0)' >/dev/null

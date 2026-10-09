@@ -49,6 +49,12 @@ From the 2026-10-08 design review (all six findings confirmed by the steward):
   address bar when the clipboard is unavailable.
 - GHCN's description says each element has measurement, quality and source flags (it said
   "quality flags"; checked against NOAA's documentation and the file).
+- Fixes from the blind design review of 2026-10-09: a dataset without a `[citation]` is shown as
+  "from BU Computing & Data Sciences" (it is cited as CDS's own), so every card names a producer;
+  column names fill row by row, so "Show all" leaves the first 20 where they were; landscape
+  phones (height ≤ 500px) no longer pin the filter panel; Clear filters in the empty state moves
+  focus to the search box; the heading's accessible name keeps a space after "Boston University";
+  About's glossary is "Terms used in the catalog".
 
 ## 2026-10-07 (v2.1)
 

@@ -3,6 +3,23 @@
 Settled choices for this project's data pages. Newest first. A decision is reopened only when the
 user asks, or new data or a reader test contradicts it — then add a new entry that supersedes it.
 
+## 2026-10-09 — Blind design review of the redesign (design-reviewer, read-only)
+
+- **Pages:** catalog (demo and 24-dataset sample), about.html, publish.html at 320–1440 and short
+  windows. No Critical; axe 0 violations in every state tested.
+- **Fixed:** #2 filter panel pinned on landscape phones; #5 focus lost after Clear filters; #6
+  sample cards without a producer although the page says each names one; #7 names jumping columns
+  on "Show all"; #8 "Terms on this page" on a page that does not use them; the heading's name ran
+  "Boston UniversityFaculty" together.
+- **Not changed, owner's call:** #1 the list gets 449 of 800px at 1280×800 under the band (the
+  band decision of 2026-10-08 accepted this cost; reopen per that entry); #3 Publish has no
+  contact until the steward is set (decided: leave empty, flagged); #4 a tall Cite popover (BibTeX)
+  can run past the list's bottom edge at 1280×800, tied to #1.
+- **Takeaway comparison:** free, no account, and find → check → download or cite all visible in
+  the first viewport; the reviewer's first impression missed that others produce the data (the
+  headline credits CDS; producers sit in grey meta text): *impression differs, no evidence of a
+  reader problem*; the reader test asks "Who made these datasets?".
+
 ## 2026-10-09 — Headline, About and Publish pages, Copy link
 
 - **Headline:** "Open datasets, curated and hosted by BU Computing & Data Sciences. Free to

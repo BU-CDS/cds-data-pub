@@ -146,8 +146,9 @@ font-size:0.875rem;}
 .dx-facts dt{font-weight:600;color:var(--muted);}.dx-facts dd{margin:0;overflow-wrap:anywhere;}
 .dx-h{font-size:0.875rem;font-weight:600;margin:14px 0 6px;}\
 .dx-h span{font-weight:400;color:var(--muted);}.dx>.dx-h:first-child{margin-top:0;}
-.dx-cols{list-style:none;margin:0;padding:0;columns:10rem;column-gap:20px;}\
-.dx-cols li{break-inside:avoid;overflow-wrap:anywhere;}\
+.dx-cols{list-style:none;margin:0;padding:0;display:grid;\
+grid-template-columns:repeat(auto-fill,minmax(10rem,1fr));gap:1px 20px;}\
+.dx-cols li{overflow-wrap:anywhere;}\
 .dx-cols code{font-family:var(--t-mono);font-size:0.8rem;}
 .dx-cols.clip:not(.filtering) li.x{display:none;}
 .colq{width:min(100%,18rem);padding:5px 8px;margin:0 0 8px;border:1px solid var(--muted);\
@@ -261,6 +262,7 @@ html{scroll-padding-top:var(--stick,90px);}\
 .filters{display:flex;flex-wrap:wrap;align-items:center;column-gap:10px;}\
 .side input[type=search]{flex:1 1 12rem;width:auto;}.chips-wrap,.count{flex-basis:100%;}\
 .count{margin:4px 0 0;}.chips-wrap.open{max-height:50dvh;overflow:auto;}}
+@media(max-width:1099px) and (max-height:500px){.side{position:static;}}
 @media(min-width:1300px){.ds{display:grid;grid-template-columns:minmax(0,80ch) \
 minmax(240px,1fr);grid-template-rows:auto auto auto 1fr auto;column-gap:28px;}\
 .ds-hd{display:contents;}.ds h2{grid-area:1/1;}.acts{grid-area:1/2;}\
@@ -416,9 +418,10 @@ def _cite(ds: Dataset) -> str:
 
 def producer(ds: Dataset) -> str | None:
     """Who made the data, from its citation: an organization by name, people by family name
-    ("A", "A & B", "A et al."). None when the dataset cites its own catalog entry."""
+    ("A", "A & B", "A et al."). Without a [citation] the dataset is cited as CDS's own, so
+    CDS is named (review 2026-10-09 #6: the page says every dataset names its producer)."""
     if not ds.citation:
-        return None
+        return "BU Computing & Data Sciences"
     first = ds.citation.authors[0]
     if ", " not in first:
         return first
@@ -609,7 +612,7 @@ def _about_body(catalog: Catalog) -> str:
         "<h3>Dates</h3>"
         "<p>“Added” is when a dataset was listed here; “updated” is when this catalog was last "
         "rebuilt. A dataset's README gives its snapshot date and source version.</p>"
-        '<h3>Terms on this page</h3><dl class="gloss">'
+        '<h3>Terms used in the catalog</h3><dl class="gloss">'
         "<dt>Checksum (sha256)</dt><dd>A fingerprint of a file. If the sha256 of your download "
         "matches the one listed, you have exactly the file published here.</dd>"
         "<dt>License</dt><dd>The terms for reuse, as an SPDX identifier such as CC0-1.0 or "
@@ -712,7 +715,7 @@ def _document(
         + (ga_tag(ga_id) if ga_id else "")
         + f"<style>{css}</style></head><body>"
         f'<header><div class="hwrap"><h1><img class="buplate" src="{assets.plate}" '
-        f'alt="Boston University"><a class="orglink" href="{CDS_URL}"><span class="orgname">'
+        f'alt="Boston University"> <a class="orglink" href="{CDS_URL}"><span class="orgname">'
         "Faculty of Computing &amp; Data Sciences</span></a> "
         '<span class="hsep" aria-hidden="true">|</span> Public Research Data'
         f"{notice}</h1>"
